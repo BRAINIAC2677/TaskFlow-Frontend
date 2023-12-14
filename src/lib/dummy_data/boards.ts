@@ -5,7 +5,7 @@ export const boards: Board[] = [
     {
         id: 1,
         title: "Board 1",
-        lists: [lists[0], lists[1], lists[2]]
+        lists: [lists[0], lists[1], lists[2], lists[3], lists[4]]
     },
     {
         id: 2,

@@ -5,7 +5,7 @@ export const tasks: Task[] = [
         id: 1,
         title: "Task 1",
         description: "This is the first task",
-        due_date: "2021-10-01"
+        due_date: "2021-10-01",
     },
     {
         id: 2,
