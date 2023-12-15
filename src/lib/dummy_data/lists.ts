@@ -1,36 +1,36 @@
 import type { List } from "../interfaces/list";
-import { tasks } from "./tasks";
+import { dummy_tasks } from "./tasks";
 
 export const lists: List[] = [
     {
         id: 1,
         title: "List 1",
-        tasks: [tasks[0], tasks[1], tasks[2]]
+        tasks: [dummy_tasks[0], dummy_tasks[1], dummy_tasks[2]]
     },
     {
         id: 2,
         title: "List 2",
-        tasks: [tasks[3], tasks[4], tasks[5]]
+        tasks: [dummy_tasks[3], dummy_tasks[4], dummy_tasks[5]]
     },
     {
         id: 3,
         title: "List 3",
-        tasks: [tasks[6], tasks[7], tasks[8]]
+        tasks: [dummy_tasks[6], dummy_tasks[7], dummy_tasks[8]]
     },
     {
         id: 4,
         title: "List 4",
-        tasks: [tasks[9]]
+        tasks: [dummy_tasks[9]]
     },
     {
         id: 5,
         title: "List 5",
-        tasks: [tasks[10]]
+        tasks: [dummy_tasks[10]]
     },
     {
         id: 6,
         title: "List 6",
-        tasks: [tasks[0]]
+        tasks: [dummy_tasks[0]]
     },
     {
         id: 7,

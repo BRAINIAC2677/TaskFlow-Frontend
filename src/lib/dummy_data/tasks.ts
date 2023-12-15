@@ -1,70 +1,135 @@
 import type { Task } from "../interfaces/task";
+import { Status, Label } from "../interfaces/task";
 
-export const tasks: Task[] = [
+export const dummy_tasks: Task[] = [
     {
-        id: 1,
-        title: "Task 1",
-        description: "This is the first task",
-        due_date: "2021-10-01",
+        name: "Task 1",
+        description: "Description for Task 1",
+        due_date: new Date("2023-12-31"),
+        label: Label.Work,
+        cover_photo_link: "https://example.com/cover1.jpg",
+        color: { r: 255, g: 0, b: 0 },
+        status: Status.InProgress,
+        checklist_items: [
+            { name: "Subtask A", is_checked: false },
+            { name: "Subtask B", is_checked: true }
+        ]
     },
     {
-        id: 2,
-        title: "Task 2",
-        description: "This is the second task",
-        due_date: "2021-10-02"
+        name: "Task 2",
+        description: "Description for Task 2",
+        due_date: new Date("2024-01-15"),
+        label: Label.Personal,
+        cover_photo_link: "https://example.com/cover2.jpg",
+        color: { r: 0, g: 128, b: 0 },
+        status: Status.Completed,
+        checklist_items: [
+            { name: "Subtask X", is_checked: true },
+            { name: "Subtask Y", is_checked: true }
+        ]
     },
     {
-        id: 3,
-        title: "Task 3",
-        description: "This is the third task",
-        due_date: "2021-10-03"
+        name: "Task 3",
+        description: "Description for Task 3",
+        due_date: new Date("2024-02-28"),
+        label: Label.Study,
+        cover_photo_link: "https://example.com/cover3.jpg",
+        color: { r: 0, g: 0, b: 255 },
+        status: Status.NotStarted,
+        checklist_items: [
+            { name: "Subtask P", is_checked: false },
+            { name: "Subtask Q", is_checked: true }
+        ]
     },
     {
-        id: 4,
-        title: "Task 4",
-        description: "This is the fourth task",
-        due_date: "2021-10-04"
+        name: "Task 4",
+        description: "Description for Task 4",
+        due_date: new Date("2024-03-15"),
+        label: Label.Work,
+        cover_photo_link: "https://example.com/cover4.jpg",
+        color: { r: 255, g: 128, b: 0 },
+        status: Status.InProgress,
+        checklist_items: [
+            { name: "Subtask M", is_checked: false },
+            { name: "Subtask N", is_checked: true }
+        ]
     },
     {
-        id: 5,
-        title: "Task 5",
-        description: "This is the fifth task",
-        due_date: "2021-10-05"
+        name: "Task 5",
+        description: "Description for Task 5",
+        due_date: new Date("2024-04-30"),
+        label: Label.Personal,
+        cover_photo_link: "https://example.com/cover5.jpg",
+        color: { r: 128, g: 0, b: 128 },
+        status: Status.Completed,
+        checklist_items: [
+            { name: "Subtask Z", is_checked: true },
+            { name: "Subtask W", is_checked: true }
+        ]
     },
     {
-        id: 6,
-        title: "Task 6",
-        description: "This is the sixth task",
-        due_date: "2021-10-06"
+        name: "Task 6",
+        description: "Description for Task 6",
+        due_date: new Date("2024-05-15"),
+        label: Label.Study,
+        cover_photo_link: "https://example.com/cover6.jpg",
+        color: { r: 0, g: 255, b: 255 },
+        status: Status.NotStarted,
+        checklist_items: [
+            { name: "Subtask R", is_checked: false },
+            { name: "Subtask S", is_checked: true }
+        ]
     },
     {
-        id: 7,
-        title: "Task 7",
-        description: "This is the seventh task",
-        due_date: "2021-10-07"
+        name: "Task 7",
+        description: "Description for Task 7",
+        due_date: new Date("2024-06-30"),
+        label: Label.Work,
+        cover_photo_link: "https://example.com/cover7.jpg",
+        color: { r: 128, g: 128, b: 0 },
+        status: Status.InProgress,
+        checklist_items: [
+            { name: "Subtask C", is_checked: false },
+            { name: "Subtask D", is_checked: true }
+        ]
     },
     {
-        id: 8,
-        title: "Task 8",
-        description: "This is the eighth task",
-        due_date: "2021-10-08"
+        name: "Task 8",
+        description: "Description for Task 8",
+        due_date: new Date("2024-07-15"),
+        label: Label.Personal,
+        cover_photo_link: "https://example.com/cover8.jpg",
+        color: { r: 255, g: 0, b: 255 },
+        status: Status.Completed,
+        checklist_items: [
+            { name: "Subtask E", is_checked: true },
+            { name: "Subtask F", is_checked: true }
+        ]
     },
     {
-        id: 9,
-        title: "Task 9",
-        description: "This is the ninth task",
-        due_date: "2021-10-09"
+        name: "Task 9",
+        description: "Description for Task 9",
+        due_date: new Date("2024-08-31"),
+        label: Label.Study,
+        cover_photo_link: "https://example.com/cover9.jpg",
+        color: { r: 128, g: 128, b: 128 },
+        status: Status.NotStarted,
+        checklist_items: [
+            { name: "Subtask G", is_checked: false },
+            { name: "Subtask H", is_checked: true }
+        ]
     },
     {
-        id: 10,
-        title: "Task 10",
-        description: "This is the tenth task",
-        due_date: "2021-10-10"
-    },
-    {
-        id: 11,
-        title: "Task 11",
-        description: "This is the eleventh task",
-        due_date: "2021-10-11"
+        name: "Task 10",
+        description: "Description for Task 10",
+        due_date: new Date("2024-09-15"),
+        label: Label.Work,
+        cover_photo_link: "https://example.com/cover10.jpg",
+        color: { r: 0, g: 255, b: 0 },
+        status: Status.InProgress,
+        checklist_items: [
+            { name: "Subtask I", is_checked: false },
+            { name: "Subtask J", is_checked: true }
+        ]
     }
 ];
