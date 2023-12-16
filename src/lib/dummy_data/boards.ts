@@ -1,11 +1,11 @@
 import type { Board } from "../interfaces/board";
-import { lists } from "./lists";
+import { dummy_lists } from "./lists";
 
 export const dummy_boards: Board[] = [
     {
         id: 1,
         title: "Website Redesign",
-        lists: [],
+        lists: [dummy_lists[0], dummy_lists[1], dummy_lists[2], dummy_lists[5], dummy_lists[3]],
         progress: 20,
         status: "In Progress",
         due_date: new Date("2023-03-15"),
@@ -14,7 +14,7 @@ export const dummy_boards: Board[] = [
     {
         id: 2,
         title: "Mobile App Development",
-        lists: [],
+        lists: [dummy_lists[3]],
         progress: 50,
         status: "In Progress",
         due_date: new Date("2023-04-10"),
@@ -23,7 +23,7 @@ export const dummy_boards: Board[] = [
     {
         id: 3,
         title: "Market Research",
-        lists: [],
+        lists: [dummy_lists[6], dummy_lists[7], dummy_lists[8]],
         progress: 80,
         status: "In Progress",
         due_date: new Date("2023-05-20"),
@@ -32,7 +32,7 @@ export const dummy_boards: Board[] = [
     {
         id: 4,
         title: "Product Launch",
-        lists: [],
+        lists: [dummy_lists[9], dummy_lists[10], dummy_lists[11]],
         progress: 100,
         status: "Completed",
         due_date: new Date("2023-06-30"),
@@ -41,7 +41,7 @@ export const dummy_boards: Board[] = [
     {
         id: 5,
         title: "New Feature Development",
-        lists: [],
+        lists: [dummy_lists[12], dummy_lists[13], dummy_lists[14]],
         progress: 0,
         status: "Not Started",
         due_date: new Date("2023-08-05"),
