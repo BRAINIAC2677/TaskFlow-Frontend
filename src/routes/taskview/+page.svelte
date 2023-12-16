@@ -74,20 +74,20 @@
       },
       {
         title: "ML: Natural Language Processing Assignment",
-        start: "2023-12-17T17:49:00",
-        end: "2023-12-17T19:49:00",
+        start: "2023-12-17T01:49:00",
+        end: "2023-12-17T03:49:00",
         backgroundColor: "#228B22",
       },
       {
         title: "Comp. Security: Penetration Testing Lab",
-        start: "2023-12-17T18:57:00",
-        end: "2023-12-17T20:57:00",
+        start: "2023-12-17T02:57:00",
+        end: "2023-12-17T05:57:00",
         backgroundColor: "#8B0000",
       },
       {
         title: "Graph Theory: Hamiltonian Paths Exercise",
-        start: "2023-12-21T22:25:00",
-        end: "2023-12-22T00:25:00",
+        start: "2023-12-17T04:25:00",
+        end: "2023-12-17T08:25:00",
         backgroundColor: "#A0522D",
       },
       {
@@ -128,9 +128,9 @@
       },
       {
         title: "Economics: International Trade Simulation",
-        start: "2024-10-27T16:05:00",
-        end: "2024-10-27T18:05:00",
-        backgroundColor: "#A0522D",
+        start: "2023-12-17T09:05:00",
+        end: "2023-12-17T11:05:00",
+        backgroundColor: "#003900",
       },
       {
         title: "Comp. Security: Network Security Workshop",
@@ -164,8 +164,8 @@
       },
       {
         title: "AI: Machine Learning Ethics Debate",
-        start: "2023-12-22T17:03:00",
-        end: "2023-12-22T19:03:00",
+        start: "2023-12-22T08:03:00",
+        end: "2023-12-22T09:03:00",
         backgroundColor: "#8B0000",
       },
       {
@@ -214,4 +214,10 @@
   };
 </script>
 
-<Calendar {plugins} {options} />
+<div class="px-10 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+  <h1 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">Tasks</h1>
+  <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+    View your tasks here.
+    <Calendar {plugins} {options} />
+  </p>
+</div>
