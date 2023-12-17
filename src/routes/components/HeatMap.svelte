@@ -8,6 +8,6 @@
 </script>
 
 <div class="mt-4">
-    <div class="mb-16 text-2xl text-black">{title}</div>
-    < font-boldHeatmap {data} {startDate} {endDate} />
+    <div class="mb-16 text-2xl text-black font-bold">{title}</div>
+    <Heatmap {data} {startDate} {endDate} />
 </div>

@@ -1,17 +1,95 @@
 import type { Board } from "../interfaces/board";
-import { lists } from "./lists";
+import { dummy_lists } from "./lists";
 
-export const boards: Board[] = [
+export const dummy_boards: Board[] = [
     {
         id: 1,
-        title: "Board 1",
-        lists: [lists[0], lists[1], lists[2], lists[3], lists[4]]
+        title: "Website Redesign",
+        lists: [dummy_lists[0], dummy_lists[1], dummy_lists[2], dummy_lists[5], dummy_lists[3]],
+        progress: 20,
+        status: "In Progress",
+        due_date: new Date("2023-03-15"),
+        owner_name: "Creative Innovators",
     },
     {
         id: 2,
-        title: "Board 2",
-        lists: [lists[3]]
-    }
-]
-
-
+        title: "Mobile App Development",
+        lists: [dummy_lists[3]],
+        progress: 50,
+        status: "In Progress",
+        due_date: new Date("2023-04-10"),
+        owner_name: "App Wizards",
+    },
+    {
+        id: 3,
+        title: "Market Research",
+        lists: [dummy_lists[6], dummy_lists[7], dummy_lists[8]],
+        progress: 80,
+        status: "In Progress",
+        due_date: new Date("2023-05-20"),
+        owner_name: "Market Analysts",
+    },
+    {
+        id: 4,
+        title: "Product Launch",
+        lists: [dummy_lists[9], dummy_lists[10], dummy_lists[11]],
+        progress: 100,
+        status: "Completed",
+        due_date: new Date("2023-06-30"),
+        owner_name: "Launch Pioneers",
+    },
+    {
+        id: 5,
+        title: "New Feature Development",
+        lists: [dummy_lists[12], dummy_lists[13], dummy_lists[14]],
+        progress: 0,
+        status: "Not Started",
+        due_date: new Date("2023-08-05"),
+        owner_name: "Feature Explorers",
+    },
+    {
+        id: 6,
+        title: "Quality Assurance",
+        lists: [],
+        progress: 30,
+        status: "In Progress",
+        due_date: new Date("2023-09-12"),
+        owner_name: "QA Dream Team",
+    },
+    {
+        id: 7,
+        title: "Marketing Campaign",
+        lists: [],
+        progress: 70,
+        status: "In Progress",
+        due_date: new Date("2023-10-25"),
+        owner_name: "Marketing Mavericks",
+    },
+    {
+        id: 8,
+        title: "Research and Development",
+        lists: [],
+        progress: 90,
+        status: "In Progress",
+        due_date: new Date("2023-11-18"),
+        owner_name: "Innovation Explorers",
+    },
+    {
+        id: 9,
+        title: "Financial Analysis",
+        lists: [],
+        progress: 40,
+        status: "In Progress",
+        due_date: new Date("2024-01-05"),
+        owner_name: "Financial Wizards",
+    },
+    {
+        id: 10,
+        title: "Content Creation",
+        lists: [],
+        progress: 0,
+        status: "Not Started",
+        due_date: new Date("2024-02-20"),
+        owner_name: "Content Creators",
+    },
+];
