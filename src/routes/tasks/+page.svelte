@@ -37,6 +37,7 @@
   let start_width: number;
   // This will be set using bind:this on the element
   let left_panel: HTMLElement;
+  let left_panel_width: number = 600;
 
   function init_drag(e: MouseEvent) {
     start_x = e.clientX;
@@ -46,7 +47,7 @@
   }
 
   function do_drag(e: MouseEvent) {
-    let min_percentage = 0.2;
+    let min_percentage = 0;
     let width = start_width + e.clientX - start_x;
     let total_width = document.documentElement.clientWidth;
     if (
@@ -55,6 +56,8 @@
     )
       return;
     left_panel.style.width = start_width + e.clientX - start_x + "px";
+    left_panel_width = start_width + e.clientX - start_x;
+    console.log(left_panel_width);
   }
 
   function stop_drag() {
@@ -65,6 +68,7 @@
 
 <div class="flex flex-wrap md:flex-nowrap min-h-screen">
   <!-- Left side: Task Detail Editing -->
+  {#if left_panel_width >= 100}
   <div
     bind:this={left_panel}
     class="flex flex-col bg-white dark:bg-gray-800 p-4"
@@ -159,6 +163,7 @@
       </div>
     </div>
   </div>
+  {/if}
 
   <!-- Draggable Divider -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -170,6 +175,7 @@
   </div>
 
   <!-- Right side: Chat Window-->
+  {#if left_panel_width < 1250}
   <div class="flex-1 bg-white dark:bg-gray-900 p-4">
     <h2 class="text-xl font-semibold text-black dark:text-black mb-4">
       Chat Window
@@ -219,4 +225,5 @@
       </button>
     </div>
   </div>
+  {/if}
 </div>
