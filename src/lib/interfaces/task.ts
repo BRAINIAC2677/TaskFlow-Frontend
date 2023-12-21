@@ -1,26 +1,24 @@
 export enum Status {
-    NotStarted = "Not Started",
-    InProgress = "In Progress",
-    Completed = "Completed"
+  NotStarted = "Not Started",
+  InProgress = "In Progress",
+  Completed = "Completed",
 }
 
 export enum Label {
-    Work = "Work",
-    Personal = "Personal",
-    Study = "Study"
+  Work = "Work",
+  Personal = "Personal",
+  Study = "Study",
 }
 
 export interface Task {
-    name: string;
-    description: string;
-    due_date: Date;
-    label: Label;
-    cover_photo_link: string;
-    color: {
-        r: number;
-        g: number;
-        b: number;
-    };
-    status: Status;
-    checklist_items: { name: string; is_checked: boolean }[];
+  id: number;
+  name: string;
+  description: string;
+  start_time: Date;
+  due_time: Date;
+  label: Label;
+  cover_photo_link: string;
+  color: string; // of form #RRGGBB
+  status: Status;
+  checklist_items: { name: string; is_checked: boolean }[];
 }
