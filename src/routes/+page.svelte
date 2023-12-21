@@ -4,7 +4,6 @@
   let progress = 72; // Your progress value
   const radius = 45; // Radius of the circle
   const circumference = 2 * Math.PI * radius; // Circumference of the circle
-  const offset = ((100 - progress) / 100) * circumference; // Offset for stroke-dasharray
 </script>
 
 <div class="min-h-screen bg-gray-100 p-8">
@@ -93,7 +92,11 @@
             <tbody class="bg-white divide-y divide-gray-200">
               {#each dummy_boards as board}
                 <tr>
-                  <td class="px-4 py-4 whitespace-nowrap">{board.title}</td>
+                  <a href="/boards/{board.id}">
+                    <td class="px-4 py-4 whitespace-nowrap hover:text-blue-500"
+                      >{board.title}</td
+                    >
+                  </a>
                   <td class="px-4 py-4 whitespace-nowrap">{board.owner_name}</td
                   >
                   <td class="px-4 py-4 whitespace-nowrap"

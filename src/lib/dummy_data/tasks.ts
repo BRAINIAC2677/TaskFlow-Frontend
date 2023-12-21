@@ -10,7 +10,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2023-12-31T16:30:00"),
     label: Label.Work,
     cover_photo_link: "https://source.unsplash.com/400x300/?work",
-    color: "#FF0000", // Hexadecimal color string for red
+    color: "#FF0000",
     status: Status.InProgress,
     checklist_items: [
       { name: "Subtask A", is_checked: false },
@@ -25,7 +25,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-01-15T14:45:00"),
     label: Label.Personal,
     cover_photo_link: "https://source.unsplash.com/400x300/?personal",
-    color: "#008000", // Hexadecimal color string for green
+    color: "#008000",
     status: Status.Completed,
     checklist_items: [
       { name: "Subtask X", is_checked: true },
@@ -40,7 +40,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-02-28T18:00:00"),
     label: Label.Study,
     cover_photo_link: "https://source.unsplash.com/400x300/?study",
-    color: "#0000FF", // Hexadecimal color string for blue
+    color: "#0000FF",
     status: Status.NotStarted,
     checklist_items: [
       { name: "Subtask P", is_checked: false },
@@ -55,7 +55,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-03-15T17:15:00"),
     label: Label.Work,
     cover_photo_link: "https://source.unsplash.com/400x300/?work",
-    color: "#FF8000", // Hexadecimal color string for orange
+    color: "#FF8000",
     status: Status.InProgress,
     checklist_items: [
       { name: "Subtask M", is_checked: false },
@@ -70,7 +70,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-04-30T23:59:00"),
     label: Label.Personal,
     cover_photo_link: "https://source.unsplash.com/400x300/?personal",
-    color: "#800080", // Hexadecimal color string for purple
+    color: "#800080",
     status: Status.Completed,
     checklist_items: [
       { name: "Subtask Z", is_checked: true },
@@ -85,7 +85,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-05-15T16:00:00"),
     label: Label.Study,
     cover_photo_link: "https://source.unsplash.com/400x300/?study",
-    color: "#00FFFF", // Hexadecimal color string for cyan
+    color: "#00FFFF",
     status: Status.NotStarted,
     checklist_items: [
       { name: "Subtask R", is_checked: false },
@@ -100,7 +100,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-06-30T15:30:00"),
     label: Label.Work,
     cover_photo_link: "https://source.unsplash.com/400x300/?work",
-    color: "#808000", // Hexadecimal color string for olive
+    color: "#808000",
     status: Status.InProgress,
     checklist_items: [
       { name: "Subtask C", is_checked: false },
@@ -115,7 +115,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-07-15T18:30:00"),
     label: Label.Personal,
     cover_photo_link: "https://source.unsplash.com/400x300/?personal",
-    color: "#FF00FF", // Hexadecimal color string for magenta
+    color: "#FF00FF",
     status: Status.Completed,
     checklist_items: [
       { name: "Subtask E", is_checked: true },
@@ -130,7 +130,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-08-31T22:00:00"),
     label: Label.Study,
     cover_photo_link: "https://source.unsplash.com/400x300/?study",
-    color: "#808080", // Hexadecimal color string for gray
+    color: "#808080",
     status: Status.NotStarted,
     checklist_items: [
       { name: "Subtask G", is_checked: false },
@@ -145,7 +145,7 @@ export const dummy_tasks: Task[] = [
     due_time: new Date("2024-09-15T13:15:00"),
     label: Label.Work,
     cover_photo_link: "https://source.unsplash.com/400x300/?work",
-    color: "#00FF00", // Hexadecimal color string for lime green
+    color: "#00FF00",
     status: Status.InProgress,
     checklist_items: [
       { name: "Subtask I", is_checked: false },
