@@ -1,9 +1,9 @@
 <script lang="ts">
-  import DashBoardOverview from "../components/DashBoardOverview.svelte";
-  import LineChart from "../components/LineChart.svelte";
-  import PieChart from "../components/PieChart.svelte";
-  import BarChart from "../components/BarChart.svelte";
-  import HeatMap from "../components/HeatMap.svelte";
+  import DashBoardOverview from "../../lib/components/DashBoardOverview.svelte";
+  import LineChart from "../../lib/components/LineChart.svelte";
+  import PieChart from "../../lib/components/PieChart.svelte";
+  import BarChart from "../../lib/components/BarChart.svelte";
+  import HeatMap from "../../lib/components/HeatMap.svelte";
 
   import { heatmapData } from "$lib/dummy_data/heatmap";
 
