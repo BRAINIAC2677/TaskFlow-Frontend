@@ -1,75 +1,31 @@
-<script lang="ts">
-    // Import any necessary libraries or components
-    // Dummy data for overview statistics
-    export let title: string;
-    let totalTasks = 120;
-    let completedTasks = 85;
-    let ongoingTasks = 30;
-    let overdueTasks = 5;
-    let streak = 5;
+<div
+  class="overview-section mb-4 grid grid-cols-1 gap-4 rounded-lg bg-white p-4 md:grid-cols-4"
+>
+  <!-- Task Completion Rate Card -->
+  <div class="card bg-purple-100 p-4 rounded-lg shadow">
+    <h3 class="font-semibold text-lg">Task Completion Rate</h3>
+    <p class="text-2xl font-bold">200/300 Tasks</p>
+    <p class="text-green-600">67% of tasks completed</p>
+  </div>
 
-    let todayTaskDue = 5;
-    let todayTaskCompleted = 3;
-    let todayTaskOverdue = 2;
+  <!-- Active Tasks Card -->
+  <div class="card bg-blue-100 p-4 rounded-lg shadow">
+    <h3 class="font-semibold text-lg">Active Boards</h3>
+    <p class="text-2xl font-bold">10</p>
+    <p class="text-green-600">boards currently active</p>
+  </div>
 
-    let thisWeekTaskDue = 10;
-    let thisWeekTaskCompleted = 5;
-    let thisWeekTaskOverdue = 2;
+  <!-- Upcoming Deadlines Card -->
+  <div class="card bg-green-100 p-4 rounded-lg shadow">
+    <h3 class="font-semibold text-lg">Upcoming Deadlines</h3>
+    <p class="text-2xl font-bold">8</p>
+    <p class="text-red-600">Tasks due this week</p>
+  </div>
 
-    let thisMonthTaskDue = 20;
-    let thisMonthTaskCompleted = 15;
-    let thisMonthTaskOverdue = 5;
-</script>
-
-<div class="p-4 bg-white rounded shadow">
-    <div class="mb-16 text-2xl font-bold text-black">{title}</div>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Due Today</p>
-            <p class="text-2xl font-bold">{todayTaskDue}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Completed Today</p>
-            <p class="text-2xl font-bold">{todayTaskCompleted}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Overdue Today</p>
-            <p class="text-2xl font-bold">{todayTaskOverdue}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Due This Week</p>
-            <p class="text-2xl font-bold">{thisWeekTaskDue}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Completed This Week</p>
-            <p class="text-2xl font-bold">{thisWeekTaskCompleted}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Overdue This Week</p>
-            <p class="text-2xl font-bold">{thisWeekTaskOverdue}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Due This Month</p>
-            <p class="text-2xl font-bold">{thisMonthTaskDue}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Completed This Month</p>
-            <p class="text-2xl font-bold">{thisMonthTaskCompleted}</p>
-        </div>
-
-        <div class="p-4 border rounded">
-            <p class="text-sm text-gray-600">Task Overdue This Month</p>
-            <p class="text-2xl font-bold">{thisMonthTaskOverdue}</p>
-        </div>
-
-        <!-- Additional cards for Current Streak and Time Spent on Tasks -->
-        <!-- ... -->
-    </div>
+  <!-- Personal Goal Card -->
+  <div class="card bg-yellow-100 p-4 rounded-lg shadow">
+    <h3 class="font-semibold text-lg">Daily Goals Progress</h3>
+    <p class="text-2xl font-bold">6/10 Tasks</p>
+    <p class="text-green-600">60% of daily goal completed</p>
+  </div>
 </div>

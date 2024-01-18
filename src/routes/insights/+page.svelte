@@ -1,5 +1,5 @@
 <script lang="ts">
-  import DashBoardOverview from "../../lib/components/DashBoardOverview.svelte";
+  import InsightOverview from "../../lib/components/InsightOverview.svelte";
   import LineChart from "../../lib/components/LineChart.svelte";
   import PieChart from "../../lib/components/PieChart.svelte";
   import BarChart from "../../lib/components/BarChart.svelte";
@@ -103,7 +103,7 @@
 
 <div class="flex-col my-32 mx-80">
   <div class="chart-container">
-    <DashBoardOverview title="Overview" />
+    <InsightOverview title="Overview" />
   </div>
 
   <div class="mt-32 chart-container">

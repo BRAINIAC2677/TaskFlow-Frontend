@@ -12,7 +12,7 @@
   import { InfoCircleSolid } from "flowbite-svelte-icons";
   import { sineIn } from "svelte/easing";
 
-  let hidden3 = true;
+  let hidden = true;
   let transitionParams = {
     x: -320,
     duration: 200,
@@ -196,12 +196,7 @@
     </AccordionItem>
   </Accordion>
 
-  <Drawer
-    transitionType="fly"
-    {transitionParams}
-    bind:hidden={hidden3}
-    id="sidebar3"
-  >
+  <Drawer transitionType="fly" {transitionParams} bind:hidden id="sidebar3">
     <div class="flex items-center">
       <h5
         id="drawer-label"
@@ -210,7 +205,7 @@
         <InfoCircleSolid class="w-4 h-4 me-2.5" />Contact us
       </h5>
       <CloseButton
-        on:click={() => (hidden3 = true)}
+        on:click={() => (hidden = true)}
         class="mb-4 dark:text-white"
       />
     </div>
@@ -247,6 +242,6 @@
   </Drawer>
 
   <div class="text-center mt-6">
-    <Button on:click={() => (hidden3 = false)}>Show contact form</Button>
+    <Button on:click={() => (hidden = false)}>Show contact form</Button>
   </div>
 </div>
