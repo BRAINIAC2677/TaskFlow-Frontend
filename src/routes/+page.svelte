@@ -1,9 +1,6 @@
 <script lang="ts">
   import { dummy_boards } from "$lib/dummy_data/boards";
-
-  let progress = 72; // Your progress value
-  const radius = 45; // Radius of the circle
-  const circumference = 2 * Math.PI * radius; // Circumference of the circle
+  import PlusOutline from "flowbite-svelte-icons/PlusOutline.svelte";
 </script>
 
 <div class="min-h-screen bg-gray-100 p-8">
@@ -176,4 +173,9 @@
       </div>
     </section>
   </div>
+  <button
+    class="h-14 w-14 fixed bottom-12 right-12 z-10 shadow-xl text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full lg:ml-40 ml-10 text-sm mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+  >
+    <PlusOutline class="w-6 h-6 m-auto" />
+  </button>
 </div>

@@ -17,11 +17,6 @@
 
 <Navbar>
   <NavBrand href="/">
-    <!-- <img
-            src="/images/flowbite-svelte-icon-logo.svg"
-            class="h-6 me-3 sm:h-9"
-            alt="Flowbite Logo"
-        /> -->
     <span
       class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
       >TaskFlow</span
@@ -38,17 +33,17 @@
       >
     </DropdownHeader>
     <DropdownItem>
-      <a href="/profile">Profile</a>
+      <a href="/profile">Public Profile</a>
     </DropdownItem>
     <DropdownItem>
-      <a href="/settings">Settings</a>
+      <a href="/settings">Profile Settings</a>
     </DropdownItem>
     <DropdownDivider />
     <DropdownItem>Sign out</DropdownItem>
   </Dropdown>
   <NavUl>
-    <NavLi href="/" active={true}>Home</NavLi>
-    <NavLi href="/boards">Boards</NavLi>
+    <NavLi href="/" active={true}>Dashboard</NavLi>
+    <NavLi href="/taskview">Task View</NavLi>
     <NavLi href="/insights">Insights</NavLi>
     <NavLi href="/about">About</NavLi>
   </NavUl>
