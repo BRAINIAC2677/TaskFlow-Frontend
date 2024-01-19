@@ -5,7 +5,10 @@
     full_name: string;
     img_url: string;
   }
+  import { Button } from "flowbite-svelte";
+  import { MinusOutline } from "flowbite-svelte-icons";
   export let users: UserMinimalForm[] = [];
+  export let minus: boolean = false;
 </script>
 
 <div
@@ -26,6 +29,16 @@
           >{user.full_name}</span
         >
       </div>
+      {#if minus}
+        <Button
+          class="bg-red-500 !p-1 ml-auto"
+          size="xs"
+          on:click={() => {
+            users = users.filter((u) => u.id !== user.id);
+            users = [...users];
+          }}><MinusOutline class="w-2 h-2" /></Button
+        >
+      {/if}
     </div>
   {/each}
 </div>

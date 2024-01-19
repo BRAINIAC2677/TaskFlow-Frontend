@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dummy_boards } from "$lib/dummy_data/boards";
   import BoardListView from "$lib/components/BoardListView.svelte";
-  import DashboardOverview from "$lib/components/DashBoardOverview.svelte";
+  import DashBoardOverview from "$lib/components/DashBoardOverview.svelte";
   import {
     InfoCircleSolid,
     PlusOutline,
@@ -190,7 +190,7 @@
 
   <div class="main-content grid grid-cols-12 gap-4">
     <section class="col-span-12">
-      <DashboardOverview />
+      <DashBoardOverview />
       <BoardListView {dummy_boards} />
     </section>
   </div>
@@ -282,7 +282,9 @@
           {/if}
         </div>
       </div>
-      <ScrollableUserList users={selected_users} />
+      {#if selected_users.length > 0}
+        <ScrollableUserList bind:users={selected_users} minus={true} />
+      {/if}
       <Button
         type="submit"
         class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex w-40 mx-auto bg-blue-700 hover:bg-blue-800"
