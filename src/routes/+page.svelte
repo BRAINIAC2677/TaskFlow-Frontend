@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dummy_boards } from "$lib/dummy_data/boards";
   import BoardListView from "$lib/components/BoardListView.svelte";
-  import DashboardOverview from "$lib/components/DashboardOverview.svelte";
+  import DashboardOverview from "$lib/components/DashBoardOverview.svelte";
   import {
     InfoCircleSolid,
     PlusOutline,
