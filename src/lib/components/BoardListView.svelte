@@ -1,13 +1,35 @@
 <script lang="ts">
   import type { Board } from "$lib/interfaces/board";
+  import { Input } from "flowbite-svelte";
+  import { SearchOutline } from "flowbite-svelte-icons";
   export let dummy_boards: Board[];
+
+  let search_term: string = "";
+  let showable_boards: Board[] = dummy_boards;
+
+  $: {
+    showable_boards = dummy_boards.filter((board) =>
+      board.title.toLowerCase().includes(search_term.toLowerCase())
+    );
+  }
 </script>
 
 <div class="details-section bg-white p-4 rounded-lg shadow">
   <div class="flex justify-between items-center mb-4">
-    <h2 class="text-lg font-semibold">Summary of Boards</h2>
+    <h2 class="text-lg font-semibold">Your Boards</h2>
     <div class="flex space-x-2">
       <!-- Filter dropdowns or sorting controls can be added here -->
+      <Input
+        id="search"
+        placeholder="Search"
+        size="md"
+        bind:value={search_term}
+      >
+        <SearchOutline
+          slot="left"
+          class="w-6 h-6 text-gray-500 dark:text-gray-400"
+        />
+      </Input>
     </div>
   </div>
 
@@ -38,7 +60,7 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        {#each dummy_boards as board}
+        {#each showable_boards as board}
           <tr>
             <a href="/boards/{board.id}">
               <td class="px-4 py-4 whitespace-nowrap hover:text-blue-500"

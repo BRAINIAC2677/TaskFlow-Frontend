@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Board } from "$lib/interfaces/board";
   import ListCard from "./ListCard.svelte";
+  import NewList from "$lib/components/NewList.svelte";
   import { sineIn } from "svelte/easing";
   import {
     Drawer,
@@ -10,21 +11,19 @@
     SidebarGroup,
     SidebarItem,
     SidebarWrapper,
+    Button,
   } from "flowbite-svelte";
   import {
     ChartPieSolid,
-    ShoppingCartSolid,
-    GridSolid,
-    MailBoxSolid,
     UsersSolid,
-    BagSolid,
-    ArrowRightToBracketSolid,
     AnnotationSolid,
     ClipboardCheckSolid,
     AngleRightSolid,
     AngleLeftSolid,
     FileEditSolid,
   } from "flowbite-svelte-icons";
+
+  let formModal = false;
 
   let recent_board_ids = [1, 2, 3];
   let your_board_ids = [1, 2, 3];
@@ -140,13 +139,15 @@
       {#each board.lists as list}
         <ListCard {list} />
       {/each}
-      <button
+      <Button
         class="p-3 text-white bg-gray-700 rounded dark:bg-gray-700 dark:text-gray-200"
-        >+ Add another list</button
+        on:click={() => (formModal = true)}>+ Add another list</Button
       >
     </div>
   </div>
 </div>
+
+<NewList bind:formModal />
 
 <style>
   .transition-width {
