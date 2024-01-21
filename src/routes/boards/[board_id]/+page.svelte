@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Board } from "$lib/interfaces/board";
   import ListCard from "./ListCard.svelte";
-  import NewList from "$lib/components/NewList.svelte";
+  import NewListModal from "$lib/components/NewListModal.svelte";
   import { sineIn } from "svelte/easing";
   import {
     Drawer,
@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<NewList bind:formModal />
+<NewListModal bind:formModal />
 
 <style>
   .transition-width {
