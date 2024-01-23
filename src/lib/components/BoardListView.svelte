@@ -15,7 +15,7 @@
 </script>
 
 <div
-    class="details-section bg-primary-50 dark:bg-primary-900 p-4 rounded-lg shadow"
+    class="details-section bg-accent-50 dark:bg-accent-900 p-4 rounded-lg shadow"
 >
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Your Boards</h2>
@@ -62,7 +62,7 @@
                 </tr>
             </thead>
             <tbody
-                class="bg-primary-50 dark:bg-primary-900 divide-y divide-accent-400 dark:divide-accent-800"
+                class="bg-accent-50 dark:bg-accent-900 divide-y divide-accent-400 dark:divide-accent-800"
             >
                 {#each showable_boards as board}
                     <tr>
@@ -81,7 +81,7 @@
                         <td class="px-4 py-4 whitespace-nowrap">
                             {#if board.status === "In Progress"}
                                 <span
-                                    class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-yellow-100 text-yellow-800 dark:bg-accent-500 dark:text-accent-50"
+                                    class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-yellow-100 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
                                 >
                                     In Progress
                                 </span>
@@ -109,7 +109,7 @@
                                 </span>
                             {:else if board.progress < 100}
                                 <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-accent-500 dark:text-accent-50"
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
                                     style="width: {board.progress}%"
                                 >
                                     {board.progress}%

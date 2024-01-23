@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.accent-red {
+    --accent-50: #F8F3F3;
+    --accent-100: #fac6c6;
+    --accent-200: #f8a0a0;
+    --accent-300: #f57979;
+    --accent-400: #f03a3a;
+    --accent-500: #ee1b1b;
+    --accent-600: #be0e0e;
+    --accent-700: #850909;
+    --accent-800: #4c0505;
+    --accent-900: #080000;
+}
+
+.accent-blue {
+    --accent-50: #ecf3fe;
+    --accent-100: #c6dafb;
+    --accent-200: #a0c2f8;
+    --accent-300: #7aa9f5;
+    --accent-400: #3a80f0;
+    --accent-500: #1b6cee;
+    --accent-600: #0e52be;
+    --accent-700: #0a3985;
+    --accent-800: #06214c;
+    --accent-900: #000008;
+}
+
+.accent-green {
+    --accent-50: #ecfeec;
+    --accent-100: #c6fac6;
+    --accent-200: #a0f8a0;
+    --accent-300: #79f579;
+    --accent-400: #3af03a;
+    --accent-500: #1bee1b;
+    --accent-600: #0ebe0e;
+    --accent-700: #098509;
+    --accent-800: #054c05;
+    --accent-900: #000800;
+}
+
+.accent-yellow {
+    --accent-50: #fefcec;
+    --accent-100: #fcfac6;
+    --accent-200: #f9f8a0;
+    --accent-300: #f7f579;
+    --accent-400: #f4f03a;
+    --accent-500: #f2ee1b;
+    --accent-600: #c0be0e;
+    --accent-700: #878509;
+    --accent-800: #4f4c05;
+    --accent-900: #080800;
+}
+
+.accent-orange {
+    --accent-50: #fef0ec;
+    --accent-100: #fde0c6;
+    --accent-200: #fbd0a0;
+    --accent-300: #f9c079;
+    --accent-400: #f6a03a;
+    --accent-500: #f48f1b;
+    --accent-600: #c06e0e;
+    --accent-700: #875209;
+    --accent-800: #4f2c05;
+    --accent-900: #080400;
+}

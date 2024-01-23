@@ -21,17 +21,18 @@ const config = {
           900: '#030917'
         },
         accent: {
-          50: '#ECF3FE',
-          100: '#C6DAFB',
-          200: '#A0C2F8',
-          300: '#7AA9F5',
-          400: '#3A80F0',
-          500: '#1B6CEE',
-          600: '#0E52BE',
-          700: '#0A3985',
-          800: '#06214C',
-          900: '#031026'
+          50: 'var(--accent-50)',
+          100: 'var(--accent-100)',
+          200: 'var(--accent-200)',
+          300: 'var(--accent-300)',
+          400: 'var(--accent-400)',
+          500: 'var(--accent-500)',
+          600: 'var(--accent-600)',
+          700: 'var(--accent-700)',
+          800: 'var(--accent-800)',
+          900: 'var(--accent-900)'
         },
+
         ink: {
           light: '#000',
           dark: '#fff',

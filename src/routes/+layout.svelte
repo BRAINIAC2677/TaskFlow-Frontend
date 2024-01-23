@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import "../app.css";
     import { onMount } from "svelte";
     import {
@@ -31,16 +31,33 @@
         setThemeClass();
     }
 
+    function setAccentClass(_accent_color_index: number) {
+        document.documentElement.classList.remove(
+            ...$theme_store.accentColors.map((color) => `accent-${color}`),
+        );
+        document.documentElement.classList.add(
+            `accent-${$theme_store.accentColors[_accent_color_index]}`,
+        );
+    }
+
+    function changeAccent(_accent_color_index: number) {
+        $theme_store.accentMode = _accent_color_index;
+        localStorage.setItem("accent", _accent_color_index.toString());
+        setAccentClass(_accent_color_index);
+    }
+
     onMount(() => {
         $theme_store.darkMode = localStorage.getItem("theme") === "dark";
+        $theme_store.accentMode = parseInt(
+            localStorage.getItem("accent") || "0",
+        );
         setThemeClass();
+        setAccentClass($theme_store.accentMode);
     });
 </script>
 
-<div
-    class="text-ink-light dark:text-ink-dark bg-primary-50 dark:bg-primary-900"
->
-    <Navbar class="dark:bg-primary-900 ">
+<div class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900">
+    <Navbar class="dark:bg-accent-900 bg-accent-50">
         <NavBrand href="/">
             <span
                 class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
@@ -80,6 +97,28 @@
             <DropdownItem>
                 <a href="/settings">Profile Settings</a>
             </DropdownItem>
+            <DropdownDivider />
+
+            <!-- Color theme selector starts here -->
+            <div class="flex items-center justify-between p-4">
+                {#each $theme_store.accentColors as color, index}
+                    {#if $theme_store.accentMode === index}
+                        <button
+                            class="cursor-pointer rounded-full border-8 border-{color}-500 text-{color}-500 w-8 h-8"
+                            on:click={() => changeAccent(index)}
+                        >
+                        </button>
+                    {:else}
+                        <button
+                            class="cursor-pointer rounded-full border-8 border-{color}-300 text-{color}-500 w-4 h-4"
+                            on:click={() => changeAccent(index)}
+                        >
+                        </button>
+                    {/if}
+                {/each}
+            </div>
+            <!-- Color theme selector ends here -->
+
             <DropdownDivider />
             <DropdownItem>Sign out</DropdownItem>
         </Dropdown>
