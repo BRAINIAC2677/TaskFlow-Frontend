@@ -38,9 +38,9 @@
 </script>
 
 <div
-    class="text-ink_light dark:text-ink_dark bg-primary_light dark:bg-primary_dark"
+    class="text-ink-light dark:text-ink-dark bg-primary-50 dark:bg-primary-900"
 >
-    <Navbar>
+    <Navbar class="dark:bg-primary-900 ">
         <NavBrand href="/">
             <span
                 class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
