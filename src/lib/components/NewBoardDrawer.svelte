@@ -2,6 +2,11 @@
   import ScrollableUserList from "$lib/components/ScrollableUserList.svelte";
   import { sineIn } from "svelte/easing";
   import { InfoCircleSolid, CalendarEditSolid } from "flowbite-svelte-icons";
+  import { bearer_token } from "$lib/stores/user_store";
+  import type { UserMinimalForm } from "$lib/interfaces/user";
+  import type { BoardCreationInfo } from "$lib/interfaces/board";
+  import server_url from "$lib/stores/server_store";
+  import type { UserMemberInfo } from "$lib/interfaces/user";
   import {
     Drawer,
     Button,
@@ -9,7 +14,9 @@
     Label,
     Input,
     Textarea,
+    Helper,
   } from "flowbite-svelte";
+  import { onMount, onDestroy } from "svelte";
 
   export let hidden = true;
   let transitionParams = {
@@ -18,142 +25,118 @@
     easing: sineIn,
   };
 
-  interface UserMinimalForm {
-    id: string;
-    user_name: string;
-    full_name: string;
-    img_url: string;
-  }
+  let search_term: string = "";
+  let last_fetched_term: string = "";
+  let fetch_interval: NodeJS.Timeout;
+  let interval_time: number = 10;
 
-  let search_term = "";
-  let dummy_users: UserMinimalForm[] = [
-    {
-      id: "1",
-      user_name: "john_doe",
-      full_name: "John Doe",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "2",
-      user_name: "jane_smith",
-      full_name: "Jane Smith",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "3",
-      user_name: "bob_johnson",
-      full_name: "Bob Johnson",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "4",
-      user_name: "alice_brown",
-      full_name: "Alice Brown",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "5",
-      user_name: "charlie_davis",
-      full_name: "Charlie Davis",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "6",
-      user_name: "emma_white",
-      full_name: "Emma White",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "7",
-      user_name: "frank_wilson",
-      full_name: "Frank Wilson",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "8",
-      user_name: "grace_miller",
-      full_name: "Grace Miller",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "9",
-      user_name: "henry_taylor",
-      full_name: "Henry Taylor",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "10",
-      user_name: "isabel_moore",
-      full_name: "Isabel Moore",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "11",
-      user_name: "jack_harris",
-      full_name: "Jack Harris",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "12",
-      user_name: "kelly_thompson",
-      full_name: "Kelly Thompson",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "13",
-      user_name: "liam_clark",
-      full_name: "Liam Clark",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "14",
-      user_name: "nora_lewis",
-      full_name: "Nora Lewis",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-    {
-      id: "15",
-      user_name: "oliver_turner",
-      full_name: "Oliver Turner",
-      img_url:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80",
-    },
-  ];
-  let selected_users: UserMinimalForm[] = [
-    dummy_users[0],
-    dummy_users[1],
-    dummy_users[2],
-    dummy_users[3],
-    dummy_users[4],
-    dummy_users[5],
-  ];
+  let retrieved_users: UserMinimalForm[] = [];
   let suggested_users: UserMinimalForm[] = [];
+  let selected_users: UserMemberInfo[] = [];
+
+  let board_creation_info: BoardCreationInfo = {
+    board_name: "",
+    board_description: "",
+    board_deadline: "",
+    board_members: [],
+  };
+
+  let deadline_ok: boolean = false;
 
   $: {
-    if (search_term.length > 0) {
-      suggested_users = dummy_users.filter(
-        (user) =>
-          user.user_name.includes(search_term) &&
-          !selected_users.some((selected_user) => selected_user.id === user.id)
-      );
-    } else {
-      suggested_users = [];
+    if (board_creation_info.board_deadline.length > 0) {
+      let deadline = new Date(board_creation_info.board_deadline);
+      let now = new Date();
+      deadline_ok = deadline > now;
     }
   }
+
+  function get_final_input() {
+    selected_users.forEach((user) => {
+      board_creation_info.board_members.push({
+        user_id: user.user_id,
+        role: user.role,
+      });
+    });
+    console.log(board_creation_info);
+  }
+
+  async function createBoard() {
+    const headers = new Headers({
+      authorization: $bearer_token,
+      "Content-Type": "application/json",
+    });
+
+    const request = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(board_creation_info),
+    };
+
+    try {
+      const response = await fetch($server_url + "/board/create", request);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  onMount(() => {
+    fetch_interval = setInterval(() => {
+      if (search_term !== last_fetched_term && search_term.length > 0) {
+        console.log("Fetching users...");
+        fetchUsers(search_term)
+          .then((users) => {
+            retrieved_users = users;
+            suggested_users = retrieved_users.filter((user) =>
+              selected_users.every((selected) => selected.user_id !== user.id)
+            );
+          })
+          .catch((err) => {
+            console.error("Fetch error:", err);
+          });
+        last_fetched_term = search_term;
+      }
+    }, interval_time);
+  });
+
+  onDestroy(() => {
+    clearInterval(fetch_interval);
+  });
+
+  async function fetchUsers(search_term: string) {
+    const headers = new Headers({
+      authorization: $bearer_token,
+      "Content-Type": "application/json",
+    });
+
+    const request = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        term: search_term,
+        count: 10,
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        $server_url + "/profile/get-usernames",
+        request
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  $: if (search_term.length === 0) suggested_users = [];
 
   const makeMatchBold = (string: string, matched_part: string) => {
     let match = matched_part.toLowerCase();
@@ -175,6 +158,7 @@
   {transitionParams}
   bind:hidden
   id="sidebar4"
+  class="w-96 bg-accent-50 dark:bg-gray-900"
 >
   <div class="flex items-center max-h-screen">
     <h5
@@ -188,10 +172,16 @@
       class="mb-4 dark:text-white"
     />
   </div>
-  <form action="#" class="mb-6">
+  <form class="mb-6">
     <div class="mb-6">
       <Label for="title" class="block mb-2">Board Name</Label>
-      <Input id="title" name="title" required placeholder="Project Manhattan" />
+      <Input
+        id="title"
+        name="title"
+        required
+        placeholder="Board ABC"
+        bind:value={board_creation_info.board_name}
+      />
     </div>
     <div class="mb-6">
       <Label for="description" class="mb-2">Description</Label>
@@ -200,11 +190,23 @@
         placeholder="Write board description..."
         rows="4"
         name="message"
+        bind:value={board_creation_info.board_description}
       />
     </div>
     <div class="mb-6">
       <Label for="due-time" class="mb-2">Deadline</Label>
-      <Input id="datetime" name="date" required type="datetime-local" />
+      <Input
+        id="datetime"
+        name="date"
+        required
+        type="datetime-local"
+        bind:value={board_creation_info.board_deadline}
+      />
+      {#if board_creation_info.board_deadline.length > 0 && !deadline_ok}
+        <Helper class="mt-2" color="red">
+          <span class="font-medium">Deadline must be in the future</span>
+        </Helper>
+      {/if}
     </div>
     <div class="mb-4">
       <Label for="members" class="mb-2">Add Members</Label>
@@ -216,7 +218,7 @@
           class="p-3"
           bind:value={search_term}
         />
-        {#if suggested_users.length > 0}
+        {#if suggested_users.length > 0 && search_term.length > 0}
           <div
             id="dropdown"
             class="absolute z-20 w-full bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700"
@@ -231,11 +233,20 @@
                     class="block w-full px-4 py-2 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     on:click|stopPropagation={() => {
                       suggested_users = [];
-                      selected_users = [...selected_users, suggestion];
+                      selected_users = [
+                        ...selected_users,
+                        {
+                          user_id: suggestion.id,
+                          username: suggestion.username,
+                          full_name: suggestion.full_name,
+                          role: 3,
+                          dp_url: suggestion.dp_url,
+                        },
+                      ];
                       search_term = "";
                     }}
                   >
-                    {@html makeMatchBold(suggestion.user_name, search_term)}
+                    {@html makeMatchBold(suggestion.username, search_term)}
                   </button>
                 </li>
               {/each}
@@ -245,11 +256,25 @@
       </div>
     </div>
     {#if selected_users.length > 0}
-      <ScrollableUserList bind:users={selected_users} minus={true} />
+      <ScrollableUserList bind:users={selected_users} />
     {/if}
     <Button
       type="submit"
-      class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex w-40 mx-auto bg-blue-700 hover:bg-blue-800"
+      class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex w-40 mx-auto bg-accent-700 hover:bg-accent-800"
+      on:click={() => {
+        if (!deadline_ok) return;
+        get_final_input();
+        createBoard()
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        hidden = true;
+        // later change this to the newly created board page
+        window.location.href = "/boards/1";
+      }}
     >
       <CalendarEditSolid class="w-3.5 h-3.5 me-2.5 text-white" /> Create Board
     </Button>
