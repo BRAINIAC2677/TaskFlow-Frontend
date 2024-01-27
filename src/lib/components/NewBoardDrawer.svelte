@@ -2,7 +2,6 @@
   import ScrollableUserList from "$lib/components/ScrollableUserList.svelte";
   import { sineIn } from "svelte/easing";
   import { InfoCircleSolid, CalendarEditSolid } from "flowbite-svelte-icons";
-  import { bearer_token } from "$lib/stores/user_store";
   import type { UserMinimalForm } from "$lib/interfaces/user";
   import type { BoardCreationInfo } from "$lib/interfaces/board";
   import server_url from "$lib/stores/server_store";
@@ -63,7 +62,7 @@
 
   async function createBoard() {
     const headers = new Headers({
-      authorization: $bearer_token,
+      authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
     });
 
@@ -109,7 +108,7 @@
 
   async function fetchUsers(search_term: string) {
     const headers = new Headers({
-      authorization: $bearer_token,
+      authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
     });
 

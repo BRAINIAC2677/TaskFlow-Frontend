@@ -5,7 +5,7 @@
   import theme_store from "$lib/stores/theme_store";
 
   let color: string;
-  $: color = $theme_store.accentColors[$theme_store.accentMode];
+  $: color = $theme_store.accentCurrentColor || "red";
   export let users: UserMemberInfo[] = [];
 </script>
 

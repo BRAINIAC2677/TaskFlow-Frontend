@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { BoardDashboardInfo } from "$lib/interfaces/board";
   import server_url from "$lib/stores/server_store";
-  import { bearer_token } from "$lib/stores/user_store";
   import BoardListView from "$lib/components/BoardListView.svelte";
   import DashBoardOverview from "$lib/components/DashBoardOverview.svelte";
   import NewBoardDrawer from "$lib/components/NewBoardDrawer.svelte";
@@ -11,8 +10,9 @@
   let hidden = true;
 
   async function fetchBoards() {
+    const token: string = localStorage.getItem("access_token") || "";
     const headers = new Headers({
-      authorization: $bearer_token,
+      authorization: token,
       "Content-Type": "application/json",
     });
 

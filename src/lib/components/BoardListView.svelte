@@ -27,10 +27,10 @@
     }
   }
 
-  let spinner_color: string = "#232323";
-  // spinner_color = get_spinner_color(
-  //   $theme_store.accentColors[$theme_store.accentMode]
-  // );
+  let spinner_color: string = "#000000";
+  $: {
+    spinner_color = get_spinner_color($theme_store.accentCurrentColor);
+  }
 
   $: {
     showable_boards = all_boards.filter((board) =>
@@ -110,6 +110,7 @@
               <td class="px-4 py-4 whitespace-nowrap"
                 >{new Date(board.due_timestamp).toLocaleDateString()}</td
               >
+              <!-- randomly generated numbers for now -->
               <!-- <td class="px-4 py-4 whitespace-nowrap">
               {#if board.status === "In Progress"}
                 <span

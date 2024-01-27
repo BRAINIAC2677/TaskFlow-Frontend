@@ -23,3 +23,8 @@ export interface UserMemberInfo {
   role: number;
   dp_url: string;
 }
+
+export interface SignInInfo {
+  email: string;
+  password: string;
+}

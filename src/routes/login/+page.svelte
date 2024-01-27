@@ -1,167 +1,107 @@
 <script lang="ts">
-  import theme_store from "$lib/stores/theme_store";
-  //   import { Section, Register } from "flowbite-svelte-blocks";
-  import { Button, Checkbox, Label, Input } from "flowbite-svelte";
-  let username: string = "";
-  let password: string = "";
+  import { CloseCircleSolid, CheckCircleSolid } from "flowbite-svelte-icons";
+  import { Toast, Button, Label, Input } from "flowbite-svelte";
+  import { goto } from "$app/navigation";
+  import server_url from "$lib/stores/server_store";
+  import type { SignInInfo } from "$lib/interfaces/user";
 
-  const generateGradientSpectrum = (hue: number) => {
-    const shades = 10; // Number of shades in the gradient
-    let spectrum = [];
-
-    for (let i = 0; i <= shades; i++) {
-      // Adjusting lightness and saturation for a more prominent gradient
-      let lightness = 100 - i * 2; // Change the multiplier for a wider range
-      let saturation = 50 + i * 5; // Varying the saturation for more vibrant colors
-      let hslColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-      spectrum.push(hslToHex(hslColor));
-    }
-
-    return spectrum;
+  let user_info: SignInInfo = {
+    email: "",
+    password: "",
   };
 
-  const hslToHex = (hsl: string) => {
-    if (hsl.length === 0) return "#000000";
+  let show_toast: boolean = false;
+  let toast_type: string = "success";
+  let toast_message: string = "";
 
-    const match = hsl.match(/^hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)$/);
+  function enable_toast(error: boolean, message: string) {
+    show_toast = true;
+    toast_type = error ? "error" : "success";
+    toast_message = message;
+  }
 
-    if (match) {
-      const [h, s, l] = match.slice(1, 4).map(Number);
+  async function signIn() {
+    console.log(user_info);
 
-      const a = (s * Math.min(l, 100 - l)) / 100;
-      const f = (n: number) => {
-        const k = (n + h / 30) % 12;
-        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-        return Math.round(color).toString(16).padStart(2, "0");
-      };
+    const request = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user_info),
+    };
 
-      return `#${f(0)}${f(8)}${f(4)}`;
-    } else {
-      return "#000000";
-    }
-  };
-
-  const colorToHue = (color: string) => {
-    let color_code: string;
-    if (color === "red") color_code = "#ff0000";
-    else if (color === "orange") color_code = "#ffa500";
-    else if (color === "yellow") color_code = "#ffff00";
-    else if (color === "green") color_code = "#008000";
-    else if (color === "blue") color_code = "#0000ff";
-    else if (color === "indigo") color_code = "#4b0082";
-    else if (color === "violet") color_code = "#ee82ee";
-    else color_code = "#000000";
-    const match = color_code.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
-
-    if (match) {
-      const [r, g, b] = match.slice(1, 4).map((x) => parseInt(x, 16));
-
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-
-      let hue = 0;
-
-      if (max === min) {
-        hue = 0;
-      } else if (max === r) {
-        hue = 60 * (0 + (g - b) / (max - min));
-      } else if (max === g) {
-        hue = 60 * (2 + (b - r) / (max - min));
-      } else if (max === b) {
-        hue = 60 * (4 + (r - g) / (max - min));
+    try {
+      const response = await fetch($server_url + "/auth/signin", request);
+      console.log(response);
+      if (!response.ok) {
+        enable_toast(true, "Invalid Credentials");
+        console.error("Network response was not ok");
+        return;
       }
-
-      return hue;
-    } else {
-      return 0;
+      const data = await response.json();
+      enable_toast(false, "Sign In Successful");
+      console.log(data.session.access_token);
+      localStorage.setItem(
+        "access_token",
+        "Bearer " + data.session.access_token
+      );
+      goto("/dashboard");
+    } catch (error) {
+      console.error(error);
+      enable_toast(true, "An error occurred during sign-in. Please try again.");
+      return;
     }
-  };
-
-  let gradientCss: string = "";
-
-  //   $: {
-  //     let hue = colorToHue($theme_store.accentCurrentColor);
-  //     let gradient = generateGradientSpectrum(hue);
-  //     gradientCss = `linear-gradient(to right, ${gradient.join(", ")})`;
-  //   }
+  }
 </script>
 
 <svelte:head>
-  <title>Login</title>
+  <title>Sign In</title>
 </svelte:head>
 
 <div class="flex h-screen overflow-hidden">
   <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-100 dark:bg-accent-700 bg-opacity-50"
+    class="w-1/4 h-full flex flex-col justify-center items-center bg-gray-200 dark:bg-gray-900"
   >
-    <div class="w-10/12">
-      <h2 class="text-3xl font-semibold mb-4">Login</h2>
-      <form class="space-y-6">
-        <div>
-          <label for="username" class="text-sm font-medium">Username</label>
-          <input
-            type="text"
-            bind:value={username}
-            class="w-full p-2 border rounded mt-1"
-            placeholder="Username"
-          />
-        </div>
-        <div>
-          <label for="password" class="text-sm font-medium">Password</label>
-          <input
-            type="password"
-            bind:value={password}
-            class="w-full p-2 border rounded mt-1"
-            placeholder="Password"
-          />
-        </div>
-        <button
-          type="submit"
-          class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          >Log in</button
-        >
-      </form>
-    </div>
-  </div>
-  <!--   
-  <Section name="login">
-    <Register href="/">
-      <svelte:fragment slot="top">
-        <img class="w-8 h-8 mr-2" src="/images/logo.svg" alt="logo" />
-        Flowbite
-      </svelte:fragment>
+    <div
+      class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-white
+      "
+    >
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <form class="flex flex-col space-y-6" action="/">
+        <form class="flex flex-col space-y-6">
           <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">
-            Change Password
+            Sign In
           </h3>
           <Label class="space-y-2">
-            <span>Your email</span>
+            <span>Email</span>
             <Input
-              type="email"
               name="email"
-              placeholder="name@company.com"
+              placeholder="abc@gmail.com"
+              bind:value={user_info.email}
               required
             />
           </Label>
           <Label class="space-y-2">
-            <span>Your password</span>
+            <span>Password</span>
             <Input
               type="password"
               name="password"
+              bind:value={user_info.password}
               placeholder="•••••"
               required
             />
           </Label>
           <div class="flex items-start">
-            <Checkbox>Remember me</Checkbox>
             <a
               href="/"
               class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
               >Forgot password?</a
             >
           </div>
-          <Button type="submit" class="w-full1">Sign in</Button>
+          <Button
+            on:click={() => {
+              signIn();
+            }}
+            class="w-full1">Sign in</Button
+          >
           <p class="text-sm font-light text-gray-500 dark:text-gray-400">
             Don’t have an account yet? <a
               href="/"
@@ -171,8 +111,29 @@
           </p>
         </form>
       </div>
-    </Register>
-  </Section> -->
+    </div>
+    {#if show_toast}
+      <Toast
+        on:close={() => {
+          show_toast = false;
+        }}
+        color={toast_type === "error" ? "red" : "green"}
+        class={toast_type === "error"
+          ? "w-full max-w-xs p-4 text-gray-500 bg-red-200 shadow dark:text-gray-400 dark:bg-red-800 gap-3"
+          : "w-full max-w-xs p-4 text-gray-500 bg-green-200 shadow dark:text-gray-400 dark:bg-green-800 gap-3"}
+        position="bottom-right"
+      >
+        <svelte:fragment slot="icon">
+          {#if toast_type === "error"}
+            <CloseCircleSolid class="w-5 h-5" />
+          {:else}
+            <CheckCircleSolid class="w-5 h-5" />
+          {/if}
+        </svelte:fragment>
+        <span>{toast_message}</span>
+      </Toast>
+    {/if}
+  </div>
 
   <div
     class="w-3/4 h-full bg-cover bg-center typewriter"

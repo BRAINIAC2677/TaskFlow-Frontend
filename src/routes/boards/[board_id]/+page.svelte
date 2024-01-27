@@ -3,6 +3,7 @@
   import ListCard from "./ListCard.svelte";
   import NewListModal from "$lib/components/NewListModal.svelte";
   import { sineIn } from "svelte/easing";
+  import server_url from "$lib/stores/server_store";
   import {
     Drawer,
     Sidebar,
@@ -39,6 +40,30 @@
   let board: Board = data.board;
   function toggleSidebar() {
     hiddenSideBar = !hiddenSideBar;
+  }
+
+  async function fetchBoardContent() {
+    const token: string = localStorage.getItem("access_token") || "";
+    const headers = new Headers({
+      authorization: token,
+      "Content-Type": "application/json",
+    });
+
+    try {
+      const response = await fetch(
+        $server_url + "/board/get-content/" + board.id,
+        {
+          method: "GET",
+          headers: headers,
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
   }
 </script>
 

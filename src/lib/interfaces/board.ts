@@ -16,10 +16,10 @@ export interface BoardDashboardInfo {
   due_timestamp: string;
   description: string;
   role: number;
-  owner_info: Array<{
+  owner_info: {
     user_id: bigint;
     username: string;
-  }>;
+  };
 }
 
 export interface BoardCreationInfo {

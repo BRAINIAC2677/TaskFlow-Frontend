@@ -15,6 +15,7 @@
   import { SunSolid, MoonSolid } from "flowbite-svelte-icons";
   import user_store from "$lib/stores/user_store";
   import theme_store from "$lib/stores/theme_store";
+  import { onMount } from "svelte";
 
   function setThemeClass() {
     if ($theme_store.darkMode) {
@@ -42,16 +43,12 @@
     localStorage.setItem("accent", _accent_color);
     setAccentClass(_accent_color);
   }
-</script>
 
-<svelte:head>
-  <script>
+  onMount(() => {
+    $theme_store.accentCurrentColor = localStorage.getItem("accent") || "red";
     $theme_store.darkMode = localStorage.getItem("theme") === "dark";
-    $theme_store.accentMode = parseInt(localStorage.getItem("accent") || "0");
-    setThemeClass();
-    setAccentClass($theme_store.accentMode);
-  </script>
-</svelte:head>
+  });
+</script>
 
 <div class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900">
   <Navbar class="dark:bg-accent-900 bg-accent-50">
