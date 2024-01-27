@@ -62,11 +62,11 @@
       </div>
       <div>
         <Label for="last_name" class="mb-2">Username</Label>
-        <Input type="text" id="last_name" bind:value={new_user.user_name}>
+        <Input type="text" id="last_name" bind:value={new_user.username}>
           <UserOutline slot="left" class="w-4 h-4" />
         </Input>
       </div>
-      <div>
+      <!-- <div>
         <Label for="phone" class="mb-2">Phone Number</Label>
         <Input
           type="tel"
@@ -76,7 +76,7 @@
         >
           <PhoneOutline slot="left" class="w-4 h-4" />
         </Input>
-      </div>
+      </div> -->
     </div>
     <div class="mb-6 w-1/2">
       <Label for="email" class="mb-2">Email Address</Label>

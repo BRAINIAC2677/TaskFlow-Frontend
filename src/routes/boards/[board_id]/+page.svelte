@@ -1,9 +1,12 @@
 <script lang="ts">
-  import type { Board } from "$lib/interfaces/board";
   import ListCard from "./ListCard.svelte";
   import NewListModal from "$lib/components/NewListModal.svelte";
   import { sineIn } from "svelte/easing";
   import server_url from "$lib/stores/server_store";
+  import type { BoardContent } from "$lib/interfaces/board";
+  import { onMount } from "svelte";
+  import { page } from "$app/stores";
+  import user_store from "$lib/stores/user_store";
   import {
     Drawer,
     Sidebar,
@@ -26,18 +29,16 @@
 
   let formModal = false;
 
-  let recent_board_ids = [1, 2, 3];
-  let your_board_ids = [1, 2, 3];
+  // let recent_board_ids = [1, 2, 3];
+  // let your_board_ids = [1, 2, 3];
 
   let hiddenSideBar = true;
-  let spanClass = "flex-1 ms-3 whitespace-nowrap";
   let transitionParams = {
     x: -320,
     duration: 200,
     easing: sineIn,
   };
-  export let data: any;
-  let board: Board = data.board;
+
   function toggleSidebar() {
     hiddenSideBar = !hiddenSideBar;
   }
@@ -51,7 +52,7 @@
 
     try {
       const response = await fetch(
-        $server_url + "/board/get-content/" + board.id,
+        $server_url + "/board/get-content/" + $page.params.board_id,
         {
           method: "GET",
           headers: headers,
@@ -60,14 +61,42 @@
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return await response.json();
+      const data = await response.json();
+      return data[0];
     } catch (error) {
+      console.error(error);
       throw error;
     }
   }
+
+  let content_loading: boolean = false;
+  let board_content: BoardContent;
+  import type { BoardContentListForm } from "$lib/interfaces/list";
+  import { fade } from "svelte/transition";
+  let tasklist_collection: BoardContentListForm[] =
+    Array<BoardContentListForm>();
+  onMount(async () => {
+    console.log("Fetching board content");
+    try {
+      content_loading = true;
+      board_content = await fetchBoardContent();
+      board_content.board_lists.forEach((list) => {
+        tasklist_collection.push(list);
+        console.log(list);
+      });
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      content_loading = false;
+    }
+  });
 </script>
 
-<div class="flex h-screen bg-white dark:bg-gray-800">
+<svelte:head>
+  <title>Board</title>
+</svelte:head>
+
+<div class="flex h-screen bg-accent-100 dark:bg-accent-700">
   <button
     on:click={toggleSidebar}
     class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
@@ -88,7 +117,7 @@
         id="drawer-navigation-label-3"
         class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
       >
-        Hello, Asif
+        Hello, {$user_store.user_name}
       </h5>
       <button
         on:click={toggleSidebar}
@@ -123,13 +152,13 @@
                 class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
               />
             </svelte:fragment>
-            {#each recent_board_ids as id}
+            <!-- {#each recent_board_ids as id}
               <SidebarDropdownItem
                 label="Board {id}"
                 target="_self"
                 href={`/boards/${id}`}
               />
-            {/each}
+            {/each} -->
           </SidebarDropdownWrapper>
           <SidebarDropdownWrapper label="Your Boards">
             <svelte:fragment slot="icon">
@@ -137,9 +166,9 @@
                 class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
               />
             </svelte:fragment>
-            {#each your_board_ids as id}
+            <!-- {#each your_board_ids as id}
               <SidebarDropdownItem label="Board {id}" href={`/boards/${id}`} />
-            {/each}
+            {/each} -->
           </SidebarDropdownWrapper>
 
           <SidebarItem label="Log out">
@@ -154,21 +183,28 @@
     </Sidebar>
   </Drawer>
 
-  <!-- Main content -->
   <div
     class={`flex-grow p-4 ${
       !hiddenSideBar ? "ml-72" : "ml-0"
     } transition-margin duration-300`}
   >
-    <div class="grid grid-cols-4 gap-4">
-      {#each board.lists as list}
-        <ListCard {list} />
-      {/each}
-      <Button
-        class="p-3 text-white bg-gray-700 rounded dark:bg-gray-700 dark:text-gray-200"
-        on:click={() => (formModal = true)}>+ Add another list</Button
-      >
-    </div>
+    {#if content_loading}
+      <div class="flex items-center justify-center h-full">
+        <div
+          class="w-16 h-16 border-b-4 border-gray-400 rounded-full animate-spin"
+        ></div>
+      </div>
+    {:else}
+      <div class="grid grid-cols-4 gap-4">
+        {#each tasklist_collection as list}
+          <ListCard {list} />
+        {/each}
+        <Button
+          class="p-3 text-white bg-gray-700 rounded dark:bg-gray-700 dark:text-gray-200"
+          on:click={() => (formModal = true)}>+ Add another list</Button
+        >
+      </div>
+    {/if}
   </div>
 </div>
 

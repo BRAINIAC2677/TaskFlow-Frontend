@@ -16,6 +16,9 @@
   import user_store from "$lib/stores/user_store";
   import theme_store from "$lib/stores/theme_store";
   import { onMount } from "svelte";
+  import { is_logged_in } from "$lib/stores/user_store";
+  import server_url from "$lib/stores/server_store";
+  import { goto } from "$app/navigation";
 
   function setThemeClass() {
     if ($theme_store.darkMode) {
@@ -44,7 +47,56 @@
     setAccentClass(_accent_color);
   }
 
+  async function signOut() {
+    const headers = new Headers({
+      authorization: localStorage.getItem("access_token") || "",
+      "Content-Type": "application/json",
+    });
+
+    try {
+      const response = await fetch($server_url + "/auth/signout", {
+        method: "POST",
+        headers: headers,
+      });
+
+      console.log(response);
+      // logging out anyway
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      $is_logged_in = false;
+    } catch (error) {
+      console.error(error);
+    }
+
+    goto("/login");
+  }
+
+  function fix_user_stores() {
+    if (localStorage.getItem("user")) {
+      $user_store = JSON.parse(localStorage.getItem("user") || "");
+      $is_logged_in = true;
+    } else {
+      $user_store = {
+        id: "",
+        username: "",
+        email: "",
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        dp_url: "",
+      };
+      $is_logged_in = false;
+    }
+  }
+
+  $: console.log($user_store, $is_logged_in);
+
   onMount(() => {
+    fix_user_stores();
+    if (!$user_store.dp_url || $user_store.dp_url === "") {
+      $user_store.dp_url =
+        "https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg";
+    }
     $theme_store.accentCurrentColor = localStorage.getItem("accent") || "red";
     $theme_store.darkMode = localStorage.getItem("theme") === "dark";
   });
@@ -59,7 +111,14 @@
       >
     </NavBrand>
     <div class="flex items-center md:order-2">
-      <Avatar id="avatar-menu" src={$user_store.img_url} />
+      <!-- {#if $user_store.dp_url != undefined && $user_store.dp_url !== ""}
+        <Avatar id="avatar-menu" src={$user_store.dp_url} />
+      {:else} -->
+      <Avatar
+        id="avatar-menu"
+        src="https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg"
+      />
+      <!-- {/if} -->
       <button
         on:click={toggleTheme}
         class="p-2 mx-3 bg-gray-200 rounded dark:bg-gray-700"
@@ -80,7 +139,7 @@
     </div>
     <Dropdown placement="bottom" triggeredBy="#avatar-menu">
       <DropdownHeader>
-        <span class="block text-sm">{$user_store.user_name}</span>
+        <span class="block text-sm">{$user_store.username}</span>
         <span class="block text-sm font-medium truncate"
           >{$user_store.email}</span
         >
@@ -114,7 +173,13 @@
       <!-- Color theme selector ends here -->
 
       <DropdownDivider />
-      <DropdownItem>Sign out</DropdownItem>
+      <DropdownItem>
+        <button on:click={signOut} class="w-full text-left">
+          <!-- replace with your icon -->
+          <span class="mr-2">👋</span>
+          Sign out
+        </button>
+      </DropdownItem>
     </Dropdown>
     <NavUl>
       <NavLi href="/dashboard" active={true}>Dashboard</NavLi>

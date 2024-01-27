@@ -1,11 +1,11 @@
 export interface User {
-  id: number;
+  id: string;
   first_name: string;
+  middle_name: string;
   last_name: string;
-  user_name: string;
-  img_url: string;
+  username: string;
+  dp_url: string;
   email: string;
-  phone_number: string;
 }
 
 export interface UserMinimalForm {

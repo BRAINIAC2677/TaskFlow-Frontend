@@ -4,6 +4,7 @@
   import { goto } from "$app/navigation";
   import server_url from "$lib/stores/server_store";
   import type { SignInInfo } from "$lib/interfaces/user";
+  import user_store, { is_logged_in } from "$lib/stores/user_store";
 
   let user_info: SignInInfo = {
     email: "",
@@ -39,11 +40,13 @@
       }
       const data = await response.json();
       enable_toast(false, "Sign In Successful");
-      console.log(data.session.access_token);
       localStorage.setItem(
         "access_token",
-        "Bearer " + data.session.access_token
+        "Bearer " + data.signInData.session.access_token
       );
+      $is_logged_in = true;
+      $user_store = data.userProfileData[0];
+      localStorage.setItem("user", JSON.stringify(data.userProfileData[0]));
       goto("/dashboard");
     } catch (error) {
       console.error(error);

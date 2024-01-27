@@ -22,3 +22,10 @@ export interface Task {
   status: Status;
   checklist_items: { name: string; is_checked: boolean }[];
 }
+
+export interface BoardContentTaskForm {
+  task_id: number;
+  task_name: string;
+  task_deadline: string;
+  task_label_color: string;
+}
