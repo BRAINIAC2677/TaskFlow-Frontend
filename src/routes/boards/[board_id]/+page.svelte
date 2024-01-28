@@ -1,220 +1,218 @@
 <script lang="ts">
-    import ListCard from "./ListCard.svelte";
-    import NewListModal from "$lib/components/NewListModal.svelte";
-    import { sineIn } from "svelte/easing";
-    import server_url from "$lib/stores/server_store";
-    import type { BoardContent } from "$lib/interfaces/board";
-    import { onMount } from "svelte";
-    import { page } from "$app/stores";
-    import user_store from "$lib/stores/user_store";
-    import {
-        Drawer,
-        Sidebar,
-        SidebarDropdownItem,
-        SidebarDropdownWrapper,
-        SidebarGroup,
-        SidebarItem,
-        SidebarWrapper,
-        Button,
-    } from "flowbite-svelte";
-    import {
-        ChartPieSolid,
-        UsersSolid,
-        AnnotationSolid,
-        ClipboardCheckSolid,
-        AngleRightSolid,
-        AngleLeftSolid,
-        FileEditSolid,
-    } from "flowbite-svelte-icons";
+  import ListCard from "./ListCard.svelte";
+  import NewListModal from "$lib/components/NewListModal.svelte";
+  import { sineIn } from "svelte/easing";
+  import server_url from "$lib/stores/server_store";
+  import type { BoardContent } from "$lib/interfaces/board";
+  import { onMount } from "svelte";
+  import { page } from "$app/stores";
+  import { user_info_store } from "$lib/stores/user_store";
+  import {
+    Drawer,
+    Sidebar,
+    SidebarDropdownItem,
+    SidebarDropdownWrapper,
+    SidebarGroup,
+    SidebarItem,
+    SidebarWrapper,
+    Button,
+  } from "flowbite-svelte";
+  import {
+    ChartPieSolid,
+    UsersSolid,
+    AnnotationSolid,
+    ClipboardCheckSolid,
+    AngleRightSolid,
+    AngleLeftSolid,
+    FileEditSolid,
+  } from "flowbite-svelte-icons";
 
-    let formModal = false;
+  let formModal = false;
 
-    // let recent_board_ids = [1, 2, 3];
-    // let your_board_ids = [1, 2, 3];
+  // let recent_board_ids = [1, 2, 3];
+  // let your_board_ids = [1, 2, 3];
 
-    let hiddenSideBar = true;
-    let transitionParams = {
-        x: -320,
-        duration: 200,
-        easing: sineIn,
-    };
+  let hiddenSideBar = true;
+  let transitionParams = {
+    x: -320,
+    duration: 200,
+    easing: sineIn,
+  };
 
-    function toggleSidebar() {
-        hiddenSideBar = !hiddenSideBar;
-    }
+  function toggleSidebar() {
+    hiddenSideBar = !hiddenSideBar;
+  }
 
-    async function fetchBoardContent() {
-        const token: string = localStorage.getItem("access_token") || "";
-        const headers = new Headers({
-            authorization: token,
-            "Content-Type": "application/json",
-        });
-
-        try {
-            const response = await fetch(
-                $server_url + "/board/get-content/" + $page.params.board_id,
-                {
-                    method: "GET",
-                    headers: headers,
-                },
-            );
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const data = await response.json();
-            return data[0];
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
-    let content_loading: boolean = false;
-    let board_content: BoardContent;
-    import type { BoardContentListForm } from "$lib/interfaces/list";
-    import { fade } from "svelte/transition";
-    let tasklist_collection: BoardContentListForm[] =
-        Array<BoardContentListForm>();
-    onMount(async () => {
-        console.log("Fetching board content");
-        try {
-            content_loading = true;
-            board_content = await fetchBoardContent();
-            board_content.board_lists.forEach((list) => {
-                tasklist_collection.push(list);
-                console.log(list);
-            });
-        } catch (err) {
-            console.error("Fetch error:", err);
-        } finally {
-            content_loading = false;
-        }
+  async function fetchBoardContent() {
+    const token: string = localStorage.getItem("access_token") || "";
+    const headers = new Headers({
+      authorization: token,
+      "Content-Type": "application/json",
     });
+
+    try {
+      const response = await fetch(
+        $server_url + "/board/get-content/" + $page.params.board_id,
+        {
+          method: "GET",
+          headers: headers,
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  let content_loading: boolean = false;
+  let board_content: BoardContent;
+  import type { BoardContentListForm } from "$lib/interfaces/list";
+  let tasklist_collection: BoardContentListForm[] =
+    Array<BoardContentListForm>();
+  onMount(async () => {
+    console.log("Fetching board content");
+    try {
+      content_loading = true;
+      board_content = await fetchBoardContent();
+      board_content.board_lists.forEach((list) => {
+        tasklist_collection.push(list);
+        console.log(list);
+      });
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      content_loading = false;
+    }
+  });
 </script>
 
 <svelte:head>
-    <title>Board</title>
+  <title>Board Content</title>
 </svelte:head>
 
 <div class="flex h-screen bg-accent-50 dark:bg-accent-900">
-    <button
+  <button
+    on:click={toggleSidebar}
+    class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
+  >
+    <AngleRightSolid />
+  </button>
+  <Drawer
+    transitionType="fly"
+    {transitionParams}
+    bind:hidden={hiddenSideBar}
+    id="sidebar2"
+    backdrop={false}
+    leftOffset="top-16 h-screen start-0"
+    width="w-72"
+  >
+    <div class="flex items-center justify-between px-3">
+      <h5
+        id="drawer-navigation-label-3"
+        class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+      >
+        Hello, {$user_info_store.username}
+      </h5>
+      <button
         on:click={toggleSidebar}
         class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
-    >
-        <AngleRightSolid />
-    </button>
-    <Drawer
-        transitionType="fly"
-        {transitionParams}
-        bind:hidden={hiddenSideBar}
-        id="sidebar2"
-        backdrop={false}
-        leftOffset="top-16 h-screen start-0"
-        width="w-72"
-    >
-        <div class="flex items-center justify-between px-3">
-            <h5
-                id="drawer-navigation-label-3"
-                class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
-            >
-                Hello, {$user_store.username}
-            </h5>
-            <button
-                on:click={toggleSidebar}
-                class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
-            >
-                <AngleLeftSolid />
-            </button>
-        </div>
-        <Sidebar>
-            <SidebarWrapper
-                divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800"
-            >
-                <SidebarGroup>
-                    <SidebarItem label="Board Settings">
-                        <svelte:fragment slot="icon">
-                            <ChartPieSolid
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            />
-                        </svelte:fragment>
-                    </SidebarItem>
-                    <SidebarItem label="Members">
-                        <svelte:fragment slot="icon">
-                            <UsersSolid
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            />
-                        </svelte:fragment>
-                    </SidebarItem>
+      >
+        <AngleLeftSolid />
+      </button>
+    </div>
+    <Sidebar>
+      <SidebarWrapper
+        divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800"
+      >
+        <SidebarGroup>
+          <SidebarItem label="Board Settings">
+            <svelte:fragment slot="icon">
+              <ChartPieSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+          </SidebarItem>
+          <SidebarItem label="Members">
+            <svelte:fragment slot="icon">
+              <UsersSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+          </SidebarItem>
 
-                    <SidebarDropdownWrapper label="Recent Boards">
-                        <svelte:fragment slot="icon">
-                            <AnnotationSolid
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            />
-                        </svelte:fragment>
-                        <!-- {#each recent_board_ids as id}
+          <SidebarDropdownWrapper label="Recent Boards">
+            <svelte:fragment slot="icon">
+              <AnnotationSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+            <!-- {#each recent_board_ids as id}
               <SidebarDropdownItem
                 label="Board {id}"
                 target="_self"
                 href={`/boards/${id}`}
               />
             {/each} -->
-                    </SidebarDropdownWrapper>
-                    <SidebarDropdownWrapper label="Your Boards">
-                        <svelte:fragment slot="icon">
-                            <ClipboardCheckSolid
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            />
-                        </svelte:fragment>
-                        <!-- {#each your_board_ids as id}
+          </SidebarDropdownWrapper>
+          <SidebarDropdownWrapper label="Your Boards">
+            <svelte:fragment slot="icon">
+              <ClipboardCheckSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+            <!-- {#each your_board_ids as id}
               <SidebarDropdownItem label="Board {id}" href={`/boards/${id}`} />
             {/each} -->
-                    </SidebarDropdownWrapper>
+          </SidebarDropdownWrapper>
 
-                    <SidebarItem label="Log out">
-                        <svelte:fragment slot="icon">
-                            <FileEditSolid
-                                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            />
-                        </svelte:fragment>
-                    </SidebarItem>
-                </SidebarGroup>
-            </SidebarWrapper>
-        </Sidebar>
-    </Drawer>
+          <SidebarItem label="Log out">
+            <svelte:fragment slot="icon">
+              <FileEditSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+          </SidebarItem>
+        </SidebarGroup>
+      </SidebarWrapper>
+    </Sidebar>
+  </Drawer>
 
-    <div
-        class={`flex-grow p-4 ${
-            !hiddenSideBar ? "ml-72" : "ml-0"
-        } transition-margin duration-300`}
-    >
-        {#if content_loading}
-            <div class="flex items-center justify-center h-full">
-                <div
-                    class="w-16 h-16 border-b-4 border-gray-400 rounded-full animate-spin"
-                ></div>
-            </div>
-        {:else}
-            <div class="grid grid-cols-4 gap-4">
-                {#if tasklist_collection != undefined}
-                    {#each tasklist_collection as list}
-                        <ListCard {list} />
-                    {/each}
-                {/if}
-                <button
-                    class="p-3 rounded text-ink_dark bg-accent-200 dark:bg-accent-700 hover:bg-accent-400 hover:dark:bg-accent-500"
-                    on:click={() => (formModal = true)}
-                    >+ Add another list</button
-                >
-            </div>
+  <div
+    class={`flex-grow p-4 ${
+      !hiddenSideBar ? "ml-72" : "ml-0"
+    } transition-margin duration-300`}
+  >
+    {#if content_loading}
+      <div class="flex items-center justify-center h-full">
+        <div
+          class="w-16 h-16 border-b-4 border-gray-400 rounded-full animate-spin"
+        ></div>
+      </div>
+    {:else}
+      <div class="grid grid-cols-4 gap-4">
+        {#if tasklist_collection != undefined}
+          {#each tasklist_collection as list}
+            <ListCard {list} />
+          {/each}
         {/if}
-    </div>
+        <button
+          class="p-3 rounded text-ink-dark bg-accent-200 dark:bg-accent-700 hover:bg-accent-400 hover:dark:bg-accent-500"
+          on:click={() => (formModal = true)}>+ Add another list</button
+        >
+      </div>
+    {/if}
+  </div>
 </div>
 
 <NewListModal bind:formModal />
 
 <style>
-    .transition-width {
-        transition: width 0.5s;
-    }
+  .transition-width {
+    transition: width 0.5s;
+  }
 </style>

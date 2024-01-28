@@ -1,5 +1,5 @@
 <script lang="ts">
-  import user_store from "$lib/stores/user_store";
+  import { user_info_store } from "$lib/stores/user_store";
   import type { User } from "$lib/interfaces/user";
   import { Label, Input, Helper } from "flowbite-svelte";
   import {
@@ -8,7 +8,7 @@
     UserOutline,
   } from "flowbite-svelte-icons";
 
-  let new_user: User = $user_store;
+  let new_user: User = $user_info_store;
 
   let current_password: string = "";
   let new_password: string = "";
@@ -16,6 +16,10 @@
 
   $: does_match = new_password === confirm_new_password;
 </script>
+
+<svelte:head>
+  <title>Profile Settings</title>
+</svelte:head>
 
 <div class="container mx-auto p-8 bg-white shadow-lg rounded-lg w-2/3 mb-5">
   <form class="space-y-8 divide-gray-200">
@@ -31,7 +35,7 @@
           />
           <div>
             <div class="text-xl font-bold">
-              {$user_store.first_name + " " + $user_store.last_name}
+              {$user_info_store.first_name + " " + $user_info_store.last_name}
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@
   import { goto } from "$app/navigation";
   import server_url from "$lib/stores/server_store";
   import type { SignInInfo } from "$lib/interfaces/user";
-  import user_store, { is_logged_in } from "$lib/stores/user_store";
+  import { user_info_store, is_logged_in } from "$lib/stores/user_store";
   import { SyncLoader } from "svelte-loading-spinners";
 
   let user_info: SignInInfo = {
@@ -49,7 +49,7 @@
         "Bearer " + data.signInData.session.access_token
       );
       $is_logged_in = true;
-      $user_store = data.userProfileData[0];
+      $user_info_store = data.userProfileData[0];
       localStorage.setItem("user", JSON.stringify(data.userProfileData[0]));
       goto("/dashboard");
     } catch (error) {
@@ -59,20 +59,18 @@
       return;
     }
   }
-
-  $: console.log(logging_in);
 </script>
 
 <svelte:head>
-  <title>Sign In</title>
+  <title>Login</title>
 </svelte:head>
 
 <div class="flex h-screen overflow-hidden">
   <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-gray-200 dark:bg-gray-900"
+    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-accent-700"
   >
     <div
-      class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-white
+      class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-100 dark:bg-accent-500
       "
     >
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -99,13 +97,13 @@
               required
             />
           </Label>
-          <div class="flex items-start">
+          <!-- <div class="flex items-start">
             <a
               href="/"
               class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
               >Forgot password?</a
             >
-          </div>
+          </div> -->
           <Button
             on:click={() => {
               logging_in = true;
@@ -113,7 +111,7 @@
             }}
             class="w-full1">Sign in</Button
           >
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+          <p class="text-sm font-light text-ink-light dark:text-ink-dark">
             Don’t have an account yet? <a
               href="/register"
               class="font-medium text-primary-600 hover:underline dark:text-primary-500"

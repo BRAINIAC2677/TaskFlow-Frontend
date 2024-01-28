@@ -94,6 +94,10 @@
     .substring(0, 5);
 </script>
 
+<svelte:head>
+  <title>Task Detail</title>
+</svelte:head>
+
 <div class="flex flex-wrap md:flex-nowrap min-h-screen">
   <!-- Left side: Task Detail Editing -->
   <div

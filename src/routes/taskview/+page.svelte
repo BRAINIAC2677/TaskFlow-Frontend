@@ -214,6 +214,10 @@
   };
 </script>
 
+<svelte:head>
+  <title>Task View</title>
+</svelte:head>
+
 <div
   class="px-10 py-3 mb-8 bg-accent-50 dark:bg-accent-700 rounded-lg shadow-md dark:bg-gray-800 min-h-screen"
 >

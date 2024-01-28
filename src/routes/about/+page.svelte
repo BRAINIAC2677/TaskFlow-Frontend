@@ -22,6 +22,10 @@
   };
 </script>
 
+<svelte:head>
+  <title>About TaskFlow</title>
+</svelte:head>
+
 <div class="bg-accent-50 dark:bg-gray-800 py-6 min-h-screen">
   <div class="flex flex-col w-full max-w-3xl mx-auto my-8 px-4">
     <Accordion multiple>

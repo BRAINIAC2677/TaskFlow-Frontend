@@ -52,6 +52,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>User Dashboard</title>
+</svelte:head>
+
 <div class="min-h-screen p-8">
   <header class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-semibold">Dashboard</h1>

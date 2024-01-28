@@ -57,7 +57,6 @@
         role: user.role,
       });
     });
-    console.log(board_creation_info);
   }
 
   async function createBoard() {
