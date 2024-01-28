@@ -28,10 +28,15 @@
     },
   ];
 
+  let message_box_class: string =
+    "p-3 bg-accent-400 dark:bg-accent-600 text-black dark:text-white rounded-lg rounded-tl-none max-w-xs lg:max-w-md";
+  let timestamp_class: string =
+    "text-xs text-black font-bold dark:text-white text-right mt-1";
+
   function send_message() {}
 </script>
 
-<div class="flex-1 bg-white dark:bg-gray-900 p-4">
+<div class="flex-1 bg-accent-50 dark:bg-accent-700 p-4">
   <h2 class="text-xl font-semibold text-black dark:text-black mb-4">
     Chat Window
   </h2>
@@ -42,12 +47,10 @@
           <Avatar src="https://source.unsplash.com/random" />
           <div class="flex space-x-2">
             <div>
-              <div
-                class="p-3 bg-blue-800 dark:bg-gray-600 text-white dark:text-white rounded-lg rounded-tl-none max-w-xs lg:max-w-md"
-              >
+              <div class={message_box_class}>
                 <p class="text-md font-bold">{message.sender}</p>
                 <p class="text-sm">{message.text}</p>
-                <p class="text-xs text-gray-400 text-right mt-1">
+                <p class={timestamp_class}>
                   {message.timestamp}
                 </p>
               </div>
@@ -58,12 +61,10 @@
         <div class="flex gap-4 justify-end">
           <div class="flex space-x-2">
             <div>
-              <div
-                class="p-3 bg-blue-800 dark:bg-gray-600 text-white dark:text-white rounded-lg rounded-tr-none max-w-xs lg:max-w-md"
-              >
+              <div class={message_box_class}>
                 <p class="text-md font-bold">{message.sender}</p>
                 <p class="text-sm">{message.text}</p>
-                <p class="text-xs text-gray-400 text-right mt-1">
+                <p class={timestamp_class}>
                   {message.timestamp}
                 </p>
               </div>
@@ -76,12 +77,12 @@
   </div>
   <div class="pt-4 text-center">
     <textarea
-      class="w-full p-2 text-sm text-black dark:text-gray-300 bg-white dark:bg-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
+      class="w-full p-2 text-sm text-black dark:text-gray-300 bg-white dark:bg-white rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
       rows="2"
       placeholder="Type your message..."
     ></textarea>
     <button
-      class="mt-2 w-20 h-10 mx-auto max-w-3px bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded flex items-center justify-center"
+      class="mt-2 w-20 h-10 mx-auto max-w-3px bg-accent-500 hover:bg-accent-700 text-black font-bold py-2 px-4 rounded flex items-center justify-center"
       on:click={send_message}
     >
       <svg

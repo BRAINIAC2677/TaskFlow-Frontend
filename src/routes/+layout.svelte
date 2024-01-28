@@ -111,6 +111,7 @@
       >
     </NavBrand>
     <div class="flex items-center md:order-2">
+      <!-- {#if $is_logged_in} -->
       <!-- {#if $user_store.dp_url != undefined && $user_store.dp_url !== ""}
         <Avatar id="avatar-menu" src={$user_store.dp_url} />
       {:else} -->
@@ -118,6 +119,7 @@
         id="avatar-menu"
         src="https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg"
       />
+      <!-- {/if} -->
       <!-- {/if} -->
       <button
         on:click={toggleTheme}

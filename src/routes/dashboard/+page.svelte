@@ -38,6 +38,12 @@
     try {
       boards_loading = true;
       all_boards = await fetchBoards();
+      all_boards.forEach((board) => {
+        board.progress = Math.floor(Math.random() * 100);
+        if (board.progress < 5) board.status = "Not Started";
+        else if (board.progress < 97) board.status = "In Progress";
+        else board.status = "Completed";
+      });
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {

@@ -214,7 +214,9 @@
   };
 </script>
 
-<div class="px-10 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+<div
+  class="px-10 py-3 mb-8 bg-accent-50 dark:bg-accent-700 rounded-lg shadow-md dark:bg-gray-800 min-h-screen"
+>
   <h1 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">Tasks</h1>
   <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
     View your tasks here.

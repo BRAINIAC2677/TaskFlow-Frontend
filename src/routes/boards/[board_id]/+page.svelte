@@ -117,7 +117,7 @@
         id="drawer-navigation-label-3"
         class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
       >
-        Hello, {$user_store.user_name}
+        Hello, {$user_store.username}
       </h5>
       <button
         on:click={toggleSidebar}
@@ -196,9 +196,11 @@
       </div>
     {:else}
       <div class="grid grid-cols-4 gap-4">
-        {#each tasklist_collection as list}
-          <ListCard {list} />
-        {/each}
+        {#if tasklist_collection != undefined}
+          {#each tasklist_collection as list}
+            <ListCard {list} />
+          {/each}
+        {/if}
         <Button
           class="p-3 text-white bg-gray-700 rounded dark:bg-gray-700 dark:text-gray-200"
           on:click={() => (formModal = true)}>+ Add another list</Button

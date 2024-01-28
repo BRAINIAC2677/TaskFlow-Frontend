@@ -9,9 +9,11 @@
     {list.list_name}
   </h3>
   <div class="space-y-2">
-    {#each list.list_tasks as task}
-      <TaskCard {task} />
-    {/each}
+    {#if list.list_tasks != undefined}
+      {#each list.list_tasks as task}
+        <TaskCard {task} />
+      {/each}
+    {/if}
     <button class="mt-2 text-white dark:text-gray-200">+ Add a task</button>
   </div>
 </div>

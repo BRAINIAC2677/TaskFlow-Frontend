@@ -111,51 +111,51 @@
                 >{new Date(board.due_timestamp).toLocaleDateString()}</td
               >
               <!-- randomly generated numbers for now -->
-              <!-- <td class="px-4 py-4 whitespace-nowrap">
-              {#if board.status === "In Progress"}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-yellow-100 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
-                >
-                  In Progress
-                </span>
-              {:else if board.status === "Completed"}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-green-50"
-                >
-                  Completed
-                </span>
-              {:else if board.status === "Not Started"}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-red-100 text-red-800 dark:bg-red-500 dark:text-red-50"
-                >
-                  Not Started
-                </span>
-              {/if}
-            </td>
-            <td class="px-4 py-4 whitespace-nowrap">
-              {#if board.progress === 0}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-red-800"
-                  style="width: {board.progress}%"
-                >
-                  {board.progress}%
-                </span>
-              {:else if board.progress < 100}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
-                  style="width: {board.progress}%"
-                >
-                  {board.progress}%
-                </span>
-              {:else}
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-green-50"
-                  style="width: {board.progress}%"
-                >
-                  {board.progress}%
-                </span>
-              {/if}
-            </td> -->
+              <td class="px-4 py-4 whitespace-nowrap">
+                {#if board.status === "In Progress"}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-yellow-300 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
+                  >
+                    In Progress
+                  </span>
+                {:else if board.status === "Completed"}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-300 text-green-800 dark:bg-green-500 dark:text-green-50"
+                  >
+                    Completed
+                  </span>
+                {:else if board.status === "Not Started"}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-red-300 text-red-800 dark:bg-red-500 dark:text-red-50"
+                  >
+                    Not Started
+                  </span>
+                {/if}
+              </td>
+              <td class="px-4 py-4 whitespace-nowrap">
+                {#if board.progress === 0}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-red-800"
+                    style="width: {board.progress}%"
+                  >
+                    {board.progress}%
+                  </span>
+                {:else if board.progress < 100}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-300 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
+                    style="width: {board.progress}%"
+                  >
+                    {board.progress}%
+                  </span>
+                {:else}
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-green-50"
+                    style="width: {board.progress}%"
+                  >
+                    {board.progress}%
+                  </span>
+                {/if}
+              </td>
             </tr>
           {/each}
         </tbody>

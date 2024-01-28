@@ -5,6 +5,7 @@
   import server_url from "$lib/stores/server_store";
   import type { SignInInfo } from "$lib/interfaces/user";
   import user_store, { is_logged_in } from "$lib/stores/user_store";
+  import { SyncLoader } from "svelte-loading-spinners";
 
   let user_info: SignInInfo = {
     email: "",
@@ -14,6 +15,7 @@
   let show_toast: boolean = false;
   let toast_type: string = "success";
   let toast_message: string = "";
+  let logging_in: boolean = false;
 
   function enable_toast(error: boolean, message: string) {
     show_toast = true;
@@ -36,9 +38,11 @@
       if (!response.ok) {
         enable_toast(true, "Invalid Credentials");
         console.error("Network response was not ok");
+        logging_in = false;
         return;
       }
       const data = await response.json();
+      logging_in = false;
       enable_toast(false, "Sign In Successful");
       localStorage.setItem(
         "access_token",
@@ -50,10 +54,13 @@
       goto("/dashboard");
     } catch (error) {
       console.error(error);
+      logging_in = false;
       enable_toast(true, "An error occurred during sign-in. Please try again.");
       return;
     }
   }
+
+  $: console.log(logging_in);
 </script>
 
 <svelte:head>
@@ -101,6 +108,7 @@
           </div>
           <Button
             on:click={() => {
+              logging_in = true;
               signIn();
             }}
             class="w-full1">Sign in</Button
@@ -115,6 +123,13 @@
         </form>
       </div>
     </div>
+    {#if logging_in}
+      <div
+        class=" bg-gray-900 bg-opacity-50 flex justify-center items-center absolute inset-0 min-h-screen min-w-full"
+      >
+        <SyncLoader color="#ffffff" />
+      </div>
+    {/if}
     {#if show_toast}
       <Toast
         on:close={() => {

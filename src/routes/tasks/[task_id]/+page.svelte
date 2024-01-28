@@ -98,15 +98,17 @@
   <!-- Left side: Task Detail Editing -->
   <div
     bind:this={left_panel}
-    class="flex flex-col bg-white dark:bg-gray-800 p-4"
+    class="flex flex-col bg-accent-50 dark:bg-accent-700 p-4"
     style="width: 35%"
   >
     <div class="flex flex-col lg:flex-row gap-10">
       <!-- Task Details Section -->
       <div
-        class="bg-white shadow-lg rounded-lg p-6 w-full lg:w-2/3 max-w-xl mx-auto"
+        class="bg-accent-100 shadow-lg rounded-lg p-6 w-full lg:w-2/3 max-w-xl mx-auto"
       >
-        <h2 class="text-2xl font-semibold mb-4">{task.name}</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-black">
+          {task.name}
+        </h2>
 
         <!-- Cover Photo -->
         <div class="mb-4">
@@ -287,7 +289,7 @@
   <!-- Draggable Divider -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
-    class="cursor-col-resize bg-gray-400 dark:bg-gray-700 p-1"
+    class="cursor-col-resize bg-accent-300 dark:bg-accent-500 p-1"
     on:mousedown={init_drag}
   >
     <!-- This is the draggable area -->

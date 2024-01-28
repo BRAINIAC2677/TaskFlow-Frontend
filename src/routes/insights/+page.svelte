@@ -101,7 +101,7 @@
   };
 </script>
 
-<div class="flex-col my-32 mx-80">
+<div class="flex-col mt-32 mx-80 pb-32">
   <div class="chart-container">
     <InsightOverview title="Overview" />
   </div>
@@ -132,13 +132,3 @@
     />
   </div>
 </div>
-
-<style>
-  .chart-container {
-    @apply text-center mb-4;
-  }
-
-  .chart-header {
-    @apply text-2xl font-bold mb-2;
-  }
-</style>

@@ -22,6 +22,8 @@ export interface BoardDashboardInfo {
   description: string;
   role: number;
   owner_info: OwnerInfo;
+  progress: number;
+  status: string;
 }
 
 interface MemberInfo {
