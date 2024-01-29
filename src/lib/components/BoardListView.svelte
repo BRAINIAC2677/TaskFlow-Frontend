@@ -4,32 +4,16 @@
   import { SearchOutline } from "flowbite-svelte-icons";
   import { Pulse } from "svelte-loading-spinners";
   import theme_store from "$lib/stores/theme_store";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
   export let loading: boolean = false;
   export let all_boards: BoardDashboardInfo[] = [];
 
   let search_term: string = "";
   let showable_boards: BoardDashboardInfo[] = all_boards;
 
-  function get_spinner_color(color_name: string): string {
-    switch (color_name) {
-      case "red":
-        return "#FF0000";
-      case "green":
-        return "#00FF00";
-      case "blue":
-        return "#0000FF";
-      case "yellow":
-        return "#FFFF00";
-      case "orange":
-        return "#FFA500";
-      default:
-        return "#000000";
-    }
-  }
-
   let spinner_color: string = "#000000";
   $: {
-    spinner_color = get_spinner_color($theme_store.accentCurrentColor);
+    spinner_color = get_color_hex_code($theme_store.accentCurrentColor);
   }
 
   $: {

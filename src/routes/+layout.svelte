@@ -72,7 +72,9 @@
   }
 </script>
 
-<div class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900">
+<div
+  class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen"
+>
   <Navbar class="dark:bg-accent-900 bg-accent-200 py-0">
     <NavBrand href="/">
       <span

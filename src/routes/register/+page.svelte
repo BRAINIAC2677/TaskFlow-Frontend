@@ -101,11 +101,11 @@
   </div>
 
   <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-gray-200 dark:bg-gray-900"
+    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-gray-700"
     in:slide={{ delay: 300, duration: 500 }}
   >
     <div
-      class="flex flex-col items-center justify-center px-6 mx-auto py-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-white"
+      class="flex flex-col items-center justify-center px-6 mx-auto py-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-accent-100"
       in:fade={{ duration: 500 }}
     >
       <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">

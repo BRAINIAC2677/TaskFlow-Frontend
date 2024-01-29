@@ -5,7 +5,9 @@
   import server_url from "$lib/stores/server_store";
   import type { SignInInfo } from "$lib/interfaces/user";
   import { user_info_store, is_logged_in } from "$lib/stores/user_store";
-  import { SyncLoader } from "svelte-loading-spinners";
+  import { Stretch } from "svelte-loading-spinners";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
+  import theme_store from "$lib/stores/theme_store";
 
   let user_info: SignInInfo = {
     email: "",
@@ -64,6 +66,13 @@
 <svelte:head>
   <title>Login</title>
 </svelte:head>
+{#if logging_in}
+  <div
+    class="bg-gray-900 bg-opacity-50 flex justify-center items-center fixed inset-0 min-h-full min-w-full"
+  >
+    <Stretch color={get_color_hex_code($theme_store.accentCurrentColor)} />
+  </div>
+{/if}
 
 <div class="flex h-screen overflow-hidden">
   <div
@@ -121,13 +130,6 @@
         </form>
       </div>
     </div>
-    {#if logging_in}
-      <div
-        class=" bg-gray-900 bg-opacity-50 flex justify-center items-center absolute inset-0 min-h-screen min-w-full"
-      >
-        <SyncLoader color="#ffffff" />
-      </div>
-    {/if}
     {#if show_toast}
       <Toast
         on:close={() => {
