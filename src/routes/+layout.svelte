@@ -19,6 +19,10 @@
   import { bounceOut } from "svelte/easing";
   import server_url from "$lib/stores/server_store";
   import { goto } from "$app/navigation";
+  import { Shadow } from "svelte-loading-spinners";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
+
+  let logging_out: boolean = false;
 
   function setThemeClass() {
     if ($theme_store.darkMode) {
@@ -48,6 +52,7 @@
   }
 
   async function signOut() {
+    logging_out = true;
     const headers = new Headers({
       authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
@@ -67,10 +72,18 @@
     } catch (error) {
       console.error(error);
     }
-
+    logging_out = false;
     goto("/login");
   }
 </script>
+
+{#if logging_out}
+  <div
+    class="bg-gray-900 bg-opacity-50 flex justify-center items-center fixed inset-0 min-h-full min-w-full"
+  >
+    <Shadow color={get_color_hex_code($theme_store.accentCurrentColor)} />
+  </div>
+{/if}
 
 <div
   class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen"

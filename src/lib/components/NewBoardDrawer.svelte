@@ -1,5 +1,6 @@
 <script lang="ts">
   import ScrollableUserList from "$lib/components/ScrollableUserList.svelte";
+  import Autocomplete from "$lib/components/Autocomplete.svelte";
   import { sineIn } from "svelte/easing";
   import { InfoCircleSolid, CalendarEditSolid } from "flowbite-svelte-icons";
   import type { UserMinimalForm } from "$lib/interfaces/user";
@@ -27,19 +28,17 @@
   let search_term: string = "";
   let last_fetched_term: string = "";
   let fetch_interval: NodeJS.Timeout;
-  let interval_time: number = 10;
+  let interval_time: number = 100;
 
   let retrieved_users: UserMinimalForm[] = [];
-  let suggested_users: UserMinimalForm[] = [];
   let selected_users: UserMemberInfo[] = [];
-
   let board_creation_info: BoardCreationInfo = {
     board_name: "",
     board_description: "",
     board_deadline: "",
     board_members: [],
   };
-
+  let users_loading: boolean = false;
   let deadline_ok: boolean = false;
 
   $: {
@@ -85,18 +84,14 @@
   onMount(() => {
     fetch_interval = setInterval(() => {
       if (search_term !== last_fetched_term && search_term.length > 0) {
-        console.log("Fetching users...");
         fetchUsers(search_term)
           .then((users) => {
             retrieved_users = users;
-            suggested_users = retrieved_users.filter((user) =>
-              selected_users.every((selected) => selected.user_id !== user.id)
-            );
+            last_fetched_term = search_term;
           })
           .catch((err) => {
             console.error("Fetch error:", err);
           });
-        last_fetched_term = search_term;
       }
     }, interval_time);
   });
@@ -106,6 +101,7 @@
   });
 
   async function fetchUsers(search_term: string) {
+    users_loading = true;
     const headers = new Headers({
       authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
@@ -131,23 +127,27 @@
       return await response.json();
     } catch (error) {
       throw error;
+    } finally {
+      users_loading = false;
     }
   }
 
-  $: if (search_term.length === 0) suggested_users = [];
+  let suggestions: Array<{
+    id: string;
+    name: string;
+  }> = [];
 
-  const makeMatchBold = (string: string, matched_part: string) => {
-    let match = matched_part.toLowerCase();
-    let matchIndex = string.toLowerCase().indexOf(match);
-    if (matchIndex === -1) return string;
-    const ret: string =
-      string.substring(0, matchIndex) +
-      "<b>" +
-      string.substring(matchIndex, matchIndex + match.length) +
-      "</b>" +
-      string.substring(matchIndex + match.length);
-    return ret;
-  };
+  $: {
+    retrieved_users = retrieved_users.filter((user) => {
+      return selected_users.every((selected) => selected.user_id !== user.id);
+    });
+    suggestions = retrieved_users.map((user) => {
+      return {
+        id: user.id,
+        name: user.username,
+      };
+    });
+  }
 </script>
 
 <Drawer
@@ -177,7 +177,7 @@
         id="title"
         name="title"
         required
-        placeholder="Board ABC"
+        placeholder="Board Name"
         bind:value={board_creation_info.board_name}
       />
     </div>
@@ -208,50 +208,30 @@
     </div>
     <div class="mb-4">
       <Label for="members" class="mb-2">Add Members</Label>
-      <div class="relative">
-        <Input
-          noBorder
-          id="search"
-          placeholder="Enter usernames..."
-          class="p-3"
-          bind:value={search_term}
-        />
-        {#if suggested_users.length > 0 && search_term.length > 0}
-          <div
-            id="dropdown"
-            class="absolute z-20 w-full bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700"
-          >
-            <ul
-              class="w-full py-1 text-base text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownDefault"
-            >
-              {#each suggested_users as suggestion}
-                <li>
-                  <button
-                    class="block w-full px-4 py-2 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    on:click|stopPropagation={() => {
-                      suggested_users = [];
-                      selected_users = [
-                        ...selected_users,
-                        {
-                          user_id: suggestion.id,
-                          username: suggestion.username,
-                          full_name: suggestion.full_name,
-                          role: 3,
-                          dp_url: suggestion.dp_url,
-                        },
-                      ];
-                      search_term = "";
-                    }}
-                  >
-                    {@html makeMatchBold(suggestion.username, search_term)}
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-      </div>
+      <Autocomplete
+        bind:loading={users_loading}
+        bind:suggestions
+        bind:searchTerm={search_term}
+        on:select={(e) => {
+          let user = retrieved_users.find((user) => user.id === e.detail.index);
+          if (user) {
+            selected_users = [
+              ...selected_users,
+              {
+                user_id: user.id,
+                full_name: user.full_name,
+                username: user.username,
+                role: 3,
+                dp_url: user.dp_url,
+              },
+            ];
+          }
+          search_term = "";
+          retrieved_users = retrieved_users.filter((user) => {
+            return user.id !== e.detail.index;
+          });
+        }}
+      />
     </div>
     {#if selected_users.length > 0}
       <ScrollableUserList bind:users={selected_users} />
@@ -270,8 +250,6 @@
             console.error(err);
           });
         hidden = true;
-        // later change this to the newly created board page
-        window.location.href = "/boards/1";
       }}
     >
       <CalendarEditSolid class="w-3.5 h-3.5 me-2.5 text-white" /> Create Board
