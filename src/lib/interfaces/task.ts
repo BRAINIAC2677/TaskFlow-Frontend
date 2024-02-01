@@ -29,3 +29,16 @@ export interface BoardContentTaskForm {
   task_deadline: string;
   task_label_color: string;
 }
+
+export interface CalendarViewTask {
+  id: number;
+  // allDay: boolean;
+  start: string;
+  end: string;
+  title: string;
+  editable: boolean;
+  // startEditable: boolean;
+  // durationEditable: boolean;
+  backgroundColor: string;
+  // textColor: string;
+}

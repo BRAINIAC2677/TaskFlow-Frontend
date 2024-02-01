@@ -12,7 +12,7 @@
   async function fetchBoards() {
     const token: string = localStorage.getItem("access_token") || "";
     const headers = new Headers({
-      authorization: token,
+      Authorization: token,
       "Content-Type": "application/json",
     });
 

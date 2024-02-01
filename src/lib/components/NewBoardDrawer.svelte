@@ -60,7 +60,7 @@
 
   async function createBoard() {
     const headers = new Headers({
-      authorization: localStorage.getItem("access_token") || "",
+      Authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
     });
 
@@ -103,7 +103,7 @@
   async function fetchUsers(search_term: string) {
     users_loading = true;
     const headers = new Headers({
-      authorization: localStorage.getItem("access_token") || "",
+      Authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
     });
 

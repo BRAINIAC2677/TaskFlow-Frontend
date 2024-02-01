@@ -54,7 +54,7 @@
   async function signOut() {
     logging_out = true;
     const headers = new Headers({
-      authorization: localStorage.getItem("access_token") || "",
+      Authorization: localStorage.getItem("access_token") || "",
       "Content-Type": "application/json",
     });
 
