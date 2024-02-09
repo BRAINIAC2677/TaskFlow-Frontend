@@ -94,7 +94,7 @@
 {/if}
 
 <div
-  class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen"
+  class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen pb-5"
 >
   <Navbar class="dark:bg-accent-900 bg-accent-200 py-0">
     <NavBrand href="/">

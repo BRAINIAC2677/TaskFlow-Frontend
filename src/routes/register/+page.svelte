@@ -197,7 +197,6 @@
           <Input
             type="password"
             id="password"
-            placeholder="•••••••••"
             required
             bind:value={new_user.password}
           />
@@ -214,7 +213,6 @@
           <Input
             type="password"
             id="confirm_password"
-            placeholder="•••••••••"
             bind:value={confirm_password}
             required
           />
@@ -250,7 +248,7 @@
   </div>
 </div>
 
-<Popover class="text-sm" triggeredBy="#password" placement="bottom">
+<Popover class="text-sm" triggeredBy="#password" placement="top">
   <h3 class="font-semibold text-gray-900 dark:text-white">
     Must have at least 6 characters
   </h3>

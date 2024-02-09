@@ -72,7 +72,9 @@
     if (show_toast) {
       toast.push(toast_message, {
         theme: {
-          "--toastBackground": toast_type === "error" ? "#F28585" : "#D9EDBF",
+          "--toastBackground": toast_type === "error" ? "#F28585" : "#40A2E3",
+          "--toastProgressBackground":
+            toast_type === "error" ? "#D64545" : "#1A73E8",
           "--toastColor": "black",
         },
       });
@@ -101,7 +103,7 @@
     class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-accent-700"
   >
     <div
-      class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-100 dark:bg-accent-500
+      class="flex flex-col items-center justify-center mx-4 px-2 py-8 lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-100 dark:bg-accent-500
       "
     >
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -118,12 +120,7 @@
           </h3>
           <Label class="space-y-2">
             <span>Email</span>
-            <Input
-              name="email"
-              placeholder="abc@gmail.com"
-              bind:value={user_info.email}
-              required
-            />
+            <Input name="email" bind:value={user_info.email} required />
           </Label>
           <Label class="space-y-2">
             <span>Password</span>
@@ -131,7 +128,6 @@
               type="password"
               name="password"
               bind:value={user_info.password}
-              placeholder="•••••"
               required
             />
           </Label>
