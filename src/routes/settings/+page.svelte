@@ -1,29 +1,73 @@
 <script lang="ts">
   import { user_info_store } from "$lib/stores/user_store";
-  import type { User } from "$lib/interfaces/user";
+  import type { RegistrationInfo } from "$lib/interfaces/user";
   import { Label, Input, Helper } from "flowbite-svelte";
-  import {
-    EnvelopeSolid,
-    PhoneOutline,
-    UserOutline,
-  } from "flowbite-svelte-icons";
+  import { EnvelopeSolid, UserOutline } from "flowbite-svelte-icons";
+  import server_url from "$lib/stores/server_store";
 
-  let new_user: User = $user_info_store;
+  let user_info: RegistrationInfo = {
+    first_name: $user_info_store.first_name,
+    middle_name: $user_info_store.middle_name,
+    last_name: $user_info_store.last_name,
+    username: $user_info_store.username,
+    email: $user_info_store.email,
+    password: "",
+  };
 
   let current_password: string = "";
   let new_password: string = "";
   let confirm_new_password: string = "";
 
+  async function update_user_info(): Promise<void> {
+    const headers = new Headers({
+      Authorization: localStorage.getItem("access_token") || "",
+      "Content-Type": "application/json",
+    });
+
+    const request = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        first_name: user_info.first_name,
+        middle_name: user_info.middle_name,
+        last_name: user_info.last_name,
+        username: user_info.username,
+        email: user_info.email,
+      }),
+    };
+
+    try {
+      const response = await fetch($server_url + "/profile/update", request);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  let unchanged: boolean = false;
+
   $: does_match = new_password === confirm_new_password;
+  $: {
+    unchanged =
+      user_info.first_name === $user_info_store.first_name &&
+      user_info.middle_name === $user_info_store.middle_name &&
+      user_info.last_name === $user_info_store.last_name &&
+      user_info.username === $user_info_store.username &&
+      user_info.email === $user_info_store.email;
+  }
 </script>
 
 <svelte:head>
   <title>Profile Settings</title>
 </svelte:head>
 
-<div class="container mx-auto p-8 bg-white shadow-lg rounded-lg w-2/3 mb-5">
+<div
+  class="container mx-auto p-8 bg-accent-50 my-5 h-full shadow-lg rounded-lg w-2/3"
+>
   <form class="space-y-8 divide-gray-200">
-    <!-- Profile section -->
     <div class="flex flex-col space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-6">
@@ -58,29 +102,26 @@
     <div class="grid gap-6 mb-6 md:grid-cols-2 pt-5">
       <div>
         <Label for="first_name" class="mb-2">First Name</Label>
-        <Input type="text" id="first_name" bind:value={new_user.first_name} />
+        <Input type="text" id="first_name" bind:value={user_info.first_name} />
+      </div>
+      <div>
+        <Label for="middle_name" class="mb-2">Middle Name</Label>
+        <Input
+          type="text"
+          id="middle_name"
+          bind:value={user_info.middle_name}
+        />
       </div>
       <div>
         <Label for="last_name" class="mb-2">Last Name</Label>
-        <Input type="text" id="last_name" bind:value={new_user.last_name} />
+        <Input type="text" id="last_name" bind:value={user_info.last_name} />
       </div>
       <div>
         <Label for="last_name" class="mb-2">Username</Label>
-        <Input type="text" id="last_name" bind:value={new_user.username}>
+        <Input type="text" id="last_name" bind:value={user_info.username}>
           <UserOutline slot="left" class="w-4 h-4" />
         </Input>
       </div>
-      <!-- <div>
-        <Label for="phone" class="mb-2">Phone Number</Label>
-        <Input
-          type="tel"
-          id="phone"
-          placeholder="123-45-678"
-          bind:value={new_user.phone_number}
-        >
-          <PhoneOutline slot="left" class="w-4 h-4" />
-        </Input>
-      </div> -->
     </div>
     <div class="mb-6 w-1/2">
       <Label for="email" class="mb-2">Email Address</Label>
@@ -88,18 +129,13 @@
         <EnvelopeSolid slot="left" class="w-4 h-4" />
       </Input>
     </div>
-    <!-- Action buttons -->
     <div class="pt-5">
       <div class="flex justify-end">
         <button
-          type="button"
-          class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold"
-          >Cancel</button
-        >
-        <button
           type="submit"
-          on:click|preventDefault={() => {}}
-          class="ml-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold"
+          disabled={unchanged}
+          on:click|preventDefault={update_user_info}
+          class="ml-3 bg-accent-600 hover:bg-accent-700 dark:bg-accent-700 dark:hover:bg-accent-800 text-ink-light dark:text-ink-dark py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold disabled:opacity-50"
           >Save Changes</button
         >
       </div>

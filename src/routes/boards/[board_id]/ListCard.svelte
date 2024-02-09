@@ -5,7 +5,7 @@
 </script>
 
 <div class="p-3 rounded bg-accent-200 dark:bg-accent-700">
-  <h3 class="mb-2 font-bold text-ink-dark">
+  <h3 class="mb-2 font-bold text-ink-light dark:text-ink-dark">
     {list.list_name}
   </h3>
   <div class="space-y-2">
@@ -14,6 +14,6 @@
         <TaskCard {task} />
       {/each}
     {/if}
-    <button class="mt-2 text-ink-dark">+ Add a task</button>
+    <button class="mt-2 text-ink-light dark:text-ink-dark">+ Add a task</button>
   </div>
 </div>

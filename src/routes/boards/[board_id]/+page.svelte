@@ -7,15 +7,17 @@
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { user_info_store } from "$lib/stores/user_store";
+  import { Wave } from "svelte-loading-spinners";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
+  import theme_store from "$lib/stores/theme_store";
+  import { fade } from "svelte/transition";
   import {
     Drawer,
     Sidebar,
-    SidebarDropdownItem,
     SidebarDropdownWrapper,
     SidebarGroup,
     SidebarItem,
     SidebarWrapper,
-    Button,
   } from "flowbite-svelte";
   import {
     ChartPieSolid,
@@ -28,9 +30,6 @@
   } from "flowbite-svelte-icons";
 
   let formModal = false;
-
-  // let recent_board_ids = [1, 2, 3];
-  // let your_board_ids = [1, 2, 3];
 
   let hiddenSideBar = true;
   let transitionParams = {
@@ -69,6 +68,11 @@
     }
   }
 
+  let spinner_color: string = "#000000";
+  $: {
+    spinner_color = get_color_hex_code($theme_store.accentCurrentColor);
+  }
+
   let content_loading: boolean = false;
   let board_content: BoardContent;
   import type { BoardContentListForm } from "$lib/interfaces/list";
@@ -81,7 +85,6 @@
       board_content = await fetchBoardContent();
       board_content.board_lists.forEach((list) => {
         tasklist_collection.push(list);
-        console.log(list);
       });
     } catch (err) {
       console.error("Fetch error:", err);
@@ -109,6 +112,7 @@
     id="sidebar2"
     backdrop={false}
     leftOffset="top-16 h-screen start-0"
+    divClass="bg-accent-100 dark:bg-accent-700 shadow-lg dark:shadow-none"
     width="w-72"
   >
     <div class="flex items-center justify-between px-3">
@@ -165,9 +169,6 @@
                 class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
               />
             </svelte:fragment>
-            <!-- {#each your_board_ids as id}
-              <SidebarDropdownItem label="Board {id}" href={`/boards/${id}`} />
-            {/each} -->
           </SidebarDropdownWrapper>
 
           <SidebarItem label="Log out">
@@ -188,10 +189,13 @@
     } transition-margin duration-300`}
   >
     {#if content_loading}
-      <div class="flex items-center justify-center h-full">
-        <div
-          class="w-16 h-16 border-b-4 border-gray-400 rounded-full animate-spin"
-        ></div>
+      <div class="flex flex-col items-center justify-center h-full">
+        <div>
+          <Wave color={spinner_color} size="100" duration="0.75s" />
+        </div>
+        <span class="mt-4 text-3xl font-bold tracking-wider">
+          Loading Board Content...
+        </span>
       </div>
     {:else}
       <div class="grid grid-cols-4 gap-4">
@@ -201,7 +205,7 @@
           {/each}
         {/if}
         <button
-          class="p-3 rounded text-ink-dark bg-accent-200 dark:bg-accent-700 hover:bg-accent-400 hover:dark:bg-accent-500"
+          class="p-3 rounded text-ink-light dark:text-ink-dark bg-accent-200 dark:bg-accent-700 hover:bg-accent-400 hover:dark:bg-accent-500"
           on:click={() => (formModal = true)}>+ Add another list</button
         >
       </div>
@@ -209,10 +213,8 @@
   </div>
 </div>
 
-<NewListModal bind:formModal />
-
-<style>
-  .transition-width {
-    transition: width 0.5s;
-  }
-</style>
+{#if formModal}
+  <div transition:fade={{ duration: 250 }}>
+    <NewListModal bind:showModal={formModal} />
+  </div>
+{/if}

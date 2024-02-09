@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { CloseCircleSolid, CheckCircleSolid } from "flowbite-svelte-icons";
-  import { Toast, Button, Label, Input } from "flowbite-svelte";
+  import { toast } from "@zerodevx/svelte-toast";
+  import { Button, Label, Input } from "flowbite-svelte";
   import { goto } from "$app/navigation";
   import server_url from "$lib/stores/server_store";
   import type { SignInInfo } from "$lib/interfaces/user";
@@ -15,14 +15,14 @@
   };
 
   let show_toast: boolean = false;
-  let toast_type: string = "success";
+  let toast_type: string = "";
   let toast_message: string = "";
   let logging_in: boolean = false;
 
-  function enable_toast(error: boolean, message: string) {
-    show_toast = true;
+  function display_toast(error: boolean, message: string) {
     toast_type = error ? "error" : "success";
     toast_message = message;
+    show_toast = true;
   }
 
   async function signIn() {
@@ -38,14 +38,17 @@
       const response = await fetch($server_url + "/auth/signin", request);
       console.log(response);
       if (!response.ok) {
-        enable_toast(true, "Invalid Credentials");
+        display_toast(true, "Invalid Credentials");
         console.error("Network response was not ok");
         logging_in = false;
         return;
       }
       const data = await response.json();
       logging_in = false;
-      enable_toast(false, "Sign In Successful");
+      display_toast(
+        false,
+        `Welcome back, <strong>${data.userProfileData[0].username}</strong>!`
+      );
       localStorage.setItem(
         "access_token",
         "Bearer " + data.signInData.session.access_token
@@ -57,8 +60,22 @@
     } catch (error) {
       console.error(error);
       logging_in = false;
-      enable_toast(true, "An error occurred during sign-in. Please try again.");
+      display_toast(
+        true,
+        "An error occurred during sign-in. Please try again."
+      );
       return;
+    }
+  }
+
+  $: {
+    if (show_toast) {
+      toast.push(toast_message, {
+        theme: {
+          "--toastBackground": toast_type === "error" ? "#F28585" : "#D9EDBF",
+          "--toastColor": "black",
+        },
+      });
     }
   }
 </script>
@@ -68,9 +85,14 @@
 </svelte:head>
 {#if logging_in}
   <div
-    class="bg-gray-900 bg-opacity-50 flex justify-center items-center fixed inset-0 min-h-full min-w-full"
+    class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
   >
-    <Stretch color={get_color_hex_code($theme_store.accentCurrentColor)} />
+    <div>
+      <Stretch color={get_color_hex_code($theme_store.accentCurrentColor)} />
+    </div>
+    <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+      Signing you in...
+    </span>
   </div>
 {/if}
 
@@ -83,7 +105,14 @@
       "
     >
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <form class="flex flex-col space-y-6">
+        <form
+          class="flex flex-col space-y-6"
+          on:submit|preventDefault={() => {
+            if (user_info.email === "" || user_info.password === "") return;
+            logging_in = true;
+            signIn();
+          }}
+        >
           <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">
             Sign In
           </h3>
@@ -113,13 +142,7 @@
               >Forgot password?</a
             >
           </div> -->
-          <Button
-            on:click={() => {
-              logging_in = true;
-              signIn();
-            }}
-            class="w-full1">Sign in</Button
-          >
+          <Button class="w-full1" type="submit">Sign in</Button>
           <p class="text-sm font-light text-ink-light dark:text-ink-dark">
             Don’t have an account yet? <a
               href="/register"
@@ -130,27 +153,6 @@
         </form>
       </div>
     </div>
-    {#if show_toast}
-      <Toast
-        on:close={() => {
-          show_toast = false;
-        }}
-        color={toast_type === "error" ? "red" : "green"}
-        class={toast_type === "error"
-          ? "w-full max-w-xs p-4 text-gray-500 bg-red-200 shadow dark:text-gray-400 dark:bg-red-800 gap-3"
-          : "w-full max-w-xs p-4 text-gray-500 bg-green-200 shadow dark:text-gray-400 dark:bg-green-800 gap-3"}
-        position="bottom-right"
-      >
-        <svelte:fragment slot="icon">
-          {#if toast_type === "error"}
-            <CloseCircleSolid class="w-5 h-5" />
-          {:else}
-            <CheckCircleSolid class="w-5 h-5" />
-          {/if}
-        </svelte:fragment>
-        <span>{toast_message}</span>
-      </Toast>
-    {/if}
   </div>
 
   <div
