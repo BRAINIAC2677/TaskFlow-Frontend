@@ -248,8 +248,10 @@
           })
           .catch((err) => {
             console.error(err);
+          })
+          .finally(() => {
+            hidden = true;
           });
-        hidden = true;
       }}
     >
       <CalendarEditSolid class="w-3.5 h-3.5 me-2.5 text-white" /> Create Board

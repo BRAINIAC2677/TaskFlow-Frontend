@@ -1,5 +1,6 @@
 <script lang="ts">
   import "../app.css";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
   import {
     Navbar,
     NavBrand,
@@ -63,30 +64,37 @@
         method: "POST",
         headers: headers,
       });
-
       console.log(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
       // logging out anyway
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
       $is_logged_in = false;
-    } catch (error) {
-      console.error(error);
+      logging_out = false;
+      goto("/login");
     }
-    logging_out = false;
-    goto("/login");
   }
 </script>
 
+<SvelteToast />
+
 {#if logging_out}
   <div
-    class="bg-gray-900 bg-opacity-50 flex justify-center items-center fixed inset-0 min-h-full min-w-full"
+    class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
   >
-    <Shadow color={get_color_hex_code($theme_store.accentCurrentColor)} />
+    <div>
+      <Shadow color={get_color_hex_code($theme_store.accentCurrentColor)} />
+    </div>
+    <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+      Signing you out...
+    </span>
   </div>
 {/if}
 
 <div
-  class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen"
+  class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen pb-5"
 >
   <Navbar class="dark:bg-accent-900 bg-accent-200 py-0">
     <NavBrand href="/">
@@ -120,9 +128,9 @@
               >{$user_info_store.email}</span
             >
           </DropdownHeader>
-          <DropdownItem>
+          <!-- <DropdownItem>
             <a href="/profile">Public Profile</a>
-          </DropdownItem>
+          </DropdownItem> -->
           <DropdownItem>
             <a href="/settings">Profile Settings</a>
           </DropdownItem>
@@ -183,3 +191,17 @@
   >
   <slot />
 </div>
+
+<style>
+  /* for toasts */
+  :root {
+    --toastBorder: 1px rounded-full #000;
+    --toastBorderRadius: 0.5rem;
+    --toastContainerBottom: 1rem;
+    --toastContainerRight: 1rem;
+    --toastContainerTop: auto;
+    --toastContainerLeft: auto;
+    --toastPadding: 0.25rem;
+    --toastWidth: 18rem;
+  }
+</style>

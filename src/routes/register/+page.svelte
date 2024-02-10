@@ -1,17 +1,21 @@
 <script lang="ts">
   import {
-    Toast,
-    Button,
+    Popover,
     Label,
     Input,
     Checkbox,
+    Button,
     A,
     Helper,
   } from "flowbite-svelte";
-  import { fade, slide } from "svelte/transition";
+  import { CheckOutline, CloseOutline } from "flowbite-svelte-icons";
   import { goto } from "$app/navigation";
   import server_url from "$lib/stores/server_store";
   import type { RegistrationInfo } from "$lib/interfaces/user";
+  import { toast } from "@zerodevx/svelte-toast";
+  import { Diamonds } from "svelte-loading-spinners";
+  import theme_store from "$lib/stores/theme_store";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
 
   let new_user: RegistrationInfo = {
     first_name: "",
@@ -23,36 +27,27 @@
   };
   let confirm_password: string = "";
 
-  let show_mismatch_error: boolean = false;
-  let show_toast: boolean = false;
-  let toast_type: string = "success";
-  let toast_message: string = "";
+  let password_match: number = 0; // 0: not retyped, 1: mismatch, 2: match
 
-  function check_password(password: string) {
-    if (password.length < 8) return false;
-    let has_uppercase = false;
-    let has_lowercase = false;
-    let has_number = false;
-    let has_special = false;
-    for (let i = 0; i < password.length; i++) {
-      if (password[i] >= "A" && password[i] <= "Z") has_uppercase = true;
-      else if (password[i] >= "a" && password[i] <= "z") has_lowercase = true;
-      else if (password[i] >= "0" && password[i] <= "9") has_number = true;
-      else has_special = true;
-    }
-    let score: number = 0;
-    if (has_uppercase) score++;
-    if (has_lowercase) score++;
-    if (has_number) score++;
-    if (has_special) score++;
+  let both_case: boolean = false;
+  let have_symbols: boolean = false;
+  let score: number = 0;
 
-    return score >= 2 ? true : false;
-  }
+  let registering: boolean = false;
 
   $: {
-    if (new_user.password !== confirm_password && confirm_password !== "")
-      show_mismatch_error = true;
-    else show_mismatch_error = false;
+    if (confirm_password === "" || new_user.password === "") password_match = 0;
+    else if (new_user.password === confirm_password) password_match = 2;
+    else password_match = 1;
+
+    both_case =
+      /[a-z]/.test(new_user.password) && /[A-Z]/.test(new_user.password);
+    have_symbols = /[!@#$%^&*]/.test(new_user.password);
+    score = 0;
+    if (both_case) score++;
+    if (have_symbols) score++;
+    if (new_user.password.length >= 12) score += 2;
+    else if (new_user.password.length >= 6) score++;
   }
 
   async function register() {
@@ -65,18 +60,20 @@
     };
 
     try {
+      registering = true;
       const response = await fetch($server_url + "/auth/signup", request);
       console.log(response);
       if (!response.ok) {
         console.error("Network response was not ok");
         return;
       }
-      const data = await response.json();
-      console.log("Registration successful", data);
-      goto("/login");
+      return await response.json();
     } catch (error) {
-      console.error(error);
-      return;
+      throw new Error(
+        "An error occurred during registration. Please try again."
+      );
+    } finally {
+      registering = false;
     }
   }
 </script>
@@ -84,6 +81,19 @@
 <svelte:head>
   <title>Register</title>
 </svelte:head>
+
+{#if registering}
+  <div
+    class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
+  >
+    <div>
+      <Diamonds color={get_color_hex_code($theme_store.accentCurrentColor)} />
+    </div>
+    <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+      Signing you up...
+    </span>
+  </div>
+{/if}
 
 <div class="flex h-screen overflow-hidden">
   <div
@@ -101,17 +111,46 @@
   </div>
 
   <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-gray-700"
-    in:slide={{ delay: 300, duration: 500 }}
+    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-gray-700 mx-5"
   >
     <div
       class="flex flex-col items-center justify-center px-6 mx-auto py-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-accent-100"
-      in:fade={{ duration: 500 }}
     >
       <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
         Register
       </h2>
-      <form class="flex flex-col space-y-6" on:submit|preventDefault={register}>
+      <form
+        class="flex flex-col space-y-6"
+        on:submit|preventDefault={() => {
+          if (new_user.password !== confirm_password) return;
+          if (new_user.password.length < 6) return;
+          register()
+            .then((data) => {
+              console.log(data);
+              toast.push("Registration successful", {
+                theme: {
+                  "--toastBackground": "#D9EDBF",
+                  "--toastColor": "black",
+                },
+              });
+              goto("/login");
+            })
+            .catch((error) => {
+              console.error(error);
+              toast.push(
+                "An error occurred during registration. Please try again.",
+                {
+                  theme: {
+                    "--toastBackground": "#F28585",
+                    "--toastColor": "black",
+                    "--toastContainerLeft": "1rem",
+                    "--toastContainerBottom": "1rem",
+                  },
+                }
+              );
+            });
+        }}
+      >
         <div class="grid gap-6 pt-5 md:grid-cols-2">
           <div>
             <Label for="first_name" class="mb-2">First name</Label>
@@ -158,24 +197,34 @@
           <Input
             type="password"
             id="password"
-            placeholder="•••••••••"
             required
             bind:value={new_user.password}
           />
+          {#if new_user.password.length > 0 && new_user.password.length < 6}
+            <Helper class="mt-2" color="red">
+              Password must be of at least <span class="font-medium"
+                >6 characters</span
+              >
+            </Helper>
+          {/if}
         </div>
         <div class="mb-6">
           <Label for="confirm_password" class="mb-2">Confirm password</Label>
           <Input
             type="password"
             id="confirm_password"
-            placeholder="•••••••••"
             bind:value={confirm_password}
             required
           />
-          {#if show_mismatch_error}
+          {#if password_match === 1}
             <Helper class="mt-2" color="red">
               <span class="font-medium">Sorry!</span>
               Passwords do not match.
+            </Helper>
+          {:else if password_match === 2}
+            <Helper class="mt-2" color="green">
+              <span class="font-medium">Great!</span>
+              Passwords match.
             </Helper>
           {/if}
         </div>
@@ -186,14 +235,7 @@
             >terms and conditions</A
           >.
         </Checkbox>
-        <Button
-          class="w-3/4 mx-auto"
-          on:click={() => {
-            if (new_user.password !== confirm_password) return;
-            if (!check_password(new_user.password)) return;
-            register();
-          }}>Submit</Button
-        >
+        <Button type="submit" class="w-3/4 mx-auto">Submit</Button>
         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
           Already have an account? <A
             href="/login"
@@ -205,6 +247,49 @@
     </div>
   </div>
 </div>
+
+<Popover class="text-sm" triggeredBy="#password" placement="top">
+  <h3 class="font-semibold text-gray-900 dark:text-white">
+    Must have at least 6 characters
+  </h3>
+  <div class="grid grid-cols-4 gap-2">
+    <!-- score number of oranges -->
+    {#each Array(score) as _, i}
+      <div class="h-1 bg-orange-300 dark:bg-orange-400" />
+    {/each}
+    <!-- 4 - score number of grays -->
+    {#each Array(4 - score) as _, i}
+      <div class="h-1 bg-gray-200 dark:bg-gray-600" />
+    {/each}
+  </div>
+  <p class="py-2">It’s better to have:</p>
+  <ul>
+    <li class="flex items-center mb-1">
+      {#if both_case}
+        <CheckOutline class="me-2 w-4 h-4 text-green-400 dark:text-green-500" />
+      {:else}
+        <CloseOutline class="me-2 w-4 h-4 text-gray-300 dark:text-gray-400" />
+      {/if}
+      Upper &amp; lower case letters
+    </li>
+    <li class="flex items-center mb-1">
+      {#if have_symbols}
+        <CheckOutline class="me-2 w-4 h-4 text-green-400 dark:text-green-500" />
+      {:else}
+        <CloseOutline class="me-2 w-4 h-4 text-gray-300 dark:text-gray-400" />
+      {/if}
+      A symbol (#$&amp;)
+    </li>
+    <li class="flex items-center">
+      {#if new_user.password.length >= 12}
+        <CheckOutline class="me-2 w-4 h-4 text-green-400 dark:text-green-500" />
+      {:else}
+        <CloseOutline class="me-2 w-4 h-4 text-gray-300 dark:text-gray-400" />
+      {/if}
+      A longer password (min. 12 chars.)
+    </li>
+  </ul>
+</Popover>
 
 <style>
   .typewriter-text {
