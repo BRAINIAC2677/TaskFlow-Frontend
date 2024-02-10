@@ -28,7 +28,6 @@
     AngleLeftSolid,
     FileEditSolid,
   } from "flowbite-svelte-icons";
-
   let formModal = false;
 
   let hiddenSideBar = true;
@@ -156,12 +155,12 @@
               />
             </svelte:fragment>
             <!-- {#each recent_board_ids as id}
-              <SidebarDropdownItem
-                label="Board {id}"
-                target="_self"
-                href={`/boards/${id}`}
-              />
-            {/each} -->
+                <SidebarDropdownItem
+                  label="Board {id}"
+                  target="_self"
+                  href={`/boards/${id}`}
+                />
+              {/each} -->
           </SidebarDropdownWrapper>
           <SidebarDropdownWrapper label="Your Boards">
             <svelte:fragment slot="icon">
