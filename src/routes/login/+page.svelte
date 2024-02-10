@@ -78,6 +78,7 @@
           "--toastColor": "black",
         },
       });
+      show_toast = false;
     }
   }
 </script>
@@ -131,13 +132,13 @@
               required
             />
           </Label>
-          <!-- <div class="flex items-start">
+          <div class="flex items-start">
             <a
-              href="/"
+              href="/reset-password/recovery-mail"
               class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
               >Forgot password?</a
             >
-          </div> -->
+          </div>
           <Button class="w-full1" type="submit">Sign in</Button>
           <p class="text-sm font-light text-ink-light dark:text-ink-dark">
             Don’t have an account yet? <a

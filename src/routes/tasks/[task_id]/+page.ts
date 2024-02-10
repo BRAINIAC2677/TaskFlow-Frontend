@@ -9,7 +9,10 @@ let logged_in: boolean = false;
 is_logged_in.subscribe((value) => (logged_in = value));
 
 export function load({ params }) {
-  if (!logged_in) throw redirect(301, "/login");
+  if (!is_logged_in) {
+    console.log("redirecting to login");
+    throw redirect(301, "/login");
+  }
   const { task_id } = params;
   const task = dummy_tasks.find((task) => task.id === parseInt(task_id));
   if (task) {

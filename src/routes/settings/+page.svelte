@@ -90,6 +90,8 @@
       method: "POST",
       headers: headers,
       body: JSON.stringify({
+        email: $user_info_store.email,
+        type: "update",
         current_password: current_password,
         new_password: new_password,
       }),
