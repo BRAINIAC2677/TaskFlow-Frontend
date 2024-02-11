@@ -1,49 +1,72 @@
-<script>
-    let notifications = [
-      { id: 1, user: 'John Doe', message: 'liked your post.', profilePic: 'https://via.placeholder.com/50', link: '#', read: false },
-      { id: 2, user: 'Jane Smith', message: 'commented on your photo.', profilePic: 'https://via.placeholder.com/50', link: '#', read: true },
-      // Add more notifications as needed
-    ];
-  
-    const markAllAsRead = () => {
-      notifications = notifications.map(notification => ({ ...notification, read: true }));
-    };
-  </script>
-  
-  <div class="min-h-screen flex justify-center bg-gray-50 dark:bg-gray-900 p-4">
-    <div class="w-full max-w-md">
-      <div class="mb-4 flex justify-between items-center">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
-        <button
-          class="text-sm font-semibold py-2 px-4 rounded bg-blue-500 hover:bg-blue-600 text-white transition-colors"
-          on:click={markAllAsRead}>
-          Mark all as read
-        </button>
-      </div>
-      <div class="space-y-2">
-        {#each notifications as notification (notification.id)}
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <div
-            class="flex items-center p-4 bg-white dark:bg-gray-700 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
-            on:click={() => notification.read = true}>
-            <img class="w-10 h-10 rounded-full mr-3" src={notification.profilePic} alt="{notification.user}">
-            <div class="flex-1">
-              <a href={notification.link} class="{notification.read ? 'font-normal' : 'font-bold'} text-sm dark:text-white">{notification.user}</a>
-              <span class="{notification.read ? 'font-normal' : 'font-bold'} text-sm dark:text-gray-300"> {notification.message}</span>
-            </div>
-            {#if !notification.read}
-              <div class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200">
-                New
-              </div>
-            {/if}
-          </div>
-        {/each}
-      </div>
-    </div>
+<script lang="ts">
+  // Import the Tailwind CSS classes
+  import 'tailwindcss/tailwind.css';
+
+  // Sample data for notifications
+  let notifications = [
+    { id: 1, userName: 'Jane Doe', action: 'liked your post', message: 'Awesome work on your recent project!', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: false },
+    { id: 2, userName: 'John Smith', action: 'commented on your picture', message: 'Nice shot!', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: true },
+    { id: 3, userName: 'Alice Johnson', action: 'started following you', message: 'very good', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: false },
+    // ... more demo notifications
+  ];
+
+  // Function to mark all notifications as read
+  function markAllAsRead() {
+    notifications = notifications.map(n => ({ ...n, read: true }));
+  }
+
+  // Function to delete a notification
+  function deleteNotification(notificationId:any) {
+    notifications = notifications.filter(n => n.id !== notificationId);
+  }
+
+  // Function to delete all notifications
+  function deleteAllNotifications() {
+    notifications = [];
+  }
+</script>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-4">
+    <button
+      class="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded"
+      on:click={markAllAsRead}
+    >
+      Mark all as read
+    </button>
+    <button
+      class="bg-red-500 text-white hover:bg-red-600 py-2 px-4 rounded"
+      on:click={deleteAllNotifications}
+    >
+      Delete all
+    </button>
   </div>
-  
-  <style>
-    /* Additional custom styles if needed */
-  </style>
-  
+
+  <div class="space-y-4">
+    {#each notifications as notification}
+      <div class="flex items-center justify-between bg-white hover:bg-gray-100 p-4 rounded relative">
+        <img src={notification.userImage} alt="Profile" class="w-10 h-10 rounded-full">
+        <div class="flex-1 ml-4">
+          <p class={`font-semibold ${!notification.read ? 'font-bold' : ''}`}>
+            <a href="/user/{notification.userName}" class="hover:underline">{notification.userName}</a> {notification.action}
+          </p>
+          <p>{notification.message}</p>
+        </div>
+        {#if !notification.read}
+          <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 last:mr-0 mr-1">
+            New
+          </span>
+        {/if}
+        <button
+          class="absolute top-2 right-2"
+          on:click={() => deleteNotification(notification.id)}
+        >
+        
+          &#x2715;
+        </button>
+        <!-- Expand button logic to be implemented -->
+        <!-- <button class="absolute bottom-2 right-2">...</button> -->
+      </div>
+    {/each}
+  </div>
+</div>
