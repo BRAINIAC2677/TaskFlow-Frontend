@@ -8,13 +8,20 @@
   import server_url from "$lib/stores/server_store";
   import type { CalendarViewTask } from "$lib/interfaces/task";
   import { Toast, Spinner } from "flowbite-svelte";
+  import { toast } from "@zerodevx/svelte-toast";
 
-  let task_fetching: boolean = false;
+  let taskFetching: boolean = false;
   let ec: any;
 
-  async function update_task_time(
-    request_id: string,
-    task_id: string,
+  let titleMaxLength = 40;
+
+  function clipString(str: string, len: number): string {
+    return str.length > len ? str.substring(0, len) + "..." : str;
+  }
+
+  async function updateTaskTime(
+    requestID: string,
+    taskID: string,
     start: string,
     end: string
   ) {
@@ -29,8 +36,8 @@
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          request_id: request_id,
-          id: task_id,
+          request_id: requestID,
+          id: taskID,
           start: start,
           end: end,
         }),
@@ -42,24 +49,22 @@
       console.log("success", res);
       return res;
     } catch (error) {
-      console.error(request_id, "Error updating task time:", error);
+      console.error(requestID, "Error updating task time:", error);
       // need to restore the task to its original time
-      let update_info = task_update_queue.find(
-        (x) => x.requestID === request_id
-      );
-      if (update_info) {
-        let task: CalendarViewTask = ec.getEventById(update_info.id);
+      let updateInfo = taskUpdateQueue.find((x) => x.requestID === requestID);
+      if (updateInfo) {
+        let task: CalendarViewTask = ec.getEventById(updateInfo.id);
         if (task) {
-          task.start = update_info.oldStart;
-          task.end = update_info.oldEnd;
+          task.start = updateInfo.oldStart;
+          task.end = updateInfo.oldEnd;
         }
         ec.updateEvent(task);
       }
       throw error;
     } finally {
       // remove the request from the queue
-      task_update_queue = task_update_queue.filter(
-        (x) => x.requestID !== request_id
+      taskUpdateQueue = taskUpdateQueue.filter(
+        (x) => x.requestID !== requestID
       );
     }
   }
@@ -75,6 +80,7 @@
   interface TaskUpdateInfo {
     requestID: string;
     id: string;
+    title: string;
     oldStart: string;
     oldEnd: string;
     newStart: string;
@@ -82,7 +88,7 @@
     handled: boolean;
   }
 
-  let task_update_queue: TaskUpdateInfo[] = [];
+  let taskUpdateQueue: TaskUpdateInfo[] = [];
 
   let plugins = [TimeGrid, DayGrid, List, ResourceTimeGrid, Interaction];
   let options = {
@@ -110,54 +116,114 @@
     },
     eventDrop: function (info: any) {
       console.log("drag & drop", info.event);
-      let request_id: number =
-        task_update_queue.length > 0
-          ? Math.max(...task_update_queue.map((x) => parseInt(x.requestID))) + 1
+      let requestID: number =
+        taskUpdateQueue.length > 0
+          ? Math.max(...taskUpdateQueue.map((x) => parseInt(x.requestID))) + 1
           : 1;
-      task_update_queue.push({
-        requestID: request_id.toString(),
+      taskUpdateQueue.push({
+        requestID: requestID.toString(),
         id: info.event.id,
+        title: info.event.title,
         oldStart: info.oldEvent.start.toISOString(),
         oldEnd: info.oldEvent.end.toISOString(),
         newStart: info.event.start.toISOString(),
         newEnd: info.event.end.toISOString(),
         handled: false,
       });
-      update_task_time(
-        request_id.toString(),
+      updateTaskTime(
+        requestID.toString(),
         info.event.id,
         info.event.start.toISOString(),
         info.event.end.toISOString()
-      );
+      )
+        .then((res) => {
+          console.log(info.event.title);
+          toast.push(
+            `Timeline shifting successful for \"<strong>${clipString(
+              info.event.title,
+              titleMaxLength
+            )}</strong>\"`,
+            {
+              theme: {
+                "--toastBackground": "#4caf50",
+                "--toastProgressBackground": "#2e7d32",
+              },
+            }
+          );
+        })
+        .catch((error) => {
+          toast.push(
+            `Error shifting timeline for \"<strong>${clipString(
+              info.event.title,
+              titleMaxLength
+            )}</strong>\"`,
+            {
+              theme: {
+                "--toastBackground": "#f44336",
+                "--toastProgressBackground": "#c62828",
+              },
+            }
+          );
+        });
     },
     eventResize: function (info: any) {
       console.log("resize", info.event);
-      let request_id: number =
-        task_update_queue.length > 0
-          ? Math.max(...task_update_queue.map((x) => parseInt(x.requestID))) + 1
+      let requestID: number =
+        taskUpdateQueue.length > 0
+          ? Math.max(...taskUpdateQueue.map((x) => parseInt(x.requestID))) + 1
           : 1;
-      task_update_queue.push({
-        requestID: request_id.toString(),
+      taskUpdateQueue.push({
+        requestID: requestID.toString(),
         id: info.event.id,
+        title: info.event.title,
         oldStart: info.oldEvent.start.toISOString(),
         oldEnd: info.oldEvent.end.toISOString(),
         newStart: info.event.start.toISOString(),
         newEnd: info.event.end.toISOString(),
         handled: false,
       });
-      update_task_time(
-        request_id.toString(),
+      updateTaskTime(
+        requestID.toString(),
         info.event.id,
         info.event.start.toISOString(),
         info.event.end.toISOString()
-      );
+      )
+        .then((res) => {
+          console.log(info.event.title);
+          toast.push(
+            `Timeline extension successful for \"<strong>${clipString(
+              info.event.title,
+              titleMaxLength
+            )}</strong>\"`,
+            {
+              theme: {
+                "--toastBackground": "#4caf50",
+                "--toastProgressBackground": "#2e7d32",
+              },
+            }
+          );
+        })
+        .catch((error) => {
+          toast.push(
+            `Error extending timeline for \"<strong>${clipString(
+              info.event.title,
+              titleMaxLength
+            )}</strong>\"`,
+            {
+              theme: {
+                "--toastBackground": "#f44336",
+                "--toastProgressBackground": "#c62828",
+              },
+            }
+          );
+        });
     },
     firstDay: 6, // Saturday
     pointer: true,
     nowIndicator: true,
     selectable: true,
     loading: function (isLoading: boolean) {
-      task_fetching = isLoading;
+      taskFetching = isLoading;
     },
     eventSources: [
       {
@@ -228,7 +294,7 @@
     <Calendar bind:this={ec} {plugins} {options} />
   </p>
 
-  {#if task_fetching}
+  {#if taskFetching}
     <Toast
       divClass="fixed bottom-5 z-10 right-5 w-full max-w-xs p-4 bg-accent-200 text-ink-light dark:ink-dark shadow dark:bg-gray-800 gap-3 font-bold"
     >
