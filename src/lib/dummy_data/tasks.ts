@@ -9,7 +9,7 @@ export const dummy_tasks: Task[] = [
     start_time: new Date("2023-12-30T08:00:00"),
     due_time: new Date("2023-12-31T16:30:00"),
     label: Label.Work,
-    cover_photo_link: "https://source.unsplash.com/400x300/?work",
+    cover_photo_link: "https://images.unsplash.com/photo-1707343848723-bd87dea7b118?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     color: "#FF0000",
     status: Status.InProgress,
     checklist_items: [
@@ -24,7 +24,7 @@ export const dummy_tasks: Task[] = [
     start_time: new Date("2024-01-14T10:00:00"),
     due_time: new Date("2024-01-15T14:45:00"),
     label: Label.Personal,
-    cover_photo_link: "https://source.unsplash.com/400x300/?personal",
+    cover_photo_link: "https://images.unsplash.com/photo-1707090804388-7e9d7c6d6ab5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8fA%3D%3D",
     color: "#008000",
     status: Status.Completed,
     checklist_items: [
@@ -39,7 +39,7 @@ export const dummy_tasks: Task[] = [
     start_time: new Date("2024-02-27T09:30:00"),
     due_time: new Date("2024-02-28T18:00:00"),
     label: Label.Study,
-    cover_photo_link: "https://source.unsplash.com/400x300/?study",
+    cover_photo_link: "https://images.unsplash.com/photo-1707161692345-8e4684a77d8c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyNHx8fGVufDB8fHx8fA%3D%3D",
     color: "#0000FF",
     status: Status.NotStarted,
     checklist_items: [
@@ -54,7 +54,7 @@ export const dummy_tasks: Task[] = [
     start_time: new Date("2024-03-14T11:45:00"),
     due_time: new Date("2024-03-15T17:15:00"),
     label: Label.Work,
-    cover_photo_link: "https://source.unsplash.com/400x300/?work",
+    cover_photo_link: "https://plus.unsplash.com/premium_photo-1706625697966-54149c20c862?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzMnx8fGVufDB8fHx8fA%3D%3D",
     color: "#FF8000",
     status: Status.InProgress,
     checklist_items: [
