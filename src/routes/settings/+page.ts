@@ -8,5 +8,5 @@ let logged_in: boolean = false;
 is_logged_in.subscribe((value) => (logged_in = value));
 
 export const load: PageLoad = async () => {
-  if (!logged_in) throw redirect(301, "/login");
+  if (!is_logged_in) throw redirect(301, "/login");
 };

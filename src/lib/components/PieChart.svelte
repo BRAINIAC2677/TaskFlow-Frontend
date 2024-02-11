@@ -21,6 +21,6 @@
   };
 </script>
 
-<div class="p-4 bg-accent-100 dark:bg-accent-700 rounded shadow-xl">
+<div class="p-4 bg-accent-100 dark:bg-accent-700 rounded-lg shadow-xl">
   <Pie {data} {options} />
 </div>

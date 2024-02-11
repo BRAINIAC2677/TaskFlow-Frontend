@@ -7,6 +7,7 @@
   import type { BoardCreationInfo } from "$lib/interfaces/board";
   import server_url from "$lib/stores/server_store";
   import type { UserMemberInfo } from "$lib/interfaces/user";
+  import { toast } from "@zerodevx/svelte-toast";
   import {
     Drawer,
     Button,
@@ -156,105 +157,129 @@
   {transitionParams}
   bind:hidden
   id="sidebar4"
-  class="w-96 bg-accent-50 dark:bg-gray-900"
+  class="w-96 bg-accent-50 dark:bg-gray-900 h-screen"
 >
-  <div class="flex items-center max-h-screen">
-    <h5
-      id="drawer-label"
-      class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
-    >
-      <InfoCircleSolid class="w-4 h-4 me-2.5" />New Board
-    </h5>
-    <CloseButton
-      on:click={() => (hidden = true)}
-      class="mb-4 dark:text-white"
-    />
-  </div>
-  <form class="mb-6">
-    <div class="mb-6">
-      <Label for="title" class="block mb-2">Board Name</Label>
-      <Input
-        id="title"
-        name="title"
-        required
-        placeholder="Board Name"
-        bind:value={board_creation_info.board_name}
+  <div class="flex flex-col h-full">
+    <div class="flex justify-between items-center max-h-screen">
+      <h5
+        id="drawer-label"
+        class="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+      >
+        <InfoCircleSolid class="w-4 h-4 me-2.5" />New Board
+      </h5>
+      <CloseButton
+        on:click={() => (hidden = true)}
+        class="mb-4 dark:text-white"
       />
     </div>
-    <div class="mb-6">
-      <Label for="description" class="mb-2">Description</Label>
-      <Textarea
-        id="message"
-        placeholder="Write board description..."
-        rows="4"
-        name="message"
-        bind:value={board_creation_info.board_description}
-      />
-    </div>
-    <div class="mb-6">
-      <Label for="due-time" class="mb-2">Deadline</Label>
-      <Input
-        id="datetime"
-        name="date"
-        required
-        type="datetime-local"
-        bind:value={board_creation_info.board_deadline}
-      />
-      {#if board_creation_info.board_deadline.length > 0 && !deadline_ok}
-        <Helper class="mt-2" color="red">
-          <span class="font-medium">Deadline must be in the future</span>
-        </Helper>
-      {/if}
-    </div>
-    <div class="mb-4">
-      <Label for="members" class="mb-2">Add Members</Label>
-      <Autocomplete
-        bind:loading={users_loading}
-        bind:suggestions
-        bind:searchTerm={search_term}
-        on:select={(e) => {
-          let user = retrieved_users.find((user) => user.id === e.detail.index);
-          if (user) {
-            selected_users = [
-              ...selected_users,
-              {
-                user_id: user.id,
-                full_name: user.full_name,
-                username: user.username,
-                role: 3,
-                dp_url: user.dp_url,
-              },
-            ];
-          }
-          search_term = "";
-          retrieved_users = retrieved_users.filter((user) => {
-            return user.id !== e.detail.index;
-          });
-        }}
-      />
-    </div>
-    {#if selected_users.length > 0}
-      <ScrollableUserList bind:users={selected_users} />
-    {/if}
-    <Button
-      type="submit"
-      class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex w-40 mx-auto bg-accent-700 hover:bg-accent-800"
-      on:click={() => {
+    <form
+      class="flex flex-col h-full"
+      on:submit|preventDefault={() => {
         if (!deadline_ok) return;
         get_final_input();
         createBoard()
           .then((res) => {
             console.log(res);
+            toast.push("Board created successfully!", {
+              theme: {
+                "--toastBackground": "#D9EDBF",
+                "--toastColor": "black",
+                "--toastContainerLeft": "1rem",
+                "--toastContainerBottom": "1rem",
+              },
+            });
           })
           .catch((err) => {
             console.error(err);
+            toast.push("An error occurred while creating the board", {
+              theme: {
+                "--toastBackground": "#F28585",
+                "--toastColor": "black",
+                "--toastContainerLeft": "1rem",
+                "--toastContainerBottom": "1rem",
+              },
+            });
           })
           .finally(() => {
             hidden = true;
           });
       }}
     >
-      <CalendarEditSolid class="w-3.5 h-3.5 me-2.5 text-white" /> Create Board
-    </Button>
-  </form>
+      <div class="overflow-y-auto flex-grow">
+        <div class="mb-6">
+          <Label for="title" class="block mb-2">Board Name</Label>
+          <Input
+            id="title"
+            name="title"
+            required
+            placeholder="Board Name"
+            bind:value={board_creation_info.board_name}
+          />
+        </div>
+        <div class="mb-6">
+          <Label for="description" class="mb-2">Description</Label>
+          <Textarea
+            id="message"
+            placeholder="Write board description..."
+            rows="4"
+            name="message"
+            bind:value={board_creation_info.board_description}
+          />
+        </div>
+        <div class="mb-6">
+          <Label for="due-time" class="mb-2">Deadline</Label>
+          <Input
+            id="datetime"
+            name="date"
+            required
+            type="datetime-local"
+            bind:value={board_creation_info.board_deadline}
+          />
+          {#if board_creation_info.board_deadline.length > 0 && !deadline_ok}
+            <Helper class="mt-2" color="red">
+              <span class="font-medium">Deadline must be in the future</span>
+            </Helper>
+          {/if}
+        </div>
+        <div class="mb-4 z-5">
+          <Label for="members" class="mb-2">Add Members</Label>
+          <Autocomplete
+            bind:loading={users_loading}
+            bind:suggestions
+            bind:searchTerm={search_term}
+            on:select={(e) => {
+              let user = retrieved_users.find(
+                (user) => user.id === e.detail.index
+              );
+              if (user) {
+                selected_users = [
+                  ...selected_users,
+                  {
+                    user_id: user.id,
+                    full_name: user.full_name,
+                    username: user.username,
+                    role: 3,
+                    dp_url: user.dp_url,
+                  },
+                ];
+              }
+              search_term = "";
+              retrieved_users = retrieved_users.filter((user) => {
+                return user.id !== e.detail.index;
+              });
+            }}
+          />
+        </div>
+        {#if selected_users.length > 0}
+          <ScrollableUserList bind:users={selected_users} />
+        {/if}
+      </div>
+      <Button
+        type="submit"
+        class="my-3 w-full bg-accent-700 hover:bg-accent-800 w-2/3 mx-auto"
+      >
+        <CalendarEditSolid class="w-3.5 h-3.5 me-2.5 text-white" /> Create Board
+      </Button>
+    </form>
+  </div>
 </Drawer>
