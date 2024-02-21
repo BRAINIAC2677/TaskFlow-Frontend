@@ -21,7 +21,7 @@
 
     try {
       const response = await fetch(
-        $server_url + "/task/dashboard-stuff",
+        $server_url + "/insight/dashboard-stuff",
         request
       );
       if (!response.ok) {
@@ -91,7 +91,7 @@
         {dashboardStuffs.totalCompletedTasks}/{dashboardStuffs.totalTasks} Tasks
       </p>
       <p class="text-accent-600 dark:text-accent-200">
-        {dashboardStuffs.totalTasks === 0
+        {dashboardStuffs.totalTasks == 0
           ? "No tasks available"
           : `${Math.floor(
               (dashboardStuffs.totalCompletedTasks /
