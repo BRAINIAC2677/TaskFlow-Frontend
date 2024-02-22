@@ -1,4 +1,5 @@
 <script lang="ts">
+  import server_url from "$lib/stores/server_store";
   import InsightOverview from "../../lib/components/InsightOverview.svelte";
   import LineChart from "../../lib/components/LineChart.svelte";
   import PieChart from "../../lib/components/PieChart.svelte";
@@ -6,6 +7,75 @@
   import HeatMap from "../../lib/components/HeatMap.svelte";
 
   import { heatmapData } from "$lib/dummy_data/heatmap";
+  import { onMount } from "svelte";
+
+  // Weekly Task Completion Stats : Line Chart
+  let weekly_task_fetching: boolean = false;
+  let linechart_title: string = "Progress Over Time";
+  let linechart_data: any = {
+    labels: [],
+    datasets: [
+      {
+        label: "Weekly Task Completion",
+        data: [],
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  async function fetchWeeklyTaskCompletion() {
+    const token: string = localStorage.getItem("access_token") || "";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    const request = {
+      method: "GET",
+      headers: headers,
+    };
+
+    try {
+      const response = await fetch(
+        $server_url + "/insight/weekly-task-completion",
+        request
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  onMount(() => {
+    try {
+      weekly_task_fetching = true;
+      const res = fetchWeeklyTaskCompletion();
+
+      res.then(
+        (data) => {
+          data.weekly_data.forEach((element: any) => {
+            linechart_data.labels.push(element.label);
+            linechart_data.datasets[0].data.push(element.completed_task_count);
+          });
+          linechart_data = { ...linechart_data };
+          console.log("Line Chart Data:", linechart_data);
+        },
+        (error) => {
+          console.error("Error:", error);
+        }
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      weekly_task_fetching = false;
+    }
+  });
 
   let barchart_x = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   let barchart_y = [12, 19, 3, 5, 2, 3, 10];
@@ -60,45 +130,6 @@
       },
     ],
   };
-
-  let linechart_title = "Progress Over Time";
-  let linechart_data = {
-    labels: [
-      "Jan W1",
-      "Jan W2",
-      "Jan W3",
-      "Jan W4",
-      "Feb W1",
-      "Feb W2",
-      "Feb W3",
-      "Feb W4",
-      "Mar W1",
-      "Mar W2",
-      "Mar W3",
-      "Mar W4",
-      "Apr W1",
-      "Apr W2",
-      "Apr W3",
-      "Apr W4",
-      "May W1",
-      "May W2",
-      "May W3",
-      "May W4",
-      "Jun W1",
-      "Jun W2",
-      "Jun W3",
-      "Jun W4",
-    ],
-    datasets: [
-      {
-        label: "Weekly Task Completion",
-        data: Array.from({ length: 24 }, () => Math.floor(Math.random() * 5)),
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
-      },
-    ],
-  };
 </script>
 
 <svelte:head>
@@ -111,7 +142,11 @@
   </div>
 
   <div class="mt-32 chart-container">
-    <LineChart title={linechart_title} data={linechart_data} />
+    <LineChart
+      bind:title={linechart_title}
+      bind:data={linechart_data}
+      bind:loading={weekly_task_fetching}
+    />
   </div>
 
   <div class="flex justify-between w-full mt-32">

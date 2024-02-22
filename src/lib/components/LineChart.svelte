@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Line } from "svelte-chartjs";
-  import Chart from "chart.js/auto";
+  import Chart from "chart.js/auto"; // removing this actually causes issues
   export let data: any;
   export let title: string;
+  export let loading: boolean = false;
 
   let options = {
     plugins: {
