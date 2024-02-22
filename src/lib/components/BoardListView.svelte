@@ -86,7 +86,7 @@
                         <tr>
                             <a href="/boards/{board.board_id}">
                                 <td
-                                    class="px-4 py-4 whitespace-nowrap hover:text-blue-500"
+                                    class="px-4 py-4 whitespace-nowrap hover:text-accent-50"
                                     >{board.board_name}</td
                                 >
                             </a>
