@@ -8,11 +8,11 @@ export function get_color_hex_code(color_name: string): string {
     case "green":
       return "#00FF00";
     case "blue":
-      return "#0000FF";
+      return "#3b82f6";
     case "yellow":
-      return "#FFFF00";
+      return "#facc15";
     case "orange":
-      return "#FFA500";
+      return "#ea580c";
     default:
       return "#000000";
   }
