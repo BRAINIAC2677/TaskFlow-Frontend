@@ -24,17 +24,17 @@
 </script>
 
 <div
-    class="details-section bg-accent-100 dark:bg-accent-900 p-4 rounded-lg shadow"
+    class="p-4 rounded-lg shadow details-section bg-accent-100 dark:bg-accent-900"
 >
     {#if loading}
-        <div class="flex justify-center items-center h-screen flex-col my-auto">
+        <div class="flex flex-col items-center justify-center h-screen my-auto">
             <Pulse size="3" color={spinner_color} unit="cm" duration="1s" />
-            <div class="ml-4 text-2xl font-bold tracking-wider pt-5">
+            <div class="pt-5 ml-4 text-2xl font-bold tracking-wider">
                 Loading Your Boards...
             </div>
         </div>
     {:else}
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold">Your Boards</h2>
             <div class="flex space-x-2">
                 <!-- Filter dropdowns or sorting controls can be added here -->
@@ -58,29 +58,29 @@
                 <thead>
                     <tr>
                         <th
-                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            class="px-4 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
                             >Board</th
                         >
                         <th
-                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            class="px-4 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
                             >Owner</th
                         >
                         <th
-                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            class="px-4 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
                             >Due Date</th
                         >
                         <th
-                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            class="px-4 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
                             >Status</th
                         >
                         <th
-                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            class="px-4 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
                             >Progress</th
                         >
                     </tr>
                 </thead>
                 <tbody
-                    class="bg-accent-100 dark:bg-accent-900 divide-y divide-accent-50"
+                    class="divide-y bg-accent-100 dark:bg-accent-900 divide-accent-50"
                 >
                     {#each showable_boards as board}
                         <tr>
@@ -102,19 +102,19 @@
                             <td class="px-4 py-4 whitespace-nowrap">
                                 {#if board.status === "In Progress"}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-yellow-300 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
+                                        class="inline-flex px-2 text-xs font-bold leading-5 text-yellow-800 bg-yellow-300 rounded-full dark:bg-blue-500 dark:text-blue-50"
                                     >
                                         In Progress
                                     </span>
                                 {:else if board.status === "Completed"}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-300 text-green-800 dark:bg-green-500 dark:text-green-50"
+                                        class="inline-flex px-2 text-xs font-bold leading-5 text-green-800 bg-green-300 rounded-full dark:bg-green-500 dark:text-green-50"
                                     >
                                         Completed
                                     </span>
                                 {:else if board.status === "Not Started"}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-red-300 text-red-800 dark:bg-red-500 dark:text-red-50"
+                                        class="inline-flex px-2 text-xs font-bold leading-5 text-red-800 bg-red-300 rounded-full dark:bg-red-500 dark:text-red-50"
                                     >
                                         Not Started
                                     </span>
@@ -123,21 +123,21 @@
                             <td class="px-4 py-4 whitespace-nowrap">
                                 {#if board.progress === 0}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-red-800"
+                                        class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 rounded-full"
                                         style="width: {board.progress}%"
                                     >
                                         {board.progress}%
                                     </span>
                                 {:else if board.progress < 100}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-300 text-yellow-800 dark:bg-blue-500 dark:text-blue-50"
+                                        class="inline-flex px-2 text-xs font-semibold leading-5 text-yellow-800 bg-yellow-300 rounded-full dark:bg-blue-500 dark:text-blue-50"
                                         style="width: {board.progress}%"
                                     >
                                         {board.progress}%
                                     </span>
                                 {:else}
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-green-50"
+                                        class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full dark:bg-green-500 dark:text-green-50"
                                         style="width: {board.progress}%"
                                     >
                                         {board.progress}%
