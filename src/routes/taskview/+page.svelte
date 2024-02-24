@@ -286,7 +286,7 @@
 </svelte:head>
 
 <div
-  class="px-20 py-3 bg-accent-50 dark:bg-accent-700 rounded-lg shadow-md dark:bg-gray-800 min-h-screen"
+  class="px-20 py-3 bg-accent-100 dark:bg-accent-700 rounded-lg shadow-md dark:bg-gray-800 min-h-screen"
 >
   <h1 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">Tasks</h1>
   <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">

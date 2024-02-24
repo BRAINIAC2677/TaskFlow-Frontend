@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 import { readable } from "svelte/store";
 
+// used for spinners mainly
 export function get_color_hex_code(color_name: string): string {
   switch (color_name) {
     case "red":
@@ -8,11 +9,11 @@ export function get_color_hex_code(color_name: string): string {
     case "green":
       return "#00FF00";
     case "blue":
-      return "#3b82f6";
+      return "#50C4ED";
     case "yellow":
-      return "#facc15";
+      return "#FAEF5D";
     case "orange":
-      return "#ea580c";
+      return "#FBA834";
     default:
       return "#000000";
   }

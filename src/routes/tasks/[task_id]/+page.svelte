@@ -1,27 +1,78 @@
 <script lang="ts">
-  import type { Task } from "$lib/interfaces/task";
-  import { Label } from "$lib/interfaces/task";
-  import { Circle } from "svelte-loading-spinners";
-  import { user_info_store } from "$lib/stores/user_store";
+  import { onMount } from "svelte";
+  import server_url from "$lib/stores/server_store";
   import ChatWindow from "$lib/components/ChatWindow.svelte";
+  import { page } from "$app/stores";
+  import type { Task } from "$lib/interfaces/task";
 
-  export let data: any;
+  let task_id: number = Number($page.params.task_id);
 
-  let task: Task = data.task;
-  let img_loaded: boolean = false;
+  async function getTaskDetail() {
+    const token = localStorage.getItem("access_token") || "";
 
-  let task_id = task.id;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
 
-  let new_checklist_item: { name: string; is_checked: boolean } = {
+    const request = {
+      method: "GET",
+      headers,
+    };
+
+    console.log("task_id", $page.params.task_id);
+
+    try {
+      const response = await fetch(
+        $server_url + "/task/get-detail/" + $page.params.task_id,
+        request
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        return data;
+      } else {
+        console.log("Error fetching task detail");
+      }
+    } catch (error) {
+      console.log("Error fetching task detail");
+    }
+  }
+
+  let task: Task = {
+    id: 0,
     name: "",
-    is_checked: false,
+    description: "",
+    start_time: new Date(),
+    due_time: new Date(),
+    labels: [],
+    label_color: "#000000",
+    checklist_items: [],
   };
 
-  function upload_cover_photo(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const file: File = (target.files as FileList)[0];
-    console.log(file);
-  }
+  onMount(async () => {
+    try {
+      console.log("Fetching task detail");
+      const data = await getTaskDetail();
+      console.log(data);
+      task = data;
+      console.log(task);
+    } catch (error) {
+      console.log("Error fetching task detail");
+    } finally {
+      console.log("Task detail fetched");
+    }
+  });
+
+  let new_checklist_item: {
+    item_id: number;
+    item_name: string;
+    is_completed: boolean;
+  } = {
+    item_id: 0,
+    item_name: "",
+    is_completed: false,
+  };
 
   // Dragging
   let start_x: number;
@@ -74,14 +125,12 @@
 </svelte:head>
 
 <div class="flex flex-wrap min-h-screen md:flex-nowrap">
-  <!-- Left side: Task Detail Editing -->
   <div
     bind:this={left_panel}
     class="flex flex-col p-4 bg-accent-50 dark:bg-accent-700"
     style="width: 35%"
   >
     <div class="flex flex-col gap-10 lg:flex-row">
-      <!-- Task Details Section -->
       <div
         class="w-full max-w-xl p-6 mx-auto rounded-lg shadow-lg bg-accent-100 lg:w-2/3"
       >
@@ -89,53 +138,19 @@
           {task.name}
         </h2>
 
-        <!-- Cover Photo -->
-        <div class="mb-4">
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold text-gray-700">Cover Photo</label>
-
-          {#if !img_loaded}
-            <div
-              class="flex flex-col items-center justify-center h-auto my-auto"
-            >
-              <Circle size="3" color="#000000" unit="cm" duration="1s" />
-            </div>
-          {/if}
-          <!-- svelte-ignore a11y-img-redundant-alt -->
-          <img
-            src={task.cover_photo_link}
-            alt="Uploaded Photo"
-            class={img_loaded ? "mt-4 w-full h-auto" : "hidden"}
-            on:load={() => {
-              img_loaded = true;
-            }}
-            on:error={() => {
-              img_loaded = false;
-            }}
-          />
-          <input
-            type="file"
-            class="block w-full mt-3"
-            on:change={upload_cover_photo}
-          />
-          <!-- Conditional display of uploaded image -->
-        </div>
-
-        <!-- Color -->
         <div class="mb-4">
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="font-bold text-gray-700">Label Color</label>
           <input
             type="color"
             class="block w-full mt-1"
-            bind:value={task.color}
+            bind:value={task.label_color}
             on:change={() => {
-              console.log(task.color);
+              console.log(task.label_color);
             }}
           />
         </div>
 
-        <!-- Start Date and Time -->
         <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div>
             <label class="font-bold text-gray-700" for="start-date"
@@ -173,7 +188,6 @@
           </div>
         </div>
 
-        <!-- Due Date and Time -->
         <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div>
             <label class="font-bold text-gray-700" for="due-date"
@@ -211,21 +225,6 @@
           </div>
         </div>
 
-        <!-- Label -->
-        <div class="mb-4">
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold text-gray-700">Label</label>
-          <select
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            bind:value={task.label}
-          >
-            {#each Object.values(Label) as label}
-              <option value={label}>{label}</option>
-            {/each}
-          </select>
-        </div>
-
-        <!-- Checklist -->
         <div class="mb-4">
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="font-bold text-gray-700">Checklist</label>
@@ -235,9 +234,9 @@
                 <input
                   type="checkbox"
                   class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  bind:checked={item.is_checked}
+                  bind:checked={item.is_completed}
                 />
-                <span class="ml-2 text-gray-700">{item.name}</span>
+                <span class="ml-2 text-gray-700">{item.item_name}</span>
               </div>
             {/each}
           </div>
@@ -246,17 +245,18 @@
               type="text"
               class="flex-1 mr-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               placeholder="Add a new item"
-              bind:value={new_checklist_item.name}
+              bind:value={new_checklist_item.item_name}
             />
             <button
               class="w-20 h-10 px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
               on:click={() => {
-                if (new_checklist_item.name.trim() === "") return;
+                if (new_checklist_item.item_name.trim() === "") return;
                 task.checklist_items.push(new_checklist_item);
                 task.checklist_items = task.checklist_items;
                 new_checklist_item = {
-                  name: "",
-                  is_checked: false,
+                  item_name: "",
+                  is_completed: false,
+                  item_id: 0,
                 };
               }}
             >
@@ -268,7 +268,6 @@
     </div>
   </div>
 
-  <!-- Draggable Divider -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="p-1 cursor-col-resize bg-accent-300 dark:bg-accent-500"
