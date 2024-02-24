@@ -129,10 +129,7 @@
     text_color = get_contrast_YIQ(task.task_label_color);
 </script>
 
-<div
-    class="p-2 rounded cursor-pointer bg-accent-200 dark:bg-accent-700 dark:text-gray-300"
-    style="background-color : {task.task_label_color}; color : {text_color}"
->
+<div class="p-2 rounded cursor-pointer bg-accent-50 text-accent-900">
     <a target="_self" href={"/tasks/" + task.task_id}>
         <div class="font-bold text-md">{task.task_name}</div>
         <div>Due Date: {showable_date(task.task_deadline)}</div>

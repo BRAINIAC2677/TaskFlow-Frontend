@@ -83,23 +83,23 @@
 
 {#if logging_out}
     <div
-        class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
+        class="fixed inset-0 flex flex-col items-center justify-center min-w-full min-h-full bg-gray-900 bg-opacity-50"
     >
         <div>
             <Shadow
                 color={get_color_hex_code($theme_store.accentCurrentColor)}
             />
         </div>
-        <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+        <span class="mt-4 text-3xl font-bold tracking-wider text-white">
             Signing you out...
         </span>
     </div>
 {/if}
 
 <div
-    class="text-ink-light dark:text-ink-dark bg-accent-50 dark:bg-accent-900 min-h-screen pb-5"
+    class="min-h-screen pb-5 text-ink-light dark:text-ink-dark bg-accent-100 dark:bg-accent-900"
 >
-    <Navbar class="dark:bg-accent-900 bg-accent-200 py-0">
+    <Navbar class="py-0 dark:bg-accent-900 bg-accent-100">
         <NavBrand href="/">
             <span
                 class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
@@ -171,7 +171,7 @@
                     id="theme-menu"
                     src={PaintBrush}
                     size="sm"
-                    class="rounded-sm bg-gray-300 hover:cursor-pointer dark:bg-gray-100"
+                    class="bg-gray-300 rounded-sm hover:cursor-pointer dark:bg-gray-100"
                 />
                 <Dropdown placement="bottom" triggeredBy="#theme-menu">
                     <DropdownHeader>
