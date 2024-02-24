@@ -13,16 +13,16 @@
     import server_url from "$lib/stores/server_store";
     import type { CalendarViewTask } from "$lib/interfaces/task";
 
-    let taskFetching: boolean = false;
     let ec: any;
+    let task_fetching: boolean = false;
+    let title_max_length: number = 40;
+    let task_update_queue: TaskUpdateInfo[] = [];
 
-    let titleMaxLength = 40;
-
-    function clipString(str: string, len: number): string {
+    function clip_string(str: string, len: number): string {
         return str.length > len ? str.substring(0, len) + "..." : str;
     }
 
-    async function updateTaskTime(
+    async function update_task_time(
         requestID: string,
         taskID: string,
         start: string,
@@ -54,7 +54,7 @@
         } catch (error) {
             console.error(requestID, "Error updating task time:", error);
             // need to restore the task to its original time
-            let updateInfo = taskUpdateQueue.find(
+            let updateInfo = task_update_queue.find(
                 (x) => x.requestID === requestID,
             );
             if (updateInfo) {
@@ -68,36 +68,15 @@
             throw error;
         } finally {
             // remove the request from the queue
-            taskUpdateQueue = taskUpdateQueue.filter(
+            task_update_queue = task_update_queue.filter(
                 (x) => x.requestID !== requestID,
             );
         }
     }
 
-    // interfaces for fetching tasks
-    interface FetchInfo {
-        startStr: string;
-        endStr: string;
-        start: Date;
-        end: Date;
-    }
-
-    interface TaskUpdateInfo {
-        requestID: string;
-        id: string;
-        title: string;
-        oldStart: string;
-        oldEnd: string;
-        newStart: string;
-        newEnd: string;
-        handled: boolean;
-    }
-
-    let taskUpdateQueue: TaskUpdateInfo[] = [];
-
     let plugins = [TimeGrid, DayGrid, List, ResourceTimeGrid, Interaction];
     let options = {
-        allDaySlot: true, // default true anyway
+        allDaySlot: true,
         editable: true,
         dragScroll: true,
         view: "dayGridMonth",
@@ -153,12 +132,14 @@
         eventDrop: function (info: any) {
             console.log("drag & drop", info.event);
             let requestID: number =
-                taskUpdateQueue.length > 0
+                task_update_queue.length > 0
                     ? Math.max(
-                          ...taskUpdateQueue.map((x) => parseInt(x.requestID)),
+                          ...task_update_queue.map((x) =>
+                              parseInt(x.requestID),
+                          ),
                       ) + 1
                     : 1;
-            taskUpdateQueue.push({
+            task_update_queue.push({
                 requestID: requestID.toString(),
                 id: info.event.id,
                 title: info.event.title,
@@ -168,7 +149,7 @@
                 newEnd: info.event.end.toISOString(),
                 handled: false,
             });
-            updateTaskTime(
+            update_task_time(
                 requestID.toString(),
                 info.event.id,
                 info.event.start.toISOString(),
@@ -177,9 +158,9 @@
                 .then((res) => {
                     console.log(info.event.title);
                     toast.push(
-                        `Timeline shifting successful for \"<strong>${clipString(
+                        `Timeline shifting successful for \"<strong>${clip_string(
                             info.event.title,
-                            titleMaxLength,
+                            title_max_length,
                         )}</strong>\"`,
                         {
                             theme: {
@@ -192,9 +173,9 @@
                 })
                 .catch((error) => {
                     toast.push(
-                        `Error shifting timeline for \"<strong>${clipString(
+                        `Error shifting timeline for \"<strong>${clip_string(
                             info.event.title,
-                            titleMaxLength,
+                            title_max_length,
                         )}</strong>\"`,
                         {
                             theme: {
@@ -209,12 +190,14 @@
         eventResize: function (info: any) {
             console.log("resize", info.event);
             let requestID: number =
-                taskUpdateQueue.length > 0
+                task_update_queue.length > 0
                     ? Math.max(
-                          ...taskUpdateQueue.map((x) => parseInt(x.requestID)),
+                          ...task_update_queue.map((x) =>
+                              parseInt(x.requestID),
+                          ),
                       ) + 1
                     : 1;
-            taskUpdateQueue.push({
+            task_update_queue.push({
                 requestID: requestID.toString(),
                 id: info.event.id,
                 title: info.event.title,
@@ -224,7 +207,7 @@
                 newEnd: info.event.end.toISOString(),
                 handled: false,
             });
-            updateTaskTime(
+            update_task_time(
                 requestID.toString(),
                 info.event.id,
                 info.event.start.toISOString(),
@@ -233,9 +216,9 @@
                 .then((res) => {
                     console.log(info.event.title);
                     toast.push(
-                        `Timeline extension successful for \"<strong>${clipString(
+                        `Timeline extension successful for \"<strong>${clip_string(
                             info.event.title,
-                            titleMaxLength,
+                            title_max_length,
                         )}</strong>\"`,
                         {
                             theme: {
@@ -248,9 +231,9 @@
                 })
                 .catch((error) => {
                     toast.push(
-                        `Error extending timeline for \"<strong>${clipString(
+                        `Error extending timeline for \"<strong>${clip_string(
                             info.event.title,
-                            titleMaxLength,
+                            title_max_length,
                         )}</strong>\"`,
                         {
                             theme: {
@@ -267,7 +250,7 @@
         nowIndicator: true,
         selectable: true,
         loading: function (isLoading: boolean) {
-            taskFetching = isLoading;
+            task_fetching = isLoading;
         },
         eventSources: [
             {
@@ -343,7 +326,7 @@
         <Calendar bind:this={ec} {plugins} {options} />
     </p>
 
-    {#if taskFetching}
+    {#if task_fetching}
         <Toast
             divClass="fixed bottom-5 z-10 right-5 w-full max-w-xs p-4 bg-accent-50 text-accent-900 shadow gap-3 font-bold"
         >
