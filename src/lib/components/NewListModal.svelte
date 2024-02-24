@@ -19,6 +19,7 @@
       method: "POST",
       headers: headers,
       body: JSON.stringify({
+        board_id: $page.params.board_id,
         list_name: name,
         list_description: description,
         list_deadline: timestamp,

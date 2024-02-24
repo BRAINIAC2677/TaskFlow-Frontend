@@ -23,10 +23,9 @@
     console.log("task_id", $page.params.task_id);
 
     try {
-      const response = await fetch(
-        $server_url + "/task/get-detail/" + $page.params.task_id,
-        request
-      );
+      const url = new URL($server_url + "/task/get-detail");
+      url.searchParams.set("task_id", $page.params.task_id);
+      const response = await fetch(url.toString(), request);
       if (response.ok) {
         const data = await response.json();
         console.log(data);

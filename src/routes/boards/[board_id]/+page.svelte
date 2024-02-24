@@ -49,13 +49,12 @@
     });
 
     try {
-      const response = await fetch(
-        $server_url + "/board/get-content/" + $page.params.board_id,
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
+      const url = new URL($server_url + "/board/get-content");
+      url.searchParams.set("board_id", $page.params.board_id);
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: headers,
+      });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
