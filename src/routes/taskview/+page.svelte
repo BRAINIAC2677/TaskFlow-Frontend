@@ -120,14 +120,34 @@
             today: "Today",
         },
         theme: function (previous_theme: any) {
+            let event_classes = "ec-event !bg-accent-50";
+            let event_body_classes =
+                "ec-event-body !text-accent-900 !font-bold !text-base";
+            let day_head_classes =
+                "ec-day-head !bg-accent-100 !text-accent-900 dark:!bg-accent-900 dark:!text-accent-100 ";
+
+            console.log(previous_theme.view);
+            if (previous_theme.view.includes("ec-list")) {
+                event_classes = "ec-event !bg-accent-100 dark:!bg-accent-900";
+                event_body_classes =
+                    "ec-event-body !text-accent-900 dark:!text-accent-100 !font-bold !text-base";
+                day_head_classes =
+                    "ec-day-head !bg-accent-100 !text-accent-900 dark:!bg-accent-900 dark:!text-accent-100 !border-2 !border-accent-50";
+            }
             return {
                 ...previous_theme,
                 button: "px-6 py-2 border-2 border-accent-50 text-accent-50 font-semibold rounded-md transition duration-150 ease-in-out hover:bg-accent-50 hover:text-accent-100 focus:outline-none focus:ring-2 focus:ring-accent-50 focus:ring-opacity-50",
                 active: "!bg-accent-50 !text-accent-100",
+                allDay: "ec-all-day !border-2 !border-accent-50",
+                body: "ec-body !border-2 !border-accent-50",
+                day: "ec-day !border-2 !border-accent-50",
+                days: "ec-days !border-2 !border-accent-50",
+                dayHead: day_head_classes,
                 title: "text-xl font-bold",
-                event: "ec-event !bg-accent-50",
-                eventBody:
-                    "ec-event-body !text-accent-900 !font-bold !text-base",
+                event: event_classes,
+                eventBody: event_body_classes,
+                eventTag: "ec-event-tag !bg-accent-50",
+                header: "ec-header !border-2 !border-accent-50 !bg-accent-100 !text-accent-900 dark:!bg-accent-900 dark:!text-accent-100",
             };
         },
         eventDrop: function (info: any) {
