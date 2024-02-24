@@ -50,6 +50,7 @@
 
     try {
       const url = new URL($server_url + "/board/get-content");
+      console.log("id", $page.params.board_id);
       url.searchParams.set("board_id", $page.params.board_id);
       const response = await fetch(url.toString(), {
         method: "GET",
