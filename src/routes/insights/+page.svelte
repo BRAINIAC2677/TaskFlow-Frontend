@@ -11,6 +11,7 @@
 
   // Weekly Task Completion Stats : Line Chart
   let weekly_task_fetching: boolean = false;
+  let daily_task_fetching: boolean = false;
   let linechart_title: string = "Progress Over Time";
   let linechart_data: any = {
     labels: [],
@@ -38,10 +39,10 @@
     };
 
     try {
-      const response = await fetch(
-        $server_url + "/insight/weekly-task-completion",
-        request
-      );
+      const url = new URL($server_url + "/insight/weekly-task-completion");
+      url.searchParams.set("start_date", "-1"); // account creation date
+      url.searchParams.set("end_date", "-1"); // current date
+      const response = await fetch(url.toString(), request);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message);
@@ -52,12 +53,48 @@
     }
   }
 
+  async function fetchDailyTaskCompletion() {
+    const token: string = localStorage.getItem("access_token") || "";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    const request = {
+      method: "GET",
+      headers: headers,
+    };
+
+    try {
+      const url = new URL($server_url + "/insight/daily-task-completion");
+      const start_date = new Date();
+      start_date.setMonth(start_date.getMonth() - 1);
+      url.searchParams.set("start_date", start_date.toISOString());
+      url.searchParams.set("end_date", "-1"); // current date
+      url.searchParams.set("format", "DD-Mon-YYYY");
+      const response = await fetch(url.toString(), request);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  let barchart_x: Array<string> = [];
+  let barchart_y: Array<number> = [];
+  let barchart_title = "Tasks in Last 30 Days";
+
   onMount(() => {
     try {
       weekly_task_fetching = true;
-      const res = fetchWeeklyTaskCompletion();
+      const res1 = fetchWeeklyTaskCompletion();
+      daily_task_fetching = true;
+      const res2 = fetchDailyTaskCompletion();
 
-      res.then(
+      res1.then(
         (data) => {
           data.weekly_data.forEach((element: any) => {
             linechart_data.labels.push(element.label);
@@ -70,16 +107,24 @@
           console.error("Error:", error);
         }
       );
+
+      res2.then(
+        (data) => {
+          barchart_x = data.barchart_x;
+          barchart_y = data.barchart_y;
+          console.log("Daily Task Completion Data:", barchart_x, barchart_y);
+        },
+        (error) => {
+          console.error("Error:", error);
+        }
+      );
     } catch (error) {
       console.error("Error:", error);
     } finally {
       weekly_task_fetching = false;
+      daily_task_fetching = false;
     }
   });
-
-  let barchart_x = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  let barchart_y = [12, 19, 3, 5, 2, 3, 10];
-  let barchart_title = "Tasks in Last 7 Days";
 
   let piechart_title_1 = "Task Status";
   let piechart_data_1 = {
@@ -159,7 +204,13 @@
   </div>
 
   <div class="mt-32 chart-container">
-    <BarChart x={barchart_x} y={barchart_y} title={barchart_title} />
+    <BarChart
+      x_title="Date"
+      y_title="Daily Task Completion Count"
+      bind:x={barchart_x}
+      bind:y={barchart_y}
+      title={barchart_title}
+    />
   </div>
 
   <div class="mt-32 chart-container">

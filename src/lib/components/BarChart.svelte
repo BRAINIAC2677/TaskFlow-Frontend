@@ -2,6 +2,8 @@
   import { Bar } from "svelte-chartjs";
 
   export let title: string;
+  export let x_title: string;
+  export let y_title: string;
   export let x: string[];
   export let y: number[];
 
@@ -48,7 +50,7 @@
       x: {
         title: {
           display: true,
-          text: "Day Name",
+          text: x_title,
           color: "black", // You can change the color
           font: {
             size: 16, // You can adjust the font size
@@ -59,7 +61,7 @@
       y: {
         title: {
           display: true,
-          text: "Number of Completed Tasks",
+          text: y_title,
           color: "black", // You can change the color
           font: {
             size: 16, // You can adjust the font size

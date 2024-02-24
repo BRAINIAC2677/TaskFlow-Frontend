@@ -65,7 +65,7 @@
   let title_class: string = "text-sm text-gray-600 dark:text-white text-center";
   let value_class: string = "text-2xl font-bold text-center";
   let wrapper_class: string =
-    "p-4 rounded-lg shadow-xl bg-accent-50 dark:bg-accent-600 border border-accent-200 dark:border-accent-700";
+    "p-4 rounded-lg shadow-xl bg-accent-500 dark:bg-accent-600 border border-accent-200 dark:border-accent-700";
   let skeleton_class: string =
     "animate-pulse bg-gray-300 dark:bg-gray-700 h-6 rounded";
 </script>
