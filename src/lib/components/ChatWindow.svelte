@@ -3,7 +3,10 @@
   import { onMount } from "svelte";
   import server_url from "$lib/stores/server_store";
   import { user_info_store } from "$lib/stores/user_store";
+  import { Plane } from "svelte-loading-spinners";
   import { format, isToday, isThisWeek, parseISO } from "date-fns";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
+  import theme_store from "$lib/stores/theme_store";
 
   function formatChatTimestamp(timestampz: string): string {
     const date = parseISO(timestampz);
@@ -21,6 +24,8 @@
   export let task_id: number;
   let file_url = "";
   let messageText = ""; // To capture message text from textarea
+
+  let fetchingMessages = false;
 
   async function fetch_messages(_task_id: number) {
     const token: string = localStorage.getItem("access_token") || "";
@@ -128,11 +133,23 @@
   }
 
   onMount(async () => {
-    await fetch_messages(task_id);
+    try {
+      console.log("Fetching task messages");
+      fetchingMessages = true;
+      if (task_id) {
+        await fetch_messages(task_id);
+      }
+    } catch (error) {
+      console.error("Error fetching task messages");
+    } finally {
+      console.log("Task messages fetched");
+      fetchingMessages = false;
+    }
   });
 
   let message_box_class: string =
-    "p-3 bg-accent-400 dark:bg-accent-600 text-black dark:text-white rounded-lg rounded-tl-none max-w-xs lg:max-w-md";
+    "p-3 bg-accent-400 dark:bg-accent-600 text-black dark:text-white rounded-lg max-w-xs lg:max-w-md";
+
   let timestamp_class: string =
     "text-xs text-black font-bold dark:text-white text-right mt-1";
 </script>
@@ -141,45 +158,60 @@
   <h2 class="mb-4 text-xl font-semibold text-black dark:text-black">
     Chat Window
   </h2>
-  <div class="mb-6 space-y-6">
-    {#each chatMessages as message}
-      {#if message.sender_username != $user_info_store.username}
-        <div class="flex gap-4">
-          <Avatar src={message.sender_dp_url} />
-          <div class="flex space-x-2">
-            <div>
-              <div class={message_box_class}>
-                <p class="font-bold text-md">
-                  {message.sender_username}
-                </p>
-                <p class="text-sm">{message.body}</p>
-                <p class={timestamp_class}>
-                  {formatChatTimestamp(message.created_at)}
-                </p>
+  {#if fetchingMessages}
+    <div class="flex flex-col items-center justify-center space-y-4">
+      <div>
+        <Plane color={get_color_hex_code($theme_store.accentCurrentColor)} />
+      </div>
+      <div>
+        <span class="text-lg md:text-xl text-black dark:text-white font-bold"
+          >Fetching messages...</span
+        >
+      </div>
+    </div>
+  {:else if chatMessages.length == 0}
+    <p class="text-center">No messages yet</p>
+  {:else}
+    <div class="mb-6 space-y-6">
+      {#each chatMessages as message}
+        {#if message.sender_username != $user_info_store.username}
+          <div class="flex gap-4">
+            <Avatar src={message.sender_dp_url} />
+            <div class="flex space-x-2">
+              <div>
+                <div class={message_box_class + " rounded-tl-none"}>
+                  <p class="font-bold text-md">
+                    {message.sender_username}
+                  </p>
+                  <p class="text-sm">{message.body}</p>
+                  <p class={timestamp_class}>
+                    {formatChatTimestamp(message.created_at)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      {:else}
-        <div class="flex justify-end gap-4">
-          <div class="flex space-x-2">
-            <div>
-              <div class={message_box_class}>
-                <p class="font-bold text-md">
-                  {message.sender_username}
-                </p>
-                <p class="text-sm">{message.body}</p>
-                <p class={timestamp_class}>
-                  {formatChatTimestamp(message.created_at)}
-                </p>
+        {:else}
+          <div class="flex justify-end gap-4">
+            <div class="flex space-x-2">
+              <div>
+                <div class={message_box_class + " rounded-tr-none"}>
+                  <p class="font-bold text-md">
+                    {message.sender_username}
+                  </p>
+                  <p class="text-sm">{message.body}</p>
+                  <p class={timestamp_class}>
+                    {formatChatTimestamp(message.created_at)}
+                  </p>
+                </div>
               </div>
             </div>
+            <Avatar src={message.sender_dp_url} />
           </div>
-          <Avatar src={message.sender_dp_url} />
-        </div>
-      {/if}
-    {/each}
-  </div>
+        {/if}
+      {/each}
+    </div>
+  {/if}
   <div class="pt-4 text-center">
     <textarea
       class="w-full p-2 text-sm text-black bg-white rounded dark:text-gray-300 dark:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"

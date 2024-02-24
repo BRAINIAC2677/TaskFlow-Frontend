@@ -7,5 +7,4 @@ node_modules
 .env.*
 !.env.example
 vite.config.js.timestamp-*
-src/lib/stores/server_store.ts
 
