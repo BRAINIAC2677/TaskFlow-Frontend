@@ -20,8 +20,6 @@
       headers,
     };
 
-    console.log("task_id", $page.params.task_id);
-
     try {
       const url = new URL($server_url + "/task/get-detail");
       url.searchParams.set("task_id", $page.params.task_id);
@@ -52,10 +50,12 @@
   onMount(async () => {
     try {
       console.log("Fetching task detail");
-      const data = await getTaskDetail();
-      console.log(data);
-      task = data;
-      console.log(task);
+      if ($page.params.task_id) {
+        const data = await getTaskDetail();
+        console.log(data);
+        task = data;
+        console.log(task);
+      }
     } catch (error) {
       console.log("Error fetching task detail");
     } finally {
@@ -228,16 +228,18 @@
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="font-bold text-gray-700">Checklist</label>
           <div class="mt-1">
-            {#each task.checklist_items as item, i}
-              <div class="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                  bind:checked={item.is_completed}
-                />
-                <span class="ml-2 text-gray-700">{item.item_name}</span>
-              </div>
-            {/each}
+            {#if task.checklist_items != undefined}
+              {#each task.checklist_items as item, i}
+                <div class="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    bind:checked={item.is_completed}
+                  />
+                  <span class="ml-2 text-gray-700">{item.item_name}</span>
+                </div>
+              {/each}
+            {/if}
           </div>
           <div class="flex flex-col p-4 mt-4 rounded-lg">
             <input
@@ -275,5 +277,5 @@
     <!-- This is the draggable area -->
   </div>
   <!-- Right side: Chat Window-->
-  <ChatWindow {task_id} />
+  <ChatWindow bind:task_id />
 </div>

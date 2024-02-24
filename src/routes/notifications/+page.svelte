@@ -1,23 +1,63 @@
 <script lang="ts">
-  // Import the Tailwind CSS classes
-  import 'tailwindcss/tailwind.css';
+  import server_url from "$lib/stores/server_store";
+  import type { Notification } from "$lib/interfaces/notification";
+  import { processNotificationMessage } from "$lib/interfaces/notification";
+  import { onMount } from "svelte";
 
-  // Sample data for notifications
-  let notifications = [
-    { id: 1, userName: 'Jane Doe', action: 'liked your post', message: 'Awesome work on your recent project!', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: false },
-    { id: 2, userName: 'John Smith', action: 'commented on your picture', message: 'Nice shot!', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: true },
-    { id: 3, userName: 'Alice Johnson', action: 'started following you', message: 'very good', userImage: 'https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?w=740&t=st=1707636838~exp=1707637438~hmac=597556e08509858548235207ca049202317db8d6d35338f1cd8e04f82404d2e9', read: false },
-    // ... more demo notifications
-  ];
+  async function fetchNotifications() {
+    const token = localStorage.getItem("access_token") || "";
+    const header = new Headers({
+      Authorization: token,
+      "Content-Type": "application/json",
+    });
+
+    const request = {
+      method: "GET",
+      headers: header,
+    };
+
+    try {
+      const url = new URL($server_url + "/notification/retrieve");
+      url.searchParams.set("count", "100");
+      url.searchParams.set("offset", "0");
+      const response = await fetch(url.toString(), request);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        return data;
+      } else {
+        console.log("Error fetching notifications");
+      }
+    } catch (error) {
+      console.log("Error fetching notifications");
+    }
+  }
+
+  let notifications: Array<Notification> = [];
+
+  onMount(async () => {
+    try {
+      console.log("Fetching notifications");
+      const data = await fetchNotifications();
+      notifications = data;
+      notifications.forEach(
+        (n) => (n.body = processNotificationMessage(n.body))
+      );
+      console.log(notifications);
+    } catch (error) {
+      console.log("Error fetching notifications");
+    }
+  });
 
   // Function to mark all notifications as read
   function markAllAsRead() {
-    notifications = notifications.map(n => ({ ...n, read: true }));
+    notifications = notifications.map((n) => ({ ...n, read: true }));
   }
 
   // Function to delete a notification
-  function deleteNotification(notificationId:any) {
-    notifications = notifications.filter(n => n.id !== notificationId);
+  function deleteNotification(notificationId: any) {
+    notifications = notifications.filter((n) => n.id !== notificationId);
   }
 
   // Function to delete all notifications
@@ -44,16 +84,16 @@
 
   <div class="space-y-4">
     {#each notifications as notification}
-      <div class="flex items-center justify-between bg-white hover:bg-gray-100 p-4 rounded relative">
-        <img src={notification.userImage} alt="Profile" class="w-10 h-10 rounded-full">
+      <div
+        class="flex items-center justify-between bg-white hover:bg-gray-100 p-4 rounded relative"
+      >
         <div class="flex-1 ml-4">
-          <p class={`font-semibold ${!notification.read ? 'font-bold' : ''}`}>
-            <a href="/user/{notification.userName}" class="hover:underline">{notification.userName}</a> {notification.action}
-          </p>
-          <p>{notification.message}</p>
+          <p>{@html notification.body}</p>
         </div>
         {#if !notification.read}
-          <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 last:mr-0 mr-1">
+          <span
+            class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 last:mr-0 mr-1"
+          >
             New
           </span>
         {/if}
@@ -61,11 +101,8 @@
           class="absolute top-2 right-2"
           on:click={() => deleteNotification(notification.id)}
         >
-        
           &#x2715;
         </button>
-        <!-- Expand button logic to be implemented -->
-        <!-- <button class="absolute bottom-2 right-2">...</button> -->
       </div>
     {/each}
   </div>

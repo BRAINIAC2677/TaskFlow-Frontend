@@ -80,7 +80,9 @@
     console.log("Fetching board content");
     try {
       content_loading = true;
-      board_content = await fetchBoardContent();
+      if ($page.params.board_id) {
+        board_content = await fetchBoardContent();
+      }
       board_content.board_lists.forEach((list) => {
         tasklist_collection.push(list);
       });
