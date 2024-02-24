@@ -3,11 +3,14 @@
   import { toast } from "@zerodevx/svelte-toast";
   import server_url from "$lib/stores/server_store";
   import { page } from "$app/stores";
+  import { createEventDispatcher } from "svelte";
   export let showModal = true;
 
   let name: string = "";
   let description: string = "";
   let timestamp: string = "";
+
+  const dispatch = createEventDispatcher();
 
   async function create_list() {
     const headers = new Headers({
@@ -27,14 +30,17 @@
     };
 
     try {
-      const response = await fetch(
-        $server_url + "/list/create/" + $page.params.board_id,
-        request
-      );
+      const response = await fetch($server_url + "/list/create", request);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return await response.json();
+      const data = await response.json();
+      dispatch("listCreated", {
+        list_id: data.id,
+        list_name: name,
+        list_tasks: [],
+      });
+      return data;
     } catch (error) {
       throw error;
     }
@@ -69,11 +75,10 @@
               "--toastColor": "#424242",
             },
           });
+          // success event dispatched already
         })
         .finally(() => {
           showModal = false;
-          //reload the page on success
-          if (success) location.reload();
         });
     }}
   >

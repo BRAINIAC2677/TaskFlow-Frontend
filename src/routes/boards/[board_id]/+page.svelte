@@ -41,6 +41,16 @@
     hiddenSideBar = !hiddenSideBar;
   }
 
+  function handleListCreated(event: any) {
+    console.log("List created", event);
+    tasklist_collection.push({
+      list_id: event.detail.list_id,
+      list_name: event.detail.list_name,
+      list_tasks: event.detail.list_tasks,
+    });
+    tasklist_collection = tasklist_collection;
+  }
+
   async function fetchBoardContent() {
     const token: string = localStorage.getItem("access_token") || "";
     const headers = new Headers({
@@ -188,7 +198,9 @@
   <div
     class={`flex-grow p-4 ${
       !hiddenSideBar ? "ml-72" : "ml-0"
-    } transition-margin duration-300`}
+    } transition-margin duration-300
+    overflow-auto
+    `}
   >
     {#if content_loading}
       <div class="flex flex-col items-center justify-center h-full">
@@ -200,7 +212,9 @@
         </span>
       </div>
     {:else}
-      <div class="grid grid-cols-4 gap-4">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+      >
         {#if tasklist_collection != undefined}
           {#each tasklist_collection as list}
             <ListCard {list} />
@@ -217,6 +231,9 @@
 
 {#if formModal}
   <div transition:fade={{ duration: 250 }}>
-    <NewListModal bind:showModal={formModal} />
+    <NewListModal
+      bind:showModal={formModal}
+      on:listCreated={handleListCreated}
+    />
   </div>
 {/if}
