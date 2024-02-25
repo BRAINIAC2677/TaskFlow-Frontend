@@ -11,6 +11,8 @@
     import { get_color_hex_code } from "$lib/stores/theme_store";
     import theme_store from "$lib/stores/theme_store";
     import { fade } from "svelte/transition";
+    import { Input } from "flowbite-svelte";
+    import { SearchOutline } from "flowbite-svelte-icons";
     import {
         Drawer,
         Sidebar,
@@ -36,6 +38,8 @@
         duration: 200,
         easing: sineIn,
     };
+
+    let search_term: string = "";
 
     function toggleSidebar() {
         hiddenSideBar = !hiddenSideBar;
@@ -87,6 +91,7 @@
     import type { BoardContentListForm } from "$lib/interfaces/list";
     let tasklist_collection: BoardContentListForm[] =
         Array<BoardContentListForm>();
+
     onMount(async () => {
         console.log("Fetching board content");
         try {
@@ -103,6 +108,26 @@
             content_loading = false;
         }
     });
+
+    $: {
+        if (board_content) {
+            tasklist_collection = board_content.board_lists.filter((list) => {
+                let keep: boolean = list.list_name
+                    .toLowerCase()
+                    .includes(search_term.toLowerCase());
+                if (list.list_tasks) {
+                    list.list_tasks.forEach((task) => {
+                        keep =
+                            keep ||
+                            task.task_name
+                                .toLowerCase()
+                                .includes(search_term.toLowerCase());
+                    });
+                }
+                return keep;
+            });
+        }
+    }
 </script>
 
 <svelte:head>
@@ -212,6 +237,29 @@
                 </span>
             </div>
         {:else}
+            <div class="flex items-center justify-between my-4">
+                {#if board_content}
+                    <h2 class="text-xl font-semibold">
+                        {board_content.board_name}
+                    </h2>
+                {/if}
+                <div class="flex space-x-2">
+                    <!-- Filter dropdowns or sorting controls can be added here -->
+                    <Input
+                        id="search"
+                        placeholder="Search"
+                        size="md"
+                        bind:value={search_term}
+                        class="dark:bg-accent-800 border-accent-50 dark:border-accent-50 text-accent-50"
+                    >
+                        <SearchOutline
+                            slot="left"
+                            class="w-6 h-6 text-accent-50 "
+                        />
+                    </Input>
+                </div>
+            </div>
+
             <div
                 class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             >
