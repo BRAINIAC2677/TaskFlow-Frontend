@@ -9,6 +9,12 @@
 
   let hidden = true;
 
+  function handleBoardCreated(event: any) {
+    console.log("Board created", event);
+    all_boards.push(event.detail);
+    all_boards = all_boards;
+  }
+
   async function fetchBoards() {
     const token: string = localStorage.getItem("access_token") || "";
     const headers = new Headers({
@@ -80,5 +86,6 @@
     <PlusOutline class="w-6 h-6 m-auto" />
   </button>
 
-  <NewBoardDrawer bind:hidden></NewBoardDrawer>
+  <NewBoardDrawer bind:hidden on:boardCreated={handleBoardCreated}
+  ></NewBoardDrawer>
 </div>

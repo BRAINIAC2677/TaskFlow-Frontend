@@ -8,6 +8,8 @@
   import server_url from "$lib/stores/server_store";
   import type { UserMemberInfo } from "$lib/interfaces/user";
   import { toast } from "@zerodevx/svelte-toast";
+  import { createEventDispatcher } from "svelte";
+  import { user_info_store } from "$lib/stores/user_store";
   import {
     Drawer,
     Button,
@@ -18,6 +20,8 @@
     Helper,
   } from "flowbite-svelte";
   import { onMount, onDestroy } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   export let hidden = true;
   let transitionParams = {
@@ -76,7 +80,28 @@
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return await response.json();
+      const data = await response.json();
+      dispatch("boardCreated", {
+        board_id: data.board_id,
+        board_name: board_creation_info.board_name,
+        due_timestamp: board_creation_info.board_deadline,
+        description: board_creation_info.board_description,
+        role: 1,
+        owner_info: {
+          user_id: $user_info_store.id,
+          full_name:
+            $user_info_store.first_name +
+            " " +
+            $user_info_store.middle_name +
+            " " +
+            $user_info_store.last_name,
+          username: $user_info_store.username,
+          dp_url: $user_info_store.dp_url,
+        },
+        progress: 0,
+        status: "Not Started",
+      });
+      return data;
     } catch (error) {
       throw error;
     }
