@@ -134,9 +134,10 @@
   };
 
   let containerClass: string =
-    "text-center mx-auto w-full md:w-3/4 lg:w-3/4 xl:w-2/3 2xl:w-1/2";
+    "flex flex-col shadow-lg rounded-lg overflow-hidden";
   let titleClass: string =
-    "text-2xl font-bold text-gray-800 dark:text-white mb-4";
+    "text-2xl font-bold text-gray-800 dark:text-white mb-4 p-4 text-center";
+  let cardClass: string = "flex-grow shadow-lg rounded-lg overflow-hidden p-4";
 </script>
 
 <svelte:head>
@@ -144,53 +145,53 @@
 </svelte:head>
 
 <div
-  class="flex flex-col space-y-8 mx-8 mt-8 sm:mx-4 md:mx-8 lg:mx-10 xl:mx-20 2xl:mx-32"
+  class="mx-8 mt-8 sm:mx-4 md:mx-8 lg:mx-10 xl:mx-20 2xl:mx-32 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-12"
 >
   <div class={containerClass}>
     <h2 class={titleClass}>Insights Overview</h2>
-    <div>
+    <div class={cardClass}>
       <InsightOverview />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Daily Task Completion</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <DailyTaskCompletionLineChart />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Weekly Task Completion</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <WeeklyTaskCompletionBarChart />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Task Progression</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <TaskProgressionPieChart />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Performance Analysis</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <Chart options={stackedBarChartOptions} />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Daily Task Heatmap</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <Chart options={heatmapOptions} />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Detailed Performance Analysis</h2>
-    <div class="shadow-lg rounded-lg overflow-hidden p-4">
+    <div class={cardClass}>
       <Chart options={scatterPlotOptions} />
     </div>
   </div>

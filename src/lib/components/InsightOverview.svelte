@@ -70,71 +70,67 @@
     "animate-pulse bg-gray-300 dark:bg-gray-700 h-6 rounded";
 </script>
 
-<div class="p-4 rounded-lg shadow-xl bg-accent-200 dark:bg-accent-700">
-  <!-- <div class="mb-16 text-2xl font-bold text-center text-black dark:text-white">
-    {title}
-  </div> -->
-  {#if loading}
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {#each Array(9) as _, i}
-        <div class={wrapper_class}>
-          <p class={skeleton_class}>&nbsp;</p>
-          <p class={`${skeleton_class} mt-2`}></p>
-        </div>
-      {/each}
+{#if loading}
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    {#each Array(9) as _, i}
+      <div class={wrapper_class}>
+        <p class={skeleton_class}>&nbsp;</p>
+        <p class={`${skeleton_class} mt-2`}></p>
+      </div>
+    {/each}
+  </div>
+{:else}
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Due Today</p>
+      <p class={value_class}>{todayTaskDue}</p>
     </div>
-  {:else}
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Due Today</p>
-        <p class={value_class}>{todayTaskDue}</p>
-      </div>
 
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Completed Today</p>
-        <p class={value_class}>{todayTaskCompleted}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Overdue Today</p>
-        <p class={value_class}>{todayTaskOverdue}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Due This Week</p>
-        <p class={value_class}>{thisWeekTaskDue}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Completed This Week</p>
-        <p class={value_class}>{thisWeekTaskCompleted}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Overdue This Week</p>
-        <p class={value_class}>{thisWeekTaskOverdue}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Due This Month</p>
-        <p class={value_class}>{thisMonthTaskDue}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Completed This Month</p>
-        <p class={value_class}>{thisMonthTaskCompleted}</p>
-      </div>
-
-      <div class={wrapper_class}>
-        <p class={title_class}>Task Overdue This Month</p>
-        <p class={value_class}>{thisMonthTaskOverdue}</p>
-      </div>
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Completed Today</p>
+      <p class={value_class}>{todayTaskCompleted}</p>
     </div>
-  {/if}
-</div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Overdue Today</p>
+      <p class={value_class}>{todayTaskOverdue}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Due This Week</p>
+      <p class={value_class}>{thisWeekTaskDue}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Completed This Week</p>
+      <p class={value_class}>{thisWeekTaskCompleted}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Overdue This Week</p>
+      <p class={value_class}>{thisWeekTaskOverdue}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Due This Month</p>
+      <p class={value_class}>{thisMonthTaskDue}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Completed This Month</p>
+      <p class={value_class}>{thisMonthTaskCompleted}</p>
+    </div>
+
+    <div class={wrapper_class}>
+      <p class={title_class}>Task Overdue This Month</p>
+      <p class={value_class}>{thisMonthTaskOverdue}</p>
+    </div>
+  </div>
+{/if}
+
+<!-- </div> -->
 
 <style>
-  /* Define skeleton animation here */
   .animate-pulse {
     background: linear-gradient(90deg, #ececec 25%, #f4f4f4 50%, #ececec 75%);
     background-size: 200% 100%;
