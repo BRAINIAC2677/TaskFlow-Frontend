@@ -1,11 +1,7 @@
 <script lang="ts">
   import server_url from "$lib/stores/server_store";
   import { onMount } from "svelte";
-  import { get_color_hex_code } from "$lib/stores/theme_store";
-  import theme_store from "$lib/stores/theme_store";
-  export let title: string;
-
-  async function fetchInsightOverview() {
+  async function fetchInsightOverviewStats() {
     const token = localStorage.getItem("access_token") || "";
     const headers = {
       "Content-Type": "application/json",
@@ -18,7 +14,10 @@
     };
 
     try {
-      const response = await fetch($server_url + "/insight/overview", request);
+      const response = await fetch(
+        $server_url + "/insight/task-completion",
+        request
+      );
       const data = await response.json();
       return data;
     } catch (error) {
@@ -38,11 +37,12 @@
   let thisMonthTaskCompleted: number = 0;
   let thisMonthTaskOverdue: number = 0;
   let loading: boolean = false;
+
   onMount(async () => {
     try {
       console.log("Fetching Insight Overview");
       loading = true;
-      const data = await fetchInsightOverview();
+      const data = await fetchInsightOverviewStats();
 
       todayTaskDue = data.today_task_due;
       thisWeekTaskDue = data.this_week_task_due;
@@ -71,9 +71,9 @@
 </script>
 
 <div class="p-4 rounded-lg shadow-xl bg-accent-200 dark:bg-accent-700">
-  <div class="mb-16 text-2xl font-bold text-center text-black dark:text-white">
+  <!-- <div class="mb-16 text-2xl font-bold text-center text-black dark:text-white">
     {title}
-  </div>
+  </div> -->
   {#if loading}
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {#each Array(9) as _, i}

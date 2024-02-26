@@ -21,7 +21,7 @@
 
     try {
       const response = await fetch(
-        $server_url + "/insight/dashboard-stuff",
+        $server_url + "/insight/dashboard-summary",
         request
       );
       if (!response.ok) {

@@ -41,11 +41,8 @@
 	"dependencies": {
 		"@sveltejs/adapter-node": "^4.0.1",
 		"@sveltejs/vite-plugin-svelte": "^3.0.2",
-		"chart.js": "^4.4.1",
+		"apexcharts": "^3.46.0",
 		"date-fns": "^3.3.1",
-		"flowbite-svelte-blocks": "^1.1.0",
-		"svelte-chartjs": "^3.1.5",
-		"svelte-gantt": "^4.2.4",
-		"svelte-heatmap": "^1.0.2"
+		"flowbite-svelte-blocks": "^1.1.0"
 	}
 }
