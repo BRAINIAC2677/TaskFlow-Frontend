@@ -1,8 +1,9 @@
 <script lang="ts">
   import Chart from "./Chart.svelte";
   import { onMount } from "svelte";
-  import { format, parseISO } from "date-fns";
+  import { parseISO } from "date-fns";
   import server_url from "$lib/stores/server_store";
+  import theme_store from "$lib/stores/theme_store";
 
   let loading = false;
   let options: any;
@@ -36,81 +37,92 @@
     }
   }
 
+  let data: any;
+
   onMount(async () => {
-    loading = true;
     try {
-      const data = (await fetchDailyTaskCompletion()) as any;
-      options = {
-        series: [
-          {
-            name: "Tasks Completed",
-            data: data,
-          },
-        ],
-        chart: {
-          type: "line",
-          animations: {
-            enabled: true,
-          },
-        },
-        stroke: {
-          curve: "smooth",
-        },
-        xaxis: {
-          type: "datetime",
-          title: {
-            text: "Date",
-          },
-        },
-        yaxis: {
-          title: {
-            text: "Tasks Completed",
-          },
-        },
-        annotations: {
-          xaxis: [
-            {
-              x: data[0].x,
-              strokeDashArray: 0,
-              borderColor: "#775DD0",
-              label: {
-                borderColor: "#775DD0",
-                style: {
-                  color: "#fff",
-                  background: "#775DD0",
-                },
-                text: "Account Created",
-              },
-            },
-          ],
-        },
-        tooltip: {
-          x: {
-            format: "MMM dd, yyyy",
-          },
-          y: {
-            formatter: function (val: any) {
-              return val.toFixed(0);
-            },
-          },
-        },
-        title: {
-          text: "Daily Task Completion Statistics",
-          align: "left",
-        },
-      };
+      loading = true;
+      data = (await fetchDailyTaskCompletion()) as any;
     } catch (error) {
       console.error("Error:", error);
     } finally {
       loading = false;
     }
   });
+
+  $: if (data) {
+    options = {
+      theme: {
+        mode: $theme_store.darkMode ? "dark" : "light",
+      },
+      series: [
+        {
+          name: "Tasks Completed",
+          data: data,
+        },
+      ],
+      chart: {
+        type: "line",
+        background: "transparent",
+        animations: {
+          enabled: true,
+        },
+      },
+      stroke: {
+        curve: "smooth",
+      },
+      xaxis: {
+        type: "datetime",
+        title: {
+          text: "Date",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Tasks Completed",
+        },
+      },
+      annotations: {
+        xaxis: [
+          {
+            x: data[0].x,
+            strokeDashArray: 0,
+            borderColor: "#775DD0",
+            label: {
+              borderColor: "#775DD0",
+              style: {
+                color: "#fff",
+                background: "#775DD0",
+              },
+              text: "Account Created",
+            },
+          },
+        ],
+      },
+      tooltip: {
+        x: {
+          format: "MMM dd, yyyy",
+        },
+        y: {
+          formatter: function (val: any) {
+            return val.toFixed(0);
+          },
+        },
+      },
+      title: {
+        text: "Daily Task Completion Statistics",
+        align: "left",
+      },
+    };
+  }
 </script>
 
 {#if loading}
   <div class="spinner"></div>
 {:else}
-  <Chart bind:options />
+  {#key $theme_store.darkMode}
+    <Chart bind:options />
+  {/key}
 {/if}
 
 <style>

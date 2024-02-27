@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { format, parseISO } from "date-fns";
   import server_url from "$lib/stores/server_store";
+  import theme_store from "$lib/stores/theme_store";
 
   let loading = false;
   let options: any;
@@ -37,11 +38,25 @@
     }
   }
 
+  let data: any;
+
   onMount(async () => {
-    loading = true;
     try {
-      const data = (await fetchDailyTaskCompletion()) as any;
+      loading = true;
+      data = (await fetchDailyTaskCompletion()) as any;
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      loading = false;
+    }
+  });
+
+  $: {
+    if (data) {
       options = {
+        theme: {
+          mode: $theme_store.darkMode ? "dark" : "light",
+        },
         series: [
           {
             name: "Tasks Completed",
@@ -50,6 +65,7 @@
         ],
         chart: {
           type: "bar",
+          background: "transparent",
           animations: {
             enabled: true,
           },
@@ -105,18 +121,16 @@
           align: "left",
         },
       };
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      loading = false;
     }
-  });
+  }
 </script>
 
 {#if loading}
   <div class="spinner"></div>
 {:else}
-  <Chart bind:options />
+  {#key $theme_store.darkMode}
+    <Chart bind:options />
+  {/key}
 {/if}
 
 <style>

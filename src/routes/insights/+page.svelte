@@ -5,49 +5,6 @@
   import WeeklyTaskCompletionBarChart from "$lib/components/WeeklyTaskCompletionBarChart.svelte";
   import TaskProgressionPieChart from "$lib/components/TaskProgressionPieChart.svelte";
 
-  let scatterPlotOptions = {
-    chart: {
-      type: "scatter",
-      zoom: {
-        enabled: true,
-        type: "xy",
-      },
-    },
-    series: [
-      {
-        name: "Sample A",
-        data: [
-          [16, 5.4],
-          [21, 2],
-          [25, 3],
-          [18, 5],
-          [23, 4],
-        ],
-      },
-      {
-        name: "Sample B",
-        data: [
-          [17, 4],
-          [22, 2.5],
-          [24, 3.5],
-          [19, 4.5],
-          [23, 3.5],
-        ],
-      },
-    ],
-    xaxis: {
-      tickAmount: 10,
-      labels: {
-        formatter: function (val: any) {
-          return parseFloat(val).toFixed(1);
-        },
-      },
-    },
-    yaxis: {
-      tickAmount: 7,
-    },
-  };
-
   let heatmapOptions = {
     chart: {
       type: "heatmap",
@@ -134,7 +91,7 @@
   };
 
   let containerClass: string =
-    "flex flex-col shadow-lg rounded-lg overflow-hidden";
+    "flex flex-col shadow-lg rounded-lg overflow-hidden dark:bg-gray-800 bg-white";
   let titleClass: string =
     "text-2xl font-bold text-gray-800 dark:text-white mb-4 p-4 text-center";
   let cardClass: string = "flex-grow shadow-lg rounded-lg overflow-hidden p-4";
@@ -186,13 +143,6 @@
     <h2 class={titleClass}>Daily Task Heatmap</h2>
     <div class={cardClass}>
       <Chart options={heatmapOptions} />
-    </div>
-  </div>
-
-  <div class={containerClass}>
-    <h2 class={titleClass}>Detailed Performance Analysis</h2>
-    <div class={cardClass}>
-      <Chart options={scatterPlotOptions} />
     </div>
   </div>
 </div>

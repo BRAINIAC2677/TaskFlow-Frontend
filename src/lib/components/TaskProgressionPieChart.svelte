@@ -2,6 +2,7 @@
   import Chart from "./Chart.svelte";
   import { onMount } from "svelte";
   import server_url from "$lib/stores/server_store";
+  import theme_store from "$lib/stores/theme_store";
 
   let loading = false;
   let options: any;
@@ -32,30 +33,40 @@
     }
   }
 
+  let data: any;
+
   onMount(async () => {
     loading = true;
     try {
-      const data = (await fetchTaskProgressionStats()) as any;
-      console.log(data.series, data.labels);
-      options = {
-        chart: {
-          type: "pie",
-        },
-        series: data.series,
-        labels: data.labels,
-      };
+      data = (await fetchTaskProgressionStats()) as any;
     } catch (error) {
       console.error("Error:", error);
     } finally {
       loading = false;
     }
   });
+
+  $: if (data) {
+    options = {
+      theme: {
+        mode: $theme_store.darkMode ? "dark" : "light",
+      },
+      chart: {
+        type: "pie",
+        background: "transparent",
+      },
+      series: data.series,
+      labels: data.labels,
+    };
+  }
 </script>
 
 {#if loading}
   <div class="spinner"></div>
 {:else}
-  <Chart bind:options />
+  {#key $theme_store.darkMode}
+    <Chart bind:options />
+  {/key}
 {/if}
 
 <style>
