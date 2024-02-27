@@ -95,7 +95,7 @@
   </div>
 {/if}
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden bg-accent-100 dark:bg-accent-700">
   <div
     class="w-3/4 h-full bg-cover bg-center"
     style="background-image: url('https://wallpaperset.com/w/full/3/f/6/31549.jpg');"
@@ -110,11 +110,9 @@
     </div>
   </div>
 
-  <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-gray-700 mx-5"
-  >
+  <div class="w-1/4 h-full flex flex-col justify-center items-center px-3">
     <div
-      class="flex flex-col items-center justify-center px-6 mx-auto py-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:bg-gray-800 bg-accent-100"
+      class="flex flex-col items-center justify-center px-6 mx-auto py-8 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:bg-gray-900 bg-accent-200 w-full"
     >
       <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
         Register
@@ -129,7 +127,8 @@
               console.log(data);
               toast.push("Registration successful", {
                 theme: {
-                  "--toastBackground": "#D9EDBF",
+                  "--toastBackground": "var(--accent-50)",
+                  "--toastProgressBackground": "var(--accent-100)",
                   "--toastColor": "black",
                 },
               });
@@ -141,7 +140,8 @@
                 "An error occurred during registration. Please try again.",
                 {
                   theme: {
-                    "--toastBackground": "#F28585",
+                    "--toastBackground": "var(--accent-50)",
+                    "--toastProgressBackground": "var(--accent-100)",
                     "--toastColor": "black",
                     "--toastContainerLeft": "1rem",
                     "--toastContainerBottom": "1rem",

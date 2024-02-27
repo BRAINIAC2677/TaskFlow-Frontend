@@ -207,7 +207,8 @@
             console.log(res);
             toast.push("Board created successfully!", {
               theme: {
-                "--toastBackground": "#D9EDBF",
+                "--toastBackground": "var(--accent-50)",
+                "--toastProgressBackground": "var(--accent-100)",
                 "--toastColor": "black",
                 "--toastContainerLeft": "1rem",
                 "--toastContainerBottom": "1rem",
@@ -218,7 +219,8 @@
             console.error(err);
             toast.push("An error occurred while creating the board", {
               theme: {
-                "--toastBackground": "#F28585",
+                "--toastBackground": "var(--accent-50)",
+                "--toastProgressBackground": "var(--accent-100)",
                 "--toastColor": "black",
                 "--toastContainerLeft": "1rem",
                 "--toastContainerBottom": "1rem",

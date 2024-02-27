@@ -2,7 +2,7 @@
   <title>404 - Not Found</title>
 </svelte:head>
 
-<section class="bg-accent-50 dark:bg-gray-900 min-h-screen">
+<section class="bg-accent-100 dark:bg-gray-900 min-h-screen">
   <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
     <div class="mx-auto max-w-screen-sm text-center">
       <h1

@@ -139,7 +139,8 @@
           console.log(data);
           toast.push("Profile updated successfully", {
             theme: {
-              "--toastBackground": "#D9EDBF",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
               "--toastColor": "black",
             },
           });
@@ -153,7 +154,8 @@
           console.error(error);
           toast.push("An error occurred while updating your profile", {
             theme: {
-              "--toastBackground": "#F28585",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
               "--toastColor": "black",
             },
           });
@@ -250,7 +252,8 @@
           console.log(data);
           toast.push("Password changed successfully", {
             theme: {
-              "--toastBackground": "#D9EDBF",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
               "--toastColor": "black",
             },
           });
@@ -259,7 +262,8 @@
           console.error(error);
           toast.push("An error occurred while changing your password", {
             theme: {
-              "--toastBackground": "#F28585",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
               "--toastColor": "black",
             },
           });

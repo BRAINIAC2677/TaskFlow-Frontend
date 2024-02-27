@@ -1,208 +1,192 @@
 <script lang="ts">
-    import { toast } from "@zerodevx/svelte-toast";
-    import { Button, Label, Input } from "flowbite-svelte";
-    import { goto } from "$app/navigation";
-    import server_url from "$lib/stores/server_store";
-    import type { SignInInfo } from "$lib/interfaces/user";
-    import { user_info_store, is_logged_in } from "$lib/stores/user_store";
-    import { Stretch } from "svelte-loading-spinners";
-    import { get_color_hex_code } from "$lib/stores/theme_store";
-    import theme_store from "$lib/stores/theme_store";
+  import { toast } from "@zerodevx/svelte-toast";
+  import { Button, Label, Input } from "flowbite-svelte";
+  import { goto } from "$app/navigation";
+  import server_url from "$lib/stores/server_store";
+  import type { SignInInfo } from "$lib/interfaces/user";
+  import { user_info_store, is_logged_in } from "$lib/stores/user_store";
+  import { Stretch } from "svelte-loading-spinners";
+  import { get_color_hex_code } from "$lib/stores/theme_store";
+  import theme_store from "$lib/stores/theme_store";
 
-    let user_info: SignInInfo = {
-        email: "",
-        password: "",
+  let user_info: SignInInfo = {
+    email: "",
+    password: "",
+  };
+
+  let show_toast: boolean = false;
+  let toast_type: string = "";
+  let toast_message: string = "";
+  let logging_in: boolean = false;
+
+  function display_toast(error: boolean, message: string) {
+    toast_type = error ? "error" : "success";
+    toast_message = message;
+    show_toast = true;
+  }
+
+  $: {
+    if (show_toast) {
+      toast.push(toast_message, {
+        theme: {
+          "--toastBackground": "var(--accent-50)",
+          "--toastProgressBackground": "var(--accent-100)",
+          "--toastColor": "black",
+        },
+      });
+      show_toast = false;
+    }
+  }
+
+  async function signIn() {
+    console.log(user_info);
+
+    const request = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user_info),
     };
 
-    let show_toast: boolean = false;
-    let toast_type: string = "";
-    let toast_message: string = "";
-    let logging_in: boolean = false;
-
-    function display_toast(error: boolean, message: string) {
-        toast_type = error ? "error" : "success";
-        toast_message = message;
-        show_toast = true;
+    try {
+      const response = await fetch($server_url + "/auth/signin", request);
+      console.log(response);
+      if (!response.ok) {
+        display_toast(true, "Invalid Credentials");
+        console.error("Network response was not ok");
+        logging_in = false;
+        return;
+      }
+      const data = await response.json();
+      logging_in = false;
+      display_toast(
+        false,
+        `Welcome back, <strong>${data.userProfileData[0].username}</strong>!`
+      );
+      localStorage.setItem(
+        "access_token",
+        "Bearer " + data.signInData.session.access_token
+      );
+      $is_logged_in = true;
+      $user_info_store = data.userProfileData[0];
+      localStorage.setItem("user", JSON.stringify(data.userProfileData[0]));
+      goto("/dashboard");
+    } catch (error) {
+      console.error(error);
+      logging_in = false;
+      display_toast(
+        true,
+        "An error occurred during sign-in. Please try again."
+      );
+      return;
     }
-
-    $: {
-        if (show_toast) {
-            toast.push(toast_message, {
-                theme: {
-                    "--toastBackground":
-                        toast_type === "error" ? "#F28585" : "#40A2E3",
-                    "--toastProgressBackground":
-                        toast_type === "error" ? "#D64545" : "#1A73E8",
-                    "--toastColor": "black",
-                },
-            });
-            show_toast = false;
-        }
-    }
-
-    async function signIn() {
-        console.log(user_info);
-
-        const request = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(user_info),
-        };
-
-        try {
-            const response = await fetch($server_url + "/auth/signin", request);
-            console.log(response);
-            if (!response.ok) {
-                display_toast(true, "Invalid Credentials");
-                console.error("Network response was not ok");
-                logging_in = false;
-                return;
-            }
-            const data = await response.json();
-            logging_in = false;
-            display_toast(
-                false,
-                `Welcome back, <strong>${data.userProfileData[0].username}</strong>!`,
-            );
-            localStorage.setItem(
-                "access_token",
-                "Bearer " + data.signInData.session.access_token,
-            );
-            $is_logged_in = true;
-            $user_info_store = data.userProfileData[0];
-            localStorage.setItem(
-                "user",
-                JSON.stringify(data.userProfileData[0]),
-            );
-            goto("/dashboard");
-        } catch (error) {
-            console.error(error);
-            logging_in = false;
-            display_toast(
-                true,
-                "An error occurred during sign-in. Please try again.",
-            );
-            return;
-        }
-    }
+  }
 </script>
 
 <svelte:head>
-    <title>Login</title>
+  <title>Login</title>
 </svelte:head>
 {#if logging_in}
-    <div
-        class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
-    >
-        <div>
-            <Stretch
-                color={get_color_hex_code($theme_store.accentCurrentColor)}
-            />
-        </div>
-        <span class="mt-4 font-bold tracking-wider text-white text-3xl">
-            Signing you in...
-        </span>
+  <div
+    class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
+  >
+    <div>
+      <Stretch color={get_color_hex_code($theme_store.accentCurrentColor)} />
     </div>
+    <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+      Signing you in...
+    </span>
+  </div>
 {/if}
 
 <div class="flex h-screen overflow-hidden">
+  <div
+    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-100 dark:bg-accent-700"
+  >
     <div
-        class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-50 dark:bg-accent-700"
-    >
-        <div
-            class="flex flex-col items-center justify-center mx-4 px-2 py-8 lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-100 dark:bg-accent-500
+      class="flex flex-col items-center justify-center mx-4 px-2 py-8 lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-200 dark:bg-accent-900
       "
+    >
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <form
+          class="flex flex-col space-y-6"
+          on:submit|preventDefault={() => {
+            if (user_info.email === "" || user_info.password === "") return;
+            logging_in = true;
+            signIn();
+          }}
         >
-            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <form
-                    class="flex flex-col space-y-6"
-                    on:submit|preventDefault={() => {
-                        if (user_info.email === "" || user_info.password === "")
-                            return;
-                        logging_in = true;
-                        signIn();
-                    }}
-                >
-                    <h3
-                        class="text-xl font-medium text-gray-900 dark:text-white p-0"
-                    >
-                        Sign In
-                    </h3>
-                    <Label class="space-y-2">
-                        <span>Email</span>
-                        <Input
-                            name="email"
-                            bind:value={user_info.email}
-                            required
-                        />
-                    </Label>
-                    <Label class="space-y-2">
-                        <span>Password</span>
-                        <Input
-                            type="password"
-                            name="password"
-                            bind:value={user_info.password}
-                            required
-                        />
-                    </Label>
-                    <div class="flex items-start">
-                        <a
-                            href="/reset-password/recovery-mail"
-                            class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
-                            >Forgot password?</a
-                        >
-                    </div>
-                    <Button class="w-full1" type="submit">Sign in</Button>
-                    <p
-                        class="text-sm font-light text-ink-light dark:text-ink-dark"
-                    >
-                        Don’t have an account yet? <a
-                            href="/register"
-                            class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                            >Sign up</a
-                        >
-                    </p>
-                </form>
-            </div>
-        </div>
+          <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">
+            Sign In
+          </h3>
+          <Label class="space-y-2">
+            <span>Email</span>
+            <Input name="email" bind:value={user_info.email} required />
+          </Label>
+          <Label class="space-y-2">
+            <span>Password</span>
+            <Input
+              type="password"
+              name="password"
+              bind:value={user_info.password}
+              required
+            />
+          </Label>
+          <div class="flex items-start">
+            <a
+              href="/reset-password/recovery-mail"
+              class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
+              >Forgot password?</a
+            >
+          </div>
+          <Button class="w-full1" type="submit">Sign in</Button>
+          <p class="text-sm font-light text-ink-light dark:text-ink-dark">
+            Don’t have an account yet? <a
+              href="/register"
+              class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+              >Sign up</a
+            >
+          </p>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <div
-        class="w-3/4 h-full bg-cover bg-center typewriter"
-        style="background-image: url('https://wallpaperset.com/w/full/3/f/6/31549.jpg');"
-    >
-        <div class="h-full flex flex-col justify-center items-start p-12">
-            <h2
-                class="text-4xl font-bold mb-4 typewriter-text text-white
+  <div
+    class="w-3/4 h-full bg-cover bg-center typewriter"
+    style="background-image: url('https://wallpaperset.com/w/full/3/f/6/31549.jpg');"
+  >
+    <div class="h-full flex flex-col justify-center items-start p-12">
+      <h2
+        class="text-4xl font-bold mb-4 typewriter-text text-white
       "
-            >
-                Welcome to TaskFlow
-            </h2>
-            <p
-                class="text-xl typewriter-text text-white
+      >
+        Welcome to TaskFlow
+      </h2>
+      <p
+        class="text-xl typewriter-text text-white
       "
-            >
-                Manage your tasks efficiently and effectively.
-            </p>
-        </div>
+      >
+        Manage your tasks efficiently and effectively.
+      </p>
     </div>
+  </div>
 </div>
 
 <style>
-    .typewriter-text {
-        overflow: hidden;
-        white-space: nowrap;
-        margin: 0 auto;
-        letter-spacing: 0.15em;
-        animation: typing 4s steps(40, end) forwards;
-    }
+  .typewriter-text {
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.15em;
+    animation: typing 4s steps(40, end) forwards;
+  }
 
-    @keyframes typing {
-        from {
-            width: 0;
-        }
-        to {
-            width: 100%;
-        }
+  @keyframes typing {
+    from {
+      width: 0;
     }
+    to {
+      width: 100%;
+    }
+  }
 </style>

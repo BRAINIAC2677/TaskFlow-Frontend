@@ -162,6 +162,7 @@
               theme: {
                 "--toastBackground": "var(--accent-50)",
                 "--toastProgressBackground": "var(--accent-100)",
+                "--toastColor": "black",
               },
             }
           );
@@ -174,8 +175,9 @@
             )}</strong>\"`,
             {
               theme: {
-                "--toastBackground": "#ef233c",
+                "--toastBackground": "var(--accent-50)",
                 "--toastProgressBackground": "var(--accent-100)",
+                "--toastColor": "black",
               },
             }
           );
@@ -214,6 +216,7 @@
               theme: {
                 "--toastBackground": "var(--accent-50)",
                 "--toastProgressBackground": "var(--accent-100)",
+                "--toastColor": "black",
               },
             }
           );
@@ -226,8 +229,9 @@
             )}</strong>\"`,
             {
               theme: {
-                "--toastBackground": "#ef233c",
+                "--toastBackground": "var(--accent-50)",
                 "--toastProgressBackground": "var(--accent-100)",
+                "--toastColor": "black",
               },
             }
           );
@@ -318,7 +322,9 @@
       divClass="fixed bottom-5 z-10 right-5 w-full max-w-xs p-4 bg-accent-50 text-accent-900 shadow gap-3 font-bold"
     >
       <Spinner />
-      <span class="ml-5 text-md font-bold">Loading your tasks...</span>
+      <span class="ml-5 text-md font-bold text-white"
+        >Loading your tasks...</span
+      >
     </Toast>
   {/if}
 </div>

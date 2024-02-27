@@ -58,10 +58,10 @@
           success = true;
           toast.push("List Created Successfully!", {
             theme: {
-              "--toastBackground": "#E1F0DA",
-              "--toastProgressBackground": "#294B29",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
+              "--toastColor": "black",
               "--toastProgressText": "#1A202C",
-              "--toastColor": "#424242",
             },
           });
         })
@@ -69,10 +69,10 @@
           console.error(error);
           toast.push("An error occurred. Please try again.", {
             theme: {
-              "--toastBackground": "#FDEDEE",
-              "--toastProgressBackground": "#D2042D",
+              "--toastBackground": "var(--accent-50)",
+              "--toastProgressBackground": "var(--accent-100)",
+              "--toastColor": "black",
               "--toastProgressText": "#1A202C",
-              "--toastColor": "#424242",
             },
           });
           // success event dispatched already

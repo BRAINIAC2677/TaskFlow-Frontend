@@ -13,7 +13,7 @@
   import { sineIn } from "svelte/easing";
 
   let accordionItemClass: string =
-    "bg-accent-100 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-600";
+    "bg-accent-200 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-600 shadow-lg";
   let hidden: boolean = true;
   let transitionParams = {
     x: -320,
@@ -26,7 +26,7 @@
   <title>About TaskFlow</title>
 </svelte:head>
 
-<div class="bg-accent-50 dark:bg-gray-800 py-6 min-h-screen">
+<div class="bg-accent-100 dark:bg-accent-900 py-6 min-h-screen">
   <div class="flex flex-col w-full max-w-3xl mx-auto my-8 px-4">
     <Accordion multiple>
       <AccordionItem class={accordionItemClass}>
