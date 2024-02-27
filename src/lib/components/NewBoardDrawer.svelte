@@ -182,7 +182,7 @@
   {transitionParams}
   bind:hidden
   id="sidebar4"
-  class="w-96 bg-accent-50 dark:bg-gray-900 h-screen"
+  class="w-96 bg-accent-100 dark:bg-accent-800 h-screen"
 >
   <div class="flex flex-col h-full">
     <div class="flex justify-between items-center max-h-screen">
