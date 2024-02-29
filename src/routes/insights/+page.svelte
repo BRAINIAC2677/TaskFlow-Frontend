@@ -102,7 +102,7 @@
 </svelte:head>
 
 <div
-  class="mx-8 mt-8 sm:mx-4 md:mx-8 lg:mx-10 xl:mx-20 2xl:mx-32 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-12"
+  class="mx-8 mt-8 sm:mx-4 md:mx-8 lg:mx-10 xl:mx-20 2xl:mx-32 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-12 p-5"
 >
   <div class={containerClass}>
     <h2 class={titleClass}>Insights Overview</h2>
