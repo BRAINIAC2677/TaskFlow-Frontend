@@ -38,6 +38,41 @@
     let score: number = 0;
     let password_match: number = 0; // 0: not retyped, 1: mismatch, 2: match
 
+    async function delete_photo() {
+        const headers = new Headers({
+            Authorization: localStorage.getItem("access_token") || "",
+        });
+
+        try {
+            const response = await fetch($server_url + "/profile/dp-delete", {
+                method: "DELETE",
+                headers: headers,
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            toast.push("Photo deleted successfully", {
+                theme: {
+                    "--toastBackground": "var(--accent-50)",
+                    "--toastProgressBackground": "var(--accent-100)",
+                    "--toastColor": "black",
+                },
+            });
+            $user_info_store.dp_url = data.url;
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.push("An error occurred while deleting your photo", {
+                theme: {
+                    "--toastBackground": "var(--accent-50)",
+                    "--toastProgressBackground": "var(--accent-100)",
+                    "--toastColor": "black",
+                },
+            });
+        }
+    }
+
     async function upload_photo(event: Event) {
         console.log("entered upload_photo");
         const file = (event.target as HTMLInputElement).files[0];
@@ -268,7 +303,7 @@
                     <button
                         type="button"
                         class="px-4 py-2 ml-2 font-bold text-white transition duration-150 ease-in-out bg-red-500 rounded hover:bg-red-700"
-                        >Delete</button
+                        on:click={delete_photo}>Delete</button
                     >
                 </div>
             </div>
