@@ -1,10 +1,10 @@
-import type { BoardContentTaskForm, Task } from "./task";
+import type { BoardContentTaskForm } from "./task";
 
-export interface List {
-  id: number;
-  title: string;
-  tasks: Task[];
-}
+// export interface List {
+//   id: number;
+//   title: string;
+//   tasks: Task[];
+// }
 
 export interface BoardContentListForm {
   list_id: number;
