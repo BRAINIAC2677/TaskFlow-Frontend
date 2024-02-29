@@ -11,6 +11,8 @@
   } from "flowbite-svelte";
   import { InfoCircleSolid } from "flowbite-svelte-icons";
   import { sineIn } from "svelte/easing";
+  import { toast } from "@zerodevx/svelte-toast";
+  import server_url from "$lib/stores/server_store";
 
   let accordionItemClass: string =
     "bg-accent-200 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-600 shadow-lg";
@@ -20,6 +22,34 @@
     duration: 200,
     easing: sineIn,
   };
+
+  let email: string = "";
+  let subject: string = "";
+  let message: string = "";
+
+  async function submitComplaint() {
+    const request = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        subject,
+        message,
+      }),
+    };
+
+    try {
+      const response = await fetch($server_url + "/misc/feedback", request);
+      if (response.ok) {
+        console.log("Feedback submitted successfully");
+      } else {
+        console.error("Failed to submit feedback");
+        throw new Error("Failed to submit feedback");
+      }
+    } catch (error) {
+      console.error("Failed to submit feedback", error);
+    }
+  }
 </script>
 
 <svelte:head>
@@ -217,13 +247,43 @@
           class="mb-4 dark:text-white"
         />
       </div>
-      <form action="#" class="mb-6">
+      <form
+        on:submit|preventDefault={() => {
+          submitComplaint()
+            .then(() => {
+              toast.push("Thanks for your feedback. We will get back to you!", {
+                theme: {
+                  "--toastBackground": "var(--accent-50)",
+                  "--toastProgressBackground": "var(--accent-100)",
+                  "--toastColor": "black",
+                },
+              });
+              email = "";
+              subject = "";
+              message = "";
+            })
+            .catch((error) => {
+              toast.push("Error! Please try again.", {
+                theme: {
+                  "--toastBackground": "var(--accent-50)",
+                  "--toastProgressBackground": "var(--accent-100)",
+                  "--toastColor": "black",
+                },
+              });
+            })
+            .finally(() => {
+              hidden = true;
+            });
+        }}
+        class="mb-6"
+      >
         <div class="mb-6">
           <Label for="email" class="block mb-2">Your email</Label>
           <Input
             id="email"
             name="email"
             required
+            bind:value={email}
             placeholder="name@company.com"
           />
         </div>
@@ -232,7 +292,7 @@
           <Input
             id="subject"
             name="subject"
-            required
+            bind:value={subject}
             placeholder="Let us know how we can help you"
           />
         </div>
@@ -243,6 +303,8 @@
             placeholder="Your message..."
             rows="4"
             name="message"
+            bind:value={message}
+            required
           />
         </div>
         <Button type="submit" class="w-full">Send message</Button>
@@ -250,7 +312,9 @@
     </Drawer>
 
     <div class="text-center mt-6">
-      <Button on:click={() => (hidden = false)}>Show contact form</Button>
+      <Button type="submit" on:click={() => (hidden = false)}>
+        Show contact form
+      </Button>
     </div>
   </div>
 </div>
