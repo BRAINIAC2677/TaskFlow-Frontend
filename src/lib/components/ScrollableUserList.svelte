@@ -29,7 +29,6 @@
           >
         </div>
       </div>
-      <!-- two buttons needed: make admin and remove -->
       <div class="flex items-center justify-between py-4 px-6">
         <Toggle
           on:change={() => {

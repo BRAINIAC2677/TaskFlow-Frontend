@@ -30,13 +30,13 @@
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         return data;
       } else {
-        console.log("Error fetching notifications");
+        // console.log("Error fetching notifications");
       }
     } catch (error) {
-      console.log("Error fetching notifications");
+      // console.log("Error fetching notifications");
     }
   }
 
@@ -58,12 +58,12 @@
       const response = await fetch(url.toString(), request);
 
       if (response.ok) {
-        console.log("Notification(s) marked as read");
+        // console.log("Notification(s) marked as read");
       } else {
-        console.log("Error marking notification as read");
+        // console.log("Error marking notification as read");
       }
     } catch (error) {
-      console.log("Error marking notification as read");
+      // console.log("Error marking notification as read");
     }
   }
 
@@ -85,12 +85,12 @@
       const response = await fetch(url.toString(), request);
 
       if (response.ok) {
-        console.log("Notification(s) deleted");
+        // console.log("Notification(s) deleted");
       } else {
-        console.log("Error deleting notification");
+        // console.log("Error deleting notification");
       }
     } catch (error) {
-      console.log("Error deleting notification");
+      // console.log("Error deleting notification");
     }
   }
 
@@ -98,12 +98,12 @@
 
   onMount(async () => {
     try {
-      console.log("Fetching notifications");
+      // console.log("Fetching notifications");
       loading = true;
       const data = await fetchNotifications();
       notifications = data;
     } catch (error) {
-      console.log("Error fetching notifications");
+      // console.log("Error fetching notifications");
     } finally {
       loading = false;
     }

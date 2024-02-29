@@ -49,7 +49,7 @@
         throw new Error("Network response was not ok");
       }
       let res = await response.json();
-      console.log("success", res);
+      // console.log("success", res);
       return res;
     } catch (error) {
       console.error(requestID, "Error updating task time:", error);
@@ -103,7 +103,7 @@
       let day_head_classes =
         "ec-day-head !bg-accent-100 !text-accent-900 dark:!bg-accent-900 dark:!text-accent-100 ";
 
-      console.log(previous_theme.view);
+      // console.log(previous_theme.view);
       if (previous_theme.view.includes("ec-list")) {
         event_classes = "ec-event !bg-accent-100 dark:!bg-accent-900";
         event_body_classes =
@@ -130,7 +130,7 @@
       };
     },
     eventDrop: function (info: any) {
-      console.log("drag & drop", info.event);
+      // console.log("drag & drop", info.event);
       let requestID: number =
         task_update_queue.length > 0
           ? Math.max(...task_update_queue.map((x) => parseInt(x.requestID))) + 1
@@ -152,7 +152,7 @@
         info.event.end.toISOString()
       )
         .then((res) => {
-          console.log(info.event.title);
+          // console.log(info.event.title);
           toast.push(
             `Timeline shifting successful for \"<strong>${clip_string(
               info.event.title,
@@ -184,7 +184,7 @@
         });
     },
     eventResize: function (info: any) {
-      console.log("resize", info.event);
+      // console.log("resize", info.event);
       let requestID: number =
         task_update_queue.length > 0
           ? Math.max(...task_update_queue.map((x) => parseInt(x.requestID))) + 1
@@ -206,7 +206,7 @@
         info.event.end.toISOString()
       )
         .then((res) => {
-          console.log(info.event.title);
+          // console.log(info.event.title);
           toast.push(
             `Timeline extension successful for \"<strong>${clip_string(
               info.event.title,
@@ -251,7 +251,7 @@
           successCallback: (events: CalendarViewTask[]) => void,
           failureCallback: (error: any) => void
         ) {
-          // console.log(fetchInfo);
+          // // console.log(fetchInfo);
           const requestBody = {
             start: fetchInfo.startStr,
             end: fetchInfo.endStr,
@@ -288,7 +288,7 @@
                   ),
                 };
               });
-              console.log("Fetching done", events);
+              // console.log("Fetching done", events);
               successCallback(events);
             })
             .catch((error) => {

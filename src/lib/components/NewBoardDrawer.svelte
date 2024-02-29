@@ -204,7 +204,7 @@
         get_final_input();
         createBoard()
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             toast.push("Board created successfully!", {
               theme: {
                 "--toastBackground": "var(--accent-50)",

@@ -10,7 +10,7 @@
   let hidden = true;
 
   function handleBoardCreated(event: any) {
-    console.log("Board created", event);
+    // console.log("Board created", event);
     all_boards.push(event.detail);
     all_boards = all_boards;
   }

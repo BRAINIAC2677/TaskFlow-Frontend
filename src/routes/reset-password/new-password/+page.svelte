@@ -53,8 +53,6 @@
       });
     }
 
-    console.log(token);
-
     const headers = new Headers({
       method: "POST",
       Authorization: "Bearer " + token,
@@ -109,7 +107,6 @@
         change_password()
           .then((data) => {
             success = true;
-            console.log(data);
             toast.push("Password changed successfully", {
               theme: {
                 "--toastBackground": "var(--accent-50)",

@@ -51,7 +51,7 @@
   }
 
   async function register() {
-    console.log(new_user);
+    // console.log(new_user);
 
     const request = {
       method: "POST",
@@ -62,7 +62,7 @@
     try {
       registering = true;
       const response = await fetch($server_url + "/auth/signup", request);
-      console.log(response);
+      // console.log(response);
       if (!response.ok) {
         console.error("Network response was not ok");
         return;
@@ -124,7 +124,7 @@
           if (new_user.password.length < 6) return;
           register()
             .then((data) => {
-              console.log(data);
+              // console.log(data);
               toast.push("Registration successful", {
                 theme: {
                   "--toastBackground": "var(--accent-50)",

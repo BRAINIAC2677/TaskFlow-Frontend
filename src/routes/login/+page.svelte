@@ -39,7 +39,7 @@
   }
 
   async function signIn() {
-    console.log(user_info);
+    // console.log(user_info);
 
     const request = {
       method: "POST",
@@ -49,7 +49,7 @@
 
     try {
       const response = await fetch($server_url + "/auth/signin", request);
-      console.log(response);
+      // console.log(response);
       if (!response.ok) {
         display_toast(true, "Invalid Credentials");
         console.error("Network response was not ok");

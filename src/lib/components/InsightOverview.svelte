@@ -40,7 +40,7 @@
 
   onMount(async () => {
     try {
-      console.log("Fetching Insight Overview");
+      // console.log("Fetching Insight Overview");
       loading = true;
       const data = await fetchInsightOverviewStats();
 
@@ -127,8 +127,6 @@
     </div>
   </div>
 {/if}
-
-<!-- </div> -->
 
 <style>
   .animate-pulse {

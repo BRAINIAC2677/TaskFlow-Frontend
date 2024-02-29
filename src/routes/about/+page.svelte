@@ -41,7 +41,7 @@
     try {
       const response = await fetch($server_url + "/misc/feedback", request);
       if (response.ok) {
-        console.log("Feedback submitted successfully");
+        // console.log("Feedback submitted successfully");
       } else {
         console.error("Failed to submit feedback");
         throw new Error("Failed to submit feedback");
