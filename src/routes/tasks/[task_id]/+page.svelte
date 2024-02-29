@@ -3,20 +3,37 @@
     import server_url from "$lib/stores/server_store";
     import ChatWindow from "$lib/components/ChatWindow.svelte";
     import { page } from "$app/stores";
-    import type { Task } from "$lib/interfaces/task";
 
     let task_id: number = Number($page.params.task_id);
 
-    async function uploadCoverPhoto(event: any) {
+    let task: Task = {
+        id: 0,
+        name: "",
+        description: "",
+        start_time: new Date(),
+        due_time: new Date(),
+        labels: [],
+        label_color: "#000000",
+        cover_url: "",
+        checklist_items: [],
+    };
+
+    let new_checklist_item: CheckListItem = {
+        item_id: 0,
+        item_name: "",
+        is_completed: false,
+    };
+
+    async function upload_cover_photo(event: any) {
         const file = event.target.files[0];
         if (!file) {
             console.log("No file selected");
             return;
         }
 
-        const formData = new FormData();
-        formData.append("taskcover", file);
-        formData.append("task_id", task.id.toString());
+        const form_data = new FormData();
+        form_data.append("taskcover", file);
+        form_data.append("task_id", task.id.toString());
 
         const headers = new Headers({
             Authorization: localStorage.getItem("access_token") || "",
@@ -28,7 +45,7 @@
                 {
                     method: "POST",
                     headers,
-                    body: formData,
+                    body: form_data,
                 },
             );
 
@@ -36,14 +53,14 @@
                 throw new Error("Network response was not ok");
             }
             const data = await response.json();
-            task.cover_url = data.url; // Assuming the backend returns the URL of the uploaded image
+            task.cover_url = data.url;
             console.log("Cover photo uploaded successfully");
         } catch (error) {
             console.error("Upload error:", error);
         }
     }
 
-    async function deleteCoverPhoto() {
+    async function delete_cover_photo() {
         const headers = new Headers({
             Authorization: localStorage.getItem("access_token") || "",
             "Content-Type": "application/json",
@@ -60,14 +77,14 @@
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
-            task.cover_url = ""; // Remove the cover URL from the task object
+            task.cover_url = "";
             console.log("Cover photo deleted successfully");
         } catch (error) {
             console.error("Delete error:", error);
         }
     }
 
-    async function getTaskDetail() {
+    async function get_task_detail() {
         const token = localStorage.getItem("access_token") || "";
 
         const headers = {
@@ -82,7 +99,7 @@
 
         try {
             const url = new URL($server_url + "/task/get-detail");
-            url.searchParams.set("task_id", $page.params.task_id);
+            url.searchParams.set("task_id", String(task_id));
             const response = await fetch(url.toString(), request);
             if (response.ok) {
                 const data = await response.json();
@@ -96,23 +113,11 @@
         }
     }
 
-    let task: Task = {
-        id: 0,
-        name: "",
-        description: "",
-        start_time: new Date(),
-        due_time: new Date(),
-        labels: [],
-        label_color: "#000000",
-        cover_url: "",
-        checklist_items: [],
-    };
-
     onMount(async () => {
         try {
             console.log("Fetching task detail");
-            if ($page.params.task_id) {
-                const data = await getTaskDetail();
+            if (task_id) {
+                const data = await get_task_detail();
                 console.log(data);
                 task = data;
                 console.log(task);
@@ -123,16 +128,6 @@
             console.log("Task detail fetched");
         }
     });
-
-    let new_checklist_item: {
-        item_id: number;
-        item_name: string;
-        is_completed: boolean;
-    } = {
-        item_id: 0,
-        item_name: "",
-        is_completed: false,
-    };
 
     // Dragging
     let start_x: number;
@@ -200,35 +195,6 @@
     >
         <!-- Existing HTML elements -->
 
-        <div class="mb-4">
-            {#if task.cover_url}
-                <img
-                    src={task.cover_url}
-                    alt="Cover Photo"
-                    class="w-full mb-4"
-                />
-                <button
-                    class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
-                    on:click={deleteCoverPhoto}
-                >
-                    Delete Cover Photo
-                </button>
-            {/if}
-            <input
-                type="file"
-                id="coverUpload"
-                class="hidden"
-                accept="image/*"
-                on:change={uploadCoverPhoto}
-            />
-            <button
-                class="px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                on:click={() => document.getElementById("coverUpload").click()}
-            >
-                Upload Cover Photo
-            </button>
-        </div>
-
         <!-- Continue with the existing HTML elements -->
 
         <div class="flex flex-col gap-10 lg:flex-row">
@@ -238,6 +204,35 @@
                 <h2 class="mb-4 text-2xl font-semibold text-black">
                     {task.name}
                 </h2>
+                <div class="mb-4">
+                    {#if task.cover_url}
+                        <img
+                            src={task.cover_url}
+                            alt="Cover Photo"
+                            class="w-full mb-4"
+                        />
+                        <button
+                            class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+                            on:click={delete_cover_photo}
+                        >
+                            Delete Cover Photo
+                        </button>
+                    {/if}
+                    <input
+                        type="file"
+                        id="coverUpload"
+                        class="hidden"
+                        accept="image/*"
+                        on:change={upload_cover_photo}
+                    />
+                    <button
+                        class="px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                        on:click={() =>
+                            document.getElementById("coverUpload").click()}
+                    >
+                        Upload Cover Photo
+                    </button>
+                </div>
 
                 <div class="mb-4">
                     <!-- svelte-ignore a11y-label-has-associated-control -->
