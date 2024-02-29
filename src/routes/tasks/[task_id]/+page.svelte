@@ -7,6 +7,66 @@
 
     let task_id: number = Number($page.params.task_id);
 
+    async function uploadCoverPhoto(event: any) {
+        const file = event.target.files[0];
+        if (!file) {
+            console.log("No file selected");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("taskcover", file);
+        formData.append("task_id", task.id.toString());
+
+        const headers = new Headers({
+            Authorization: localStorage.getItem("access_token") || "",
+        });
+
+        try {
+            const response = await fetch(
+                $server_url + "/task/taskcover-upload",
+                {
+                    method: "POST",
+                    headers,
+                    body: formData,
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            task.cover_url = data.url; // Assuming the backend returns the URL of the uploaded image
+            console.log("Cover photo uploaded successfully");
+        } catch (error) {
+            console.error("Upload error:", error);
+        }
+    }
+
+    async function deleteCoverPhoto() {
+        const headers = new Headers({
+            Authorization: localStorage.getItem("access_token") || "",
+            "Content-Type": "application/json",
+        });
+
+        try {
+            const url = new URL($server_url + "/task/taskcover-delete");
+            url.searchParams.set("task_id", task.id.toString());
+            const response = await fetch(url.toString(), {
+                method: "DELETE",
+                headers,
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            task.cover_url = ""; // Remove the cover URL from the task object
+            console.log("Cover photo deleted successfully");
+        } catch (error) {
+            console.error("Delete error:", error);
+        }
+    }
+
     async function getTaskDetail() {
         const token = localStorage.getItem("access_token") || "";
 
@@ -44,6 +104,7 @@
         due_time: new Date(),
         labels: [],
         label_color: "#000000",
+        cover_url: "",
         checklist_items: [],
     };
 
@@ -137,6 +198,39 @@
         class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900"
         style="width: 35%"
     >
+        <!-- Existing HTML elements -->
+
+        <div class="mb-4">
+            {#if task.cover_url}
+                <img
+                    src={task.cover_url}
+                    alt="Cover Photo"
+                    class="w-full mb-4"
+                />
+                <button
+                    class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+                    on:click={deleteCoverPhoto}
+                >
+                    Delete Cover Photo
+                </button>
+            {/if}
+            <input
+                type="file"
+                id="coverUpload"
+                class="hidden"
+                accept="image/*"
+                on:change={uploadCoverPhoto}
+            />
+            <button
+                class="px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                on:click={() => document.getElementById("coverUpload").click()}
+            >
+                Upload Cover Photo
+            </button>
+        </div>
+
+        <!-- Continue with the existing HTML elements -->
+
         <div class="flex flex-col gap-10 lg:flex-row">
             <div
                 class="w-full max-w-xl p-6 mx-auto rounded-lg shadow-lg bg-accent-100 lg:w-2/3"
