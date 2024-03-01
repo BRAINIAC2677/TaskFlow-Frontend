@@ -23,6 +23,8 @@
   import { Shadow } from "svelte-loading-spinners";
   import { get_color_hex_code } from "$lib/stores/theme_store";
   import PaintBrush from "$lib/images/paint-brush.png";
+  import { onMount } from "svelte";
+  import { supabase } from "../supabase";
 
   let logging_out: boolean = false;
 
@@ -77,6 +79,14 @@
       goto("/login");
     }
   }
+
+  onMount(() => {
+    supabase.auth.onAuthStateChange(async (event: string, session: any) => {
+      if (event === "PASSWORD_RECOVERY") {
+        goto("/reset-password/new-password");
+      }
+    });
+  });
 </script>
 
 <SvelteToast />

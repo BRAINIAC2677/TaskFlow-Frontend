@@ -9,9 +9,8 @@
   } from "flowbite-svelte";
   import { CheckOutline, CloseOutline } from "flowbite-svelte-icons";
   import { toast } from "@zerodevx/svelte-toast";
-  import server_url from "$lib/stores/server_store";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { supabase } from "../../../supabase";
 
   let new_password: string = "";
   let confirm_password: string = "";
@@ -38,51 +37,14 @@
   }
 
   async function change_password() {
-    let url = $page.url.href;
-    let token = "";
-    try {
-      token = url.split("token=")[1].split("&")[0];
-    } catch (error) {
-      console.error(error);
-      toast.push("Invalid token, please try again!", {
-        theme: {
-          "--toastBackground": "var(--accent-50)",
-          "--toastProgressBackground": "var(--accent-100)",
-          "--toastColor": "black",
-        },
-      });
-    }
-
-    const headers = new Headers({
-      method: "POST",
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
+    const { data, error } = await supabase.auth.updateUser({
+      password: new_password,
     });
 
-    const request = {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify({
-        type: "reset",
-        email: "",
-        current_password: "",
-        new_password: new_password,
-      }),
-    };
+    console.log(data, error);
 
-    try {
-      const response = await fetch(
-        $server_url + "/auth/change-password",
-        request
-      );
-      if (!response.ok) {
-        console.error(response);
-        throw new Error("Network response was not ok");
-      }
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
+    if (data) return data;
+    if (error) throw error;
   }
 
   $: does_match = new_password === confirm_password;
@@ -93,9 +55,11 @@
 </svelte:head>
 
 <div
-  class="flex justify-center items-center min-h-screen bg-accent-50 dark:bg-gray-800"
+  class="flex justify-center items-center min-h-screen bg-accent-100 dark:bg-accent-800"
 >
-  <div class="px-4 py-8 space-y-4 rounded-lg shadow-lg max-w-lg w-1/2 mx-auto">
+  <div
+    class="px-4 py-8 space-y-4 rounded-lg shadow-xl max-w-lg w-1/2 mx-auto bg-accent-200 dark:bg-accent-900 text-accent-900 dark:text-accent-100"
+  >
     <span class="text-3xl font-bold text-center block">
       Enter New Password
     </span>
@@ -185,14 +149,14 @@
           <Button
             class="ml-3 bg-accent-300 disabled:hover:bg-accent-300 hover:bg-accent-500 dark:bg-accent-700 disabled:dark:hover:bg-accent-700 dark:hover:bg-accent-800 text-ink-light dark:text-ink-dark py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold disabled:opacity-50"
           >
-            <Spinner class="me-3" size="4" color="white" /> Updating ...
+            <Spinner class="me-3 bg-accent-50" size="4" /> Changing Password .....
           </Button>
         {:else}
           <Button
             type="submit"
             disabled={new_password.length < 6 ||
               new_password != confirm_password}
-            class="ml-3 bg-accent-300 disabled:hover:bg-accent-300 hover:bg-accent-500 dark:bg-accent-700 disabled:dark:hover:bg-accent-700 dark:hover:bg-accent-800 text-ink-light dark:text-ink-dark py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold disabled:opacity-50"
+            class="ml-3 bg-accent-50 disabled:hover:bg-accent-50 hover:bg-accent-500 dark:hover:bg-accent-800 text-ink-light dark:text-ink-dark py-2 px-4 rounded-md transition duration-150 ease-in-out font-bold disabled:opacity-50"
             >Change Password</Button
           >
         {/if}
