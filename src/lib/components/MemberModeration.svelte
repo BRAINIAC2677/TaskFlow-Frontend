@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Modal, Label, Button } from "flowbite-svelte";
-  import Autocomplete from "./Autocomplete.svelte";
+  import Autocomplete from "$lib/components/Autocomplete.svelte";
   import server_url from "$lib/stores/server_store";
+  import { toast } from "@zerodevx/svelte-toast";
   import type {
     UserMemberInfo,
     UserSuggestion,
@@ -9,6 +10,7 @@
   } from "$lib/interfaces/user";
   import type { BoardContent } from "$lib/interfaces/board";
   import { user_info_store } from "$lib/stores/user_store";
+  import { createEventDispatcher } from "svelte";
 
   export let board: BoardContent;
   export let showModal = false;
@@ -58,12 +60,162 @@
     if (res) owner = res;
   }
 
-  function removeAdmin(adminId: string) {
-    // Implement the logic to remove admin role
+  const dispatch = createEventDispatcher();
+
+  async function updateMemberAccess(
+    userID: string,
+    prevRole: number,
+    newRole: number
+  ) {
+    const headers = new Headers({
+      Authorization: localStorage.getItem("access_token") || "",
+      "Content-Type": "application/json",
+    });
+
+    const request = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        board_id: board.board_id,
+        user_id: userID,
+        prev_role: prevRole,
+        new_role: newRole,
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        $server_url + "/board/update-member-access",
+        request
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  function removeMember(memberId: string) {
-    // Implement the logic to remove a member
+  // let userID = event.detail.user_id;
+  //   let prev_role = event.detail.prev_role;
+  //   let new_role = event.detail.new_role;
+  //   let username = event.detail.username;
+  //   let full_name = event.detail.full_name;
+  //   let dp_url = event.detail.dp_url;
+
+  function removeAdmin(
+    userID: string,
+    username: string,
+    full_name: string,
+    dp_url: string
+  ) {
+    // 2 to 3
+    updateMemberAccess(userID, 2, 3)
+      .then((res) => {
+        dispatch("memberUpdated", {
+          user_id: userID,
+          prev_role: 2,
+          new_role: 3,
+          username: username,
+          full_name: full_name,
+          dp_url: dp_url,
+        });
+        toast.push("Admin removed successfully", {
+          theme: {
+            "--toastBackground": "rgba(16, 185, 129, 0.9)",
+            "--toastProgressBackground": "rgba(16, 185, 129, 0.5)",
+            "--toastProgressEndBackground": "rgba(16, 185, 129, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      })
+      .catch((error) => {
+        toast.push("Failed to remove admin", {
+          theme: {
+            "--toastBackground": "rgba(220, 38, 38, 0.9)",
+            "--toastProgressBackground": "rgba(220, 38, 38, 0.5)",
+            "--toastProgressEndBackground": "rgba(220, 38, 38, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      });
+  }
+
+  function removeMember(
+    userID: string,
+    username: string,
+    full_name: string,
+    dp_url: string
+  ) {
+    // 3 to -1
+    updateMemberAccess(userID, 3, -1)
+      .then((res) => {
+        dispatch("memberUpdated", {
+          user_id: userID,
+          prev_role: 3,
+          new_role: -1,
+          username: username,
+          full_name: full_name,
+          dp_url: dp_url,
+        });
+        toast.push("Member removed successfully", {
+          theme: {
+            "--toastBackground": "rgba(16, 185, 129, 0.9)",
+            "--toastProgressBackground": "rgba(16, 185, 129, 0.5)",
+            "--toastProgressEndBackground": "rgba(16, 185, 129, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      })
+      .catch((error) => {
+        toast.push("Failed to remove member", {
+          theme: {
+            "--toastBackground": "rgba(220, 38, 38, 0.9)",
+            "--toastProgressBackground": "rgba(220, 38, 38, 0.5)",
+            "--toastProgressEndBackground": "rgba(220, 38, 38, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      });
+  }
+
+  function addMember(
+    userID: string,
+    username: string,
+    full_name: string,
+    dp_url: string
+  ) {
+    // -1 to 3
+    updateMemberAccess(userID, -1, 3)
+      .then((res) => {
+        dispatch("memberUpdated", {
+          user_id: userID,
+          prev_role: -1,
+          new_role: 3,
+          username: username,
+          full_name: full_name,
+          dp_url: dp_url,
+        });
+        toast.push("Member added successfully", {
+          theme: {
+            "--toastBackground": "rgba(16, 185, 129, 0.9)",
+            "--toastProgressBackground": "rgba(16, 185, 129, 0.5)",
+            "--toastProgressEndBackground": "rgba(16, 185, 129, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      })
+      .catch((error) => {
+        toast.push("Failed to add member", {
+          theme: {
+            "--toastBackground": "rgba(220, 38, 38, 0.9)",
+            "--toastProgressBackground": "rgba(220, 38, 38, 0.5)",
+            "--toastProgressEndBackground": "rgba(220, 38, 38, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      });
   }
 
   let suggestions: Array<UserSuggestion> = [];
@@ -77,7 +229,7 @@
     bind:loading
     bind:suggestions
     bind:searchTerm={search_term}
-    on:select={(e) => {}}
+    on:select={() => {}}
   />
 
   <div class="mt-4">
@@ -127,7 +279,13 @@
             <Button
               color="red"
               size="xs"
-              on:click={() => removeAdmin(admin.user_id)}
+              on:click={() =>
+                removeAdmin(
+                  admin.user_id,
+                  admin.username,
+                  admin.full_name,
+                  admin.dp_url
+                )}
             >
               {#if $user_info_store.id !== admin.user_id}
                 Remove Admin
@@ -137,7 +295,13 @@
             <Button
               color="red"
               size="xs"
-              on:click={() => removeAdmin(admin.user_id)}
+              on:click={() =>
+                removeAdmin(
+                  admin.user_id,
+                  admin.username,
+                  admin.full_name,
+                  admin.dp_url
+                )}
             >
               Resign as Admin
             </Button>
@@ -173,7 +337,13 @@
           <Button
             color="red"
             size="xs"
-            on:click={() => removeMember(member.user_id)}
+            on:click={() =>
+              removeMember(
+                member.user_id,
+                member.username,
+                member.full_name,
+                member.dp_url
+              )}
           >
             Remove Member
           </Button>

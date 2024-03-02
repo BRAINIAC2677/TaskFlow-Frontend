@@ -1,7 +1,7 @@
 <script lang="ts">
   import { user_info_store } from "$lib/stores/user_store";
   import BoardSettingsModal from "$lib/components/BoardSettingsModal.svelte";
-  import MemberModeration from "./MemberModeration.svelte";
+  import MemberModeration from "$lib/components/MemberModeration.svelte";
   import type { BoardContent } from "$lib/interfaces/board";
   import { sineIn } from "svelte/easing";
   import { fade } from "svelte/transition";
@@ -33,6 +33,39 @@
       board_deadline: event.detail.due_timestamp,
       board_description: event.detail.description,
     };
+  }
+
+  function handleMemberUpdate(event: any) {
+    let userID = event.detail.user_id;
+    let prev_role = event.detail.prev_role;
+    let new_role = event.detail.new_role;
+    let username = event.detail.username;
+    let full_name = event.detail.full_name;
+    let dp_url = event.detail.dp_url;
+    if (new_role == -1) {
+      // remove this user
+      board.board_members = board.board_members.filter(
+        (member) => member.user_id !== userID
+      );
+    } else if (prev_role == -1) {
+      board.board_members = [
+        ...board.board_members,
+        {
+          user_id: userID,
+          username: username,
+          full_name: full_name,
+          role: new_role,
+          dp_url: dp_url,
+        },
+      ];
+    } else {
+      board.board_members = board.board_members.map((member) => {
+        if (member.user_id === userID) {
+          member.role = new_role;
+        }
+        return member;
+      });
+    }
   }
 
   function toggleSidebar() {
@@ -153,6 +186,10 @@
 
 {#if memberModerationModal}
   <div transition:fade={{ duration: 250 }}>
-    <MemberModeration bind:showModal={memberModerationModal} bind:board />
+    <MemberModeration
+      bind:showModal={memberModerationModal}
+      on:memberUpdated={handleMemberUpdate}
+      bind:board
+    />
   </div>
 {/if}
