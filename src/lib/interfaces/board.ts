@@ -34,4 +34,5 @@ export interface BoardContent {
   board_deadline: string;
   board_lists: Array<BoardContentListForm>;
   board_name: string;
+  board_access: number; // 1: owner, 2: admin, 3: member
 }

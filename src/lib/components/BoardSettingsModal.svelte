@@ -6,13 +6,12 @@
     Label,
     Table,
     TableBody,
-    TableBodyCell,
-    TableBodyRow,
     TableHead,
     TableHeadCell,
     Textarea,
   } from "flowbite-svelte";
   import type { BoardContent } from "$lib/interfaces/board";
+  import ListUpdateTableRow from "./ListUpdateTableRow.svelte";
   import server_url from "$lib/stores/server_store";
   import { Spinner } from "flowbite-svelte";
   import { toast } from "@zerodevx/svelte-toast";
@@ -23,9 +22,14 @@
 
   const dispatch = createEventDispatcher();
 
-  let name: string = board.board_name || "";
-  let description: string = board.board_description || "";
-  let deadline: string = board.board_deadline || "";
+  let name: string = "";
+  let description: string = "";
+  let deadline: string = "";
+
+  name = board?.board_name;
+  description = board?.board_description;
+  deadline = board?.board_deadline;
+
   let updatingBoard: boolean = false;
 
   async function updateBoard() {
@@ -58,18 +62,17 @@
     }
   }
 
-  function handleListUpdate(
-    listId: number,
-    newName: string,
-    newDeadline: string
-  ) {
-    console.log("List updated:", listId, newName, newDeadline);
-    // Implement the update logic here
-  }
-
-  function deleteList(listId: number) {
-    console.log("List deleted:", listId);
-    // Implement the delete logic here
+  function handleListUpdate(event: any) {
+    const idx = board.board_lists.findIndex(
+      (list) => list.list_id === event.detail.list_id
+    );
+    if (idx === -1) return;
+    board.board_lists[idx] = {
+      ...board.board_lists[idx],
+      list_name: event.detail.list_name,
+      list_deadline: event.detail.list_deadline,
+    };
+    board = { ...board };
   }
 </script>
 
@@ -150,32 +153,7 @@
         </TableHead>
         <TableBody>
           {#each board.board_lists as list (list.list_id)}
-            <TableBodyRow>
-              <TableBodyCell>
-                <Input type="text" bind:value={list.list_name} />
-              </TableBodyCell>
-              <TableBodyCell>
-                <Input type="datetime-local" bind:value={list.list_deadline} />
-              </TableBodyCell>
-              <TableBodyCell class="flex justify-end space-x-2">
-                <!-- Flex container for right-aligned buttons -->
-                <Button
-                  color="green"
-                  size="xs"
-                  on:click={() =>
-                    handleListUpdate(
-                      list.list_id,
-                      list.list_name,
-                      list.list_deadline
-                    )}>Update</Button
-                >
-                <Button
-                  color="red"
-                  size="xs"
-                  on:click={() => deleteList(list.list_id)}>Delete</Button
-                >
-              </TableBodyCell>
-            </TableBodyRow>
+            <ListUpdateTableRow bind:list on:listUpdated={handleListUpdate} />
           {/each}
         </TableBody>
       </Table>

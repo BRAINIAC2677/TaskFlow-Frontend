@@ -81,16 +81,18 @@
       divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800"
     >
       <SidebarGroup>
-        <SidebarItem
-          label="Board Settings"
-          on:click={() => (boardSettingsModal = true)}
-        >
-          <svelte:fragment slot="icon">
-            <PieChartSolid
-              class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            />
-          </svelte:fragment>
-        </SidebarItem>
+        {#if board?.board_access <= 2}
+          <SidebarItem
+            label="Board Settings"
+            on:click={() => (boardSettingsModal = true)}
+          >
+            <svelte:fragment slot="icon">
+              <PieChartSolid
+                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+              />
+            </svelte:fragment>
+          </SidebarItem>
+        {/if}
         <SidebarItem label="Members">
           <svelte:fragment slot="icon">
             <UsersSolid
