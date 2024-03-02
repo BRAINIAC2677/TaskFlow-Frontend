@@ -154,7 +154,7 @@
     "text-xs text-black font-bold dark:text-white text-right mt-1";
 </script>
 
-<div class="flex-1 p-4 overflow-auto bg-accent-100 dark:bg-accent-900">
+<div class="flex-1 p-4 bg-accent-100 dark:bg-accent-900">
   <h2 class="mb-4 text-xl font-semibold text-black dark:text-black">
     Chat Window
   </h2>
@@ -214,7 +214,7 @@
   {/if}
   <div class="pt-4 text-center">
     <textarea
-      class="w-full p-2 text-sm text-black bg-white rounded dark:text-gray-300 dark:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+              class="w-full p-2 text-sm border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
       rows="2"
       placeholder="Type your message..."
       bind:value={messageText}

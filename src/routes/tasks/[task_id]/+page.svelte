@@ -216,17 +216,17 @@
   <title>Task Detail</title>
 </svelte:head>
 
-<div class="flex flex-wrap md:flex-nowrap">
+<div class="flex flex-wrap max-h-screen overflow-y-scroll md:flex-nowrap">
   <div
     bind:this={left_panel}
     class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900"
     style="width: 35%"
   >
-    <div class="flex flex-col gap-10 lg:flex-row">
+    <div class="flex flex-col gap-10 p-6 lg:flex-row">
       <div
-        class="w-full max-w-xl p-6 mx-auto rounded-lg shadow-lg bg-accent-100 lg:w-2/3"
+        class="w-full max-w-2xl p-6 mx-auto rounded-lg shadow-lg text-accent-900 dark:text-accent-100 bg-accent-100 dark:bg-accent-800"
       >
-        <h2 class="mb-4 text-2xl font-semibold text-black">
+        <h2 class="mb-4 text-2xl font-semibold">
           {task.name}
         </h2>
         <div class="mb-4">
@@ -237,7 +237,7 @@
               class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
               on:click={delete_cover_photo}
             >
-              Delete Cover Photo
+              Delete
             </button>
           {/if}
           <input
@@ -248,16 +248,16 @@
             on:change={upload_cover_photo}
           />
           <button
-            class="px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+            class="px-4 py-2 mt-4 font-bold text-white transition-all rounded hover:bg-accent-500 bg-accent-50"
             on:click={() => document.getElementById("coverUpload")?.click()}
           >
-            Upload Cover Photo
+            Upload
           </button>
         </div>
 
         <div class="mb-4">
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold text-gray-700">Label Color</label>
+          <label class="font-bold">Label Color</label>
           <input
             type="color"
             class="block w-full mt-1"
@@ -270,13 +270,13 @@
 
         <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div>
-            <label class="font-bold text-gray-700" for="start-date"
+            <label class="font-bold" for="start-date"
               >Start Date</label
             >
             <input
               id="start-date"
               type="date"
-              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
               bind:value={start_date_str}
               on:change={() => {
                 const [year, month, day] = start_date_str.split("-");
@@ -289,13 +289,15 @@
             />
           </div>
           <div>
-            <label class="font-bold text-gray-700" for="start-time"
+            <label class="font-bold" for="start-time"
               >Start Time</label
             >
             <input
               id="start-time"
               type="time"
-              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+
+              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+
               bind:value={start_time_str}
               on:change={() => {
                 const [hours, minutes] = start_time_str.split(":");
@@ -307,13 +309,14 @@
 
         <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
           <div>
-            <label class="font-bold text-gray-700" for="due-date"
+            <label class="font-bold" for="due-date"
               >Due Date</label
             >
             <input
               id="due-date"
               type="date"
-              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+
               bind:value={due_date_str}
               on:change={() => {
                 const [year, month, day] = due_date_str.split("-");
@@ -326,13 +329,14 @@
             />
           </div>
           <div>
-            <label class="font-bold text-gray-700" for="due-time"
+            <label class="font-bold" for="due-time"
               >Due Time</label
             >
             <input
               id="due-time"
               type="time"
-              class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+
               bind:value={due_time_str}
               on:change={() => {
                 const [hours, minutes] = due_time_str.split(":");
@@ -344,7 +348,7 @@
 
         <div class="mb-4">
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold text-gray-700">Checklist</label>
+          <label class="font-bold">Checklist</label>
           <div class="mt-1">
             {#if task.checklist_items != undefined}
               {#each task.checklist_items as item, i}
@@ -354,7 +358,7 @@
                     class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                     bind:checked={item.is_completed}
                   />
-                  <span class="ml-2 text-gray-700">{item.item_name}</span>
+                  <span class="ml-2 ">{item.item_name}</span>
                 </div>
               {/each}
             {/if}
@@ -362,7 +366,8 @@
           <div class="flex flex-col p-4 mt-4 rounded-lg">
             <input
               type="text"
-              class="flex-1 mr-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+
+              class="flex-1 mr-2 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
               placeholder="Add a new item"
               bind:value={new_checklist_item.item_name}
             />
