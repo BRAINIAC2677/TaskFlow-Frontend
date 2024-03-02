@@ -74,6 +74,15 @@
     };
     board = { ...board };
   }
+
+  function handleListDelete(event: any) {
+    const idx = board.board_lists.findIndex(
+      (list) => list.list_id === event.detail.list_id
+    );
+    if (idx === -1) return;
+    board.board_lists.splice(idx, 1);
+    board = { ...board };
+  }
 </script>
 
 {#if board !== undefined}
@@ -153,7 +162,11 @@
         </TableHead>
         <TableBody>
           {#each board.board_lists as list (list.list_id)}
-            <ListUpdateTableRow bind:list on:listUpdated={handleListUpdate} />
+            <ListUpdateTableRow
+              bind:list
+              on:listUpdated={handleListUpdate}
+              on:listDeleted={handleListDelete}
+            />
           {/each}
         </TableBody>
       </Table>

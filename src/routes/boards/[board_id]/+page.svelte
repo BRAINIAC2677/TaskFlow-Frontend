@@ -29,14 +29,15 @@
     : "";
 
   function handleListCreated(event: any) {
-    // console.log("List created", event);
-    task_lists.push({
-      list_id: event.detail.list_id,
-      list_name: event.detail.list_name,
-      list_deadline: event.detail.list_deadline,
-      list_tasks: event.detail.list_tasks,
-    });
-    task_lists = task_lists;
+    board_content.board_lists = [
+      ...board_content.board_lists,
+      {
+        list_id: event.detail.list_id,
+        list_name: event.detail.list_name,
+        list_deadline: event.detail.list_deadline,
+        list_tasks: event.detail.list_tasks,
+      },
+    ];
   }
 
   async function fetchBoardContent() {
@@ -179,7 +180,7 @@
       >
         {#if task_lists != undefined}
           {#each task_lists as list}
-            <ListCard {list} />
+            <ListCard bind:list />
           {/each}
         {/if}
         <button

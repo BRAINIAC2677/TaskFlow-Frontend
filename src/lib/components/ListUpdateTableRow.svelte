@@ -5,12 +5,14 @@
   import { createEventDispatcher } from "svelte";
   import { toast } from "@zerodevx/svelte-toast";
   import server_url from "$lib/stores/server_store";
+  import { slide } from "svelte/transition";
 
   export let list: BoardContentListForm;
   let updating: boolean = false;
 
   let name: string = "";
   let deadline: string = "";
+  let askForConfirmation: boolean = false;
 
   name = list?.list_name;
   deadline = list?.list_deadline;
@@ -82,13 +84,53 @@
       });
   }
 
+  async function deleteList(listId: number) {
+    try {
+      const response = await fetch($server_url + "/list/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("access_token") || "",
+        },
+        body: JSON.stringify({
+          list_id: listId,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to delete list");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error deleting list:", error);
+      throw new Error("Failed to delete list");
+    }
+  }
+
   function deleteListConfirmed(listId: number) {
-    console.log("List deleted:", listId);
-    // Implement the delete logic here
+    deleteList(listId)
+      .then(() => {
+        dispatch("listDeleted", { list_id: listId });
+        toast.push("List deleted successfully", {
+          theme: {
+            "--toastBackground": "var(--accent-50)",
+            "--toastProgressBackground": "var(--accent-100)",
+            "--toastColor": "black",
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting list:", error);
+        toast.push("Failed to delete list", {
+          theme: {
+            "--toastBackground": "var(--accent-50)",
+            "--toastProgressBackground": "var(--accent-100)",
+            "--toastColor": "black",
+          },
+        });
+      });
   }
 </script>
 
-<TableBodyRow>
+<TableBodyRow class="border-none">
   <TableBodyCell>
     <Input type="text" bind:value={name} />
   </TableBodyCell>
@@ -118,8 +160,38 @@
         >
       {/if}
     </div>
-    <Button color="red" size="xs" class="w-full" on:click={() => {}}
-      >Delete</Button
+    <Button
+      color="red"
+      size="xs"
+      class="w-full"
+      on:click={() => {
+        askForConfirmation = true;
+      }}>Delete</Button
     >
   </TableBodyCell>
 </TableBodyRow>
+
+{#if askForConfirmation}
+  <div transition:slide>
+    <div class="flex justify-between items-center bg-red-100 p-3 rounded-lg">
+      <span class="font-bold text-red-700"
+        >Are you sure you want to delete this list?</span
+      >
+      <div class="space-x-2">
+        <button
+          class="btn-red"
+          on:click={() => {
+            deleteListConfirmed(list.list_id);
+            askForConfirmation = false;
+          }}>Confirm</button
+        >
+        <button
+          class="btn-gray"
+          on:click={() => {
+            askForConfirmation = false;
+          }}>Cancel</button
+        >
+      </div>
+    </div>
+  </div>
+{/if}
