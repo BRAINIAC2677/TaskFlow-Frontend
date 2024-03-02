@@ -87,24 +87,23 @@
 </svelte:head>
 {#if logging_in}
   <div
-    class="bg-gray-900 bg-opacity-50 flex flex-col justify-center items-center fixed inset-0 min-h-full min-w-full"
+    class="fixed inset-0 flex flex-col items-center justify-center min-w-full min-h-full bg-gray-900 bg-opacity-50"
   >
     <div>
       <Stretch color={get_color_hex_code($theme_store.accentCurrentColor)} />
     </div>
-    <span class="mt-4 font-bold tracking-wider text-white text-3xl">
+    <span class="mt-4 text-3xl font-bold tracking-wider text-white">
       Signing you in...
     </span>
   </div>
 {/if}
 
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden bg-accent-100 dark:bg-accent-900">
   <div
-    class="w-1/4 h-full flex flex-col justify-center items-center bg-accent-100 dark:bg-accent-700"
+    class="flex flex-col items-center justify-center w-full h-full"
   >
     <div
-      class="flex flex-col items-center justify-center mx-4 px-2 py-8 lg:py-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-accent-200 dark:bg-accent-900
-      "
+      class="flex flex-col items-center justify-center px-2 py-8 mx-4 border border-gray-200 shadow-xl rounded-xl min-w-96 lg:py-0 dark:border-gray-800 bg-accent-100 dark:bg-accent-800"
     >
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
         <form
@@ -115,21 +114,19 @@
             signIn();
           }}
         >
-          <h3 class="text-xl font-medium text-gray-900 dark:text-white p-0">
-            Sign In
-          </h3>
-          <Label class="space-y-2">
+          <h1 class="text-2xl font-bold text-center text-accent-50 ">
+            TaskFlow
+          </h1>
+          <h2 class="text-lg text-center font-base text-accent-900 dark:text-accent-100">
+            Manage your tasks with ease
+          </h2>
+         <Label class="space-y-2">
             <span>Email</span>
-            <Input name="email" bind:value={user_info.email} required />
+            <Input name="email" class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100" bind:value={user_info.email} required placeholder="Enter your mail" />
           </Label>
           <Label class="space-y-2">
             <span>Password</span>
-            <Input
-              type="password"
-              name="password"
-              bind:value={user_info.password}
-              required
-            />
+            <Input name="password" type="password" class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100" bind:value={user_info.password} required placeholder="Enter your password" />
           </Label>
           <div class="flex items-start">
             <a
@@ -138,7 +135,7 @@
               >Forgot password?</a
             >
           </div>
-          <Button class="w-full1" type="submit">Sign in</Button>
+          <button class="w-full p-2 font-bold rounded-lg bg-accent-50 text-accent-100 hover:bg-accent-500" type="submit">Sign in</button>
           <p class="text-sm font-light text-ink-light dark:text-ink-dark">
             Don’t have an account yet? <a
               href="/register"
@@ -151,25 +148,6 @@
     </div>
   </div>
 
-  <div
-    class="w-3/4 h-full bg-cover bg-center typewriter"
-    style="background-image: url('https://wallpaperset.com/w/full/3/f/6/31549.jpg');"
-  >
-    <div class="h-full flex flex-col justify-center items-start p-12">
-      <h2
-        class="text-4xl font-bold mb-4 typewriter-text text-white
-      "
-      >
-        Welcome to TaskFlow
-      </h2>
-      <p
-        class="text-xl typewriter-text text-white
-      "
-      >
-        Manage your tasks efficiently and effectively.
-      </p>
-    </div>
-  </div>
 </div>
 
 <style>
