@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Input, TableBodyCell, TableBodyRow } from "flowbite-svelte";
+  import { Button } from "flowbite-svelte";
   import type { BoardContentListForm } from "$lib/interfaces/list";
   import { Spinner } from "flowbite-svelte";
   import { createEventDispatcher } from "svelte";
@@ -9,6 +9,7 @@
 
   export let list: BoardContentListForm;
   let updating: boolean = false;
+  let deleting: boolean = false;
 
   let name: string = "";
   let deadline: string = "";
@@ -16,8 +17,6 @@
 
   name = list?.list_name;
   deadline = list?.list_deadline;
-
-  $: console.log("List:", list);
 
   const dispatch = createEventDispatcher();
 
@@ -106,6 +105,7 @@
   }
 
   function deleteListConfirmed(listId: number) {
+    deleting = true;
     deleteList(listId)
       .then(() => {
         dispatch("listDeleted", { list_id: listId });
@@ -126,72 +126,116 @@
             "--toastColor": "black",
           },
         });
+      })
+      .finally(() => {
+        deleting = false;
       });
   }
 </script>
 
-<TableBodyRow class="border-none">
-  <TableBodyCell>
-    <Input type="text" bind:value={name} />
-  </TableBodyCell>
-  <TableBodyCell>
-    <Input type="datetime-local" bind:value={deadline} />
-  </TableBodyCell>
-  <TableBodyCell class="flex flex-col space-y-2 items-end">
-    <div class="w-full flex justify-between">
-      {#if updating}
-        <Button
-          color="green"
-          size="xs"
-          disabled
-          class="disabled:opacity-100 w-full"
-        >
-          <Spinner class="me-2" size="4" color="white" /> Updating
-        </Button>
-      {:else}
-        <Button
-          disabled={name === list.list_name && deadline === list.list_deadline}
-          color="green"
-          size="xs"
-          class="w-full"
-          on:click={() => handleListUpdate(list.list_id, name, deadline)}
-        >
-          Update</Button
-        >
-      {/if}
+<div class="flex flex-col gap-6 bg-white shadow-md rounded-lg p-6">
+  <div class="flex responsive-flex gap-3">
+    <div class="flex-1">
+      <label class="text-gray-700 block">
+        List Name
+        <input
+          type="text"
+          bind:value={name}
+          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md"
+          placeholder="Enter List Name"
+        />
+      </label>
     </div>
-    <Button
-      color="red"
-      size="xs"
-      class="w-full"
-      on:click={() => {
-        askForConfirmation = true;
-      }}>Delete</Button
-    >
-  </TableBodyCell>
-</TableBodyRow>
+    <div class="flex-1">
+      <label class="text-gray-700 block">
+        Deadline
+        <input
+          type="datetime-local"
+          bind:value={deadline}
+          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md"
+        />
+      </label>
+    </div>
+  </div>
 
-{#if askForConfirmation}
-  <div transition:slide>
-    <div class="flex justify-between items-center bg-red-100 p-3 rounded-lg">
-      <span class="font-bold text-red-700"
-        >Are you sure you want to delete this list?</span
+  <div class="flex justify-center gap-4 mt-4">
+    {#if updating}
+      <Button
+        color="green"
+        size="sm"
+        disabled
+        class="bg-green-600 hover:bg-green-800 text-accent-100 font-bold disabled:hover:bg-green-600 disabled:opacity-100"
       >
-      <div class="space-x-2">
-        <button
-          class="btn-red"
+        <Spinner class="me-2" size="4" color="white" />
+        Updating
+      </Button>
+    {:else}
+      <Button
+        disabled={name === list.list_name && deadline === list.list_deadline}
+        color="green"
+        size="sm"
+        class="bg-green-600 hover:bg-green-800 text-accent-100 font-bold disabled:hover:bg-green-600"
+        on:click={() => handleListUpdate(list.list_id, name, deadline)}
+      >
+        Update
+      </Button>
+    {/if}
+    {#if deleting}
+      <Button
+        color="red"
+        size="sm"
+        disabled
+        class="bg-red-600 hover:bg-red-800 text-accent-100 font-bold disabled:hover:bg-red-500 disabled:opacity-100"
+      >
+        <Spinner class="me-2" size="4" color="white" />
+        Deleting
+      </Button>
+    {:else}
+      <Button
+        color="red"
+        size="sm"
+        class="bg-red-600 hover:bg-red-800 text-accent-100 font-bold disabled:hover:bg-red-500"
+        on:click={() => (askForConfirmation = true)}>Delete</Button
+      >
+    {/if}
+  </div>
+
+  {#if askForConfirmation}
+    <div
+      transition:slide
+      class="flex justify-between items-center bg-red-100 p-4 rounded-lg mt-4"
+    >
+      <span class="font-bold text-red-700">
+        Are you sure you want to delete this list?
+      </span>
+      <div class="flex gap-2">
+        <Button
+          color="red"
+          size="sm"
+          class="bg-red-600 hover:bg-red-800 text-accent-100 font-bold disabled:hover:bg-red-500"
           on:click={() => {
             deleteListConfirmed(list.list_id);
             askForConfirmation = false;
-          }}>Confirm</button
+          }}>Confirm</Button
         >
         <button
-          class="btn-gray"
+          class="px-6 py-2 bg-gray-500 text-white font-bold text-sm rounded-md shadow-sm hover:bg-gray-600"
           on:click={() => {
             askForConfirmation = false;
-          }}>Cancel</button
+          }}
         >
+          Cancel
+        </button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
+</div>
+
+<style>
+  /* Additional styling for responsiveness */
+  @media (max-width: 640px) {
+    .responsive-flex {
+      flex-direction: column;
+    }
+  }
+</style>

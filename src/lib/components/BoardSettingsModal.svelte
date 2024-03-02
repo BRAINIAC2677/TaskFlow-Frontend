@@ -1,17 +1,7 @@
 <script lang="ts">
-  import {
-    Modal,
-    Button,
-    Input,
-    Label,
-    Table,
-    TableBody,
-    TableHead,
-    TableHeadCell,
-    Textarea,
-  } from "flowbite-svelte";
+  import { Modal, Button, Input, Label, Textarea } from "flowbite-svelte";
   import type { BoardContent } from "$lib/interfaces/board";
-  import ListUpdateTableRow from "./ListUpdateTableRow.svelte";
+  import ListUpdateCard from "./ListUpdateCard.svelte";
   import server_url from "$lib/stores/server_store";
   import { Spinner } from "flowbite-svelte";
   import { toast } from "@zerodevx/svelte-toast";
@@ -154,22 +144,15 @@
       <h4 class="text-lg font-medium text-accent-900 dark:text-accent-100 mb-2">
         Lists
       </h4>
-      <Table>
-        <TableHead>
-          <TableHeadCell>List Name</TableHeadCell>
-          <TableHeadCell>List Deadline</TableHeadCell>
-          <TableHeadCell></TableHeadCell>
-        </TableHead>
-        <TableBody>
-          {#each board.board_lists as list (list.list_id)}
-            <ListUpdateTableRow
-              bind:list
-              on:listUpdated={handleListUpdate}
-              on:listDeleted={handleListDelete}
-            />
-          {/each}
-        </TableBody>
-      </Table>
+      <div class="flex flex-col gap-4">
+        {#each board.board_lists as list (list.list_id)}
+          <ListUpdateCard
+            bind:list
+            on:listUpdated={handleListUpdate}
+            on:listDeleted={handleListDelete}
+          />
+        {/each}
+      </div>
     </div>
   </Modal>
 {/if}
