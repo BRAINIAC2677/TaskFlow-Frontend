@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { toast } from "@zerodevx/svelte-toast";
   import server_url from "$lib/stores/server_store";
   import ChatWindow from "$lib/components/ChatWindow.svelte";
   import { page } from "$app/stores";
@@ -27,7 +28,14 @@
   async function upload_cover_photo(event: any) {
     const file = event.target.files[0];
     if (!file) {
-      // console.log("No file selected");
+      toast.push("No file selected", {
+        theme: {
+          "--toastBackground": "red",
+          "--toastProgressBackground": "pink",
+          "--toastProgressText": "red",
+          "--toastText": "white",
+        },
+      });
       return;
     }
 
@@ -50,10 +58,26 @@
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      toast.push("Cover photo uploaded successfully", {
+        theme: {
+          "--toastBackground": "green",
+          "--toastProgressBackground": "lightgreen",
+          "--toastProgressText": "green",
+          "--toastText": "white",
+        },
+      }); 
       task.cover_url = data.url;
       // console.log("Cover photo uploaded successfully");
     } catch (error) {
       console.error("Upload error:", error);
+      toast.push("Error uploading cover photo", {
+        theme: {
+          "--toastBackground": "red",
+          "--toastProgressBackground": "pink",
+          "--toastProgressText": "red",
+          "--toastText": "white",
+        },
+      });
     }
   }
 
@@ -75,9 +99,25 @@
         throw new Error("Network response was not ok");
       }
       task.cover_url = "";
+      toast.push("Cover photo deleted successfully", {
+        theme: {
+          "--toastBackground": "green",
+          "--toastProgressBackground": "lightgreen",
+          "--toastProgressText": "green",
+          "--toastText": "white",
+        },
+      });
       // console.log("Cover photo deleted successfully");
     } catch (error) {
       console.error("Delete error:", error);
+      toast.push("Error deleting cover photo", {
+        theme: {
+          "--toastBackground": "red",
+          "--toastProgressBackground": "pink",
+          "--toastProgressText": "red",
+          "--toastText": "white",
+        },
+      });
     }
   }
 
@@ -100,7 +140,7 @@
       const response = await fetch(url.toString(), request);
       if (response.ok) {
         const data = await response.json();
-        // console.log(data);
+        console.log(data);
         return data;
       } else {
         // console.log("Error fetching task detail");
@@ -117,7 +157,7 @@
         const data = await get_task_detail();
         // console.log(data);
         task = data;
-        // console.log(task);
+        console.log(task);
       }
     } catch (error) {
       // console.log("Error fetching task detail");
@@ -182,10 +222,6 @@
     class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900"
     style="width: 35%"
   >
-    <!-- Existing HTML elements -->
-
-    <!-- Continue with the existing HTML elements -->
-
     <div class="flex flex-col gap-10 lg:flex-row">
       <div
         class="w-full max-w-xl p-6 mx-auto rounded-lg shadow-lg bg-accent-100 lg:w-2/3"
@@ -196,7 +232,7 @@
         <div class="mb-4">
           {#if task.cover_url}
             <!-- svelte-ignore a11y-img-redundant-alt -->
-            <img src={task.cover_url} alt="Cover Photo" class="w-full mb-4" />
+            <img src="{task.cover_url}?t={new Date().getTime()}" alt="Cover Photo" class="w-full mb-4" />
             <button
               class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
               on:click={delete_cover_photo}
@@ -353,7 +389,7 @@
 
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
-    class="p-1 cursor-col-resize bg-accent-50 dark:bg-accent-600 my-3"
+    class="p-1 my-3 cursor-col-resize bg-accent-50 dark:bg-accent-600"
     on:mousedown={init_drag}
   ></div>
   <ChatWindow bind:task_id />

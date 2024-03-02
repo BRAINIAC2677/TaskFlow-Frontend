@@ -270,7 +270,7 @@
 
         <div class="flex items-center space-x-6">
           {#if is_image_loading}
-            <div class="skeleton w-24 h-24 rounded-full"></div>
+            <div class="w-24 h-24 rounded-full skeleton"></div>
           {/if}
           <!-- svelte-ignore a11y-img-redundant-alt -->
           <img
@@ -299,14 +299,14 @@
         <div class="flex">
           <button
             type="button"
-            class="px-4 py-2 font-bold text-black transition duration-150 ease-in-out bg-accent-50 rounded-md hover:bg-accent-600"
+            class="px-4 py-2 font-bold text-black transition duration-150 ease-in-out rounded-md bg-accent-50 hover:bg-accent-600"
             on:click={() => document.getElementById("photoUpload")?.click()}
             >Upload New Photo</button
           >
 
           <button
             type="button"
-            class="px-4 py-2 ml-2 font-bold text-black transition duration-150 ease-in-out bg-accent-50 rounded-md hover:bg-accent-600"
+            class="px-4 py-2 ml-2 font-bold text-black transition duration-150 ease-in-out rounded-md bg-accent-50 hover:bg-accent-600"
             on:click={delete_photo}>Delete Current Photo</button
           >
         </div>

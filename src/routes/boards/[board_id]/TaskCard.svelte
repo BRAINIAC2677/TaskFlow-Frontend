@@ -43,13 +43,13 @@
 
 <div class="p-2 rounded cursor-pointer bg-accent-50 text-accent-900">
   {#if task.task_cover_url}
-    <div class="overflow-hidden rounded relative">
+    <div class="relative overflow-hidden rounded">
       <!-- Skeleton placeholder -->
       <div class="skeleton" class:hidden={imageLoaded}></div>
 
       <!-- Actual image -->
       <img
-        src={task.task_cover_url}
+        src="{task.task_cover_url}?t={new Date().getTime()}"
         alt="Task Cover"
         class="w-full h-auto transition-opacity duration-700"
         class:hidden={!imageLoaded}
