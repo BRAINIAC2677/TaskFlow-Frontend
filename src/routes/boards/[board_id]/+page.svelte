@@ -13,10 +13,20 @@
   import { Input } from "flowbite-svelte";
   import { SearchOutline } from "flowbite-svelte-icons";
   import BoardViewDrawer from "$lib/components/BoardViewDrawer.svelte";
+  import { format, formatDistanceToNow } from "date-fns";
 
   let addListModal: boolean = false;
   let hiddenSideBar: boolean = true;
   let search_term: string = "";
+
+  $: formattedDeadline = board_content
+    ? format(new Date(board_content.board_deadline), "MMMM dd, yyyy")
+    : "";
+  $: timeLeft = board_content
+    ? formatDistanceToNow(new Date(board_content.board_deadline), {
+        addSuffix: true,
+      })
+    : "";
 
   function handleListCreated(event: any) {
     // console.log("List created", event);
@@ -135,10 +145,21 @@
     {:else}
       <div class="flex items-center justify-between my-4">
         {#if board_content}
-          <h2 class="text-xl font-semibold">
-            {board_content.board_name}
-          </h2>
+          <div class="my-4">
+            <h2 class="text-xl font-semibold mb-2 text-primary">
+              {board_content.board_name}
+            </h2>
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg shadow p-4">
+              <p class="text-md text-gray-600 dark:text-gray-400 mb-4">
+                {board_content.board_description}
+              </p>
+              <p class="text-md font-semibold text-accent">
+                Deadline: {formattedDeadline} ({timeLeft})
+              </p>
+            </div>
+          </div>
         {/if}
+
         <div class="flex space-x-2">
           <!-- Filter dropdowns or sorting controls can be added here -->
           <Input

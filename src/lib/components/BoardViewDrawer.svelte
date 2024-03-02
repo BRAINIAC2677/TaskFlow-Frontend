@@ -25,6 +25,15 @@
   export let hiddenSideBar: boolean = true;
   export let board: BoardContent;
 
+  function handleBoardUpdate(event: any) {
+    board = {
+      ...board,
+      board_name: event.detail.board_name,
+      board_deadline: event.detail.due_timestamp,
+      board_description: event.detail.description,
+    };
+  }
+
   function toggleSidebar() {
     hiddenSideBar = !hiddenSideBar;
   }
@@ -127,6 +136,10 @@
 
 {#if boardSettingsModal}
   <div transition:fade={{ duration: 250 }}>
-    <BoardSettingsModal bind:board bind:showModal={boardSettingsModal} />
+    <BoardSettingsModal
+      bind:board
+      bind:showModal={boardSettingsModal}
+      on:boardUpdated={handleBoardUpdate}
+    />
   </div>
 {/if}

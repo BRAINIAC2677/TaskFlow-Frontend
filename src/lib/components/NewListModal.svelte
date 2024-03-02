@@ -89,7 +89,7 @@
       <span>List Name</span>
       <Input type="text" name="name" required bind:value={name} />
     </Label>
-    <Label class="space-y-2">
+    <!-- <Label class="space-y-2">
       <span>Description</span>
       <Textarea
         id="message"
@@ -98,7 +98,7 @@
         name="message"
         bind:value={description}
       />
-    </Label>
+    </Label> -->
     <Label class="space-y-2">
       <span>Due Time</span>
       <Input

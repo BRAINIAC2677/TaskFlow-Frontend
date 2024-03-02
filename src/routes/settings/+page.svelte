@@ -272,7 +272,6 @@
           {#if is_image_loading}
             <div class="skeleton w-24 h-24 rounded-full"></div>
           {/if}
-          <!-- {:else} -->
           <!-- svelte-ignore a11y-img-redundant-alt -->
           <img
             src="{$user_info_store.dp_url}?t={new Date().getTime()}"
