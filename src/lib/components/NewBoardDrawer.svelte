@@ -10,6 +10,7 @@
   import { toast } from "@zerodevx/svelte-toast";
   import { createEventDispatcher } from "svelte";
   import { user_info_store } from "$lib/stores/user_store";
+  import type { UserSuggestion } from "$lib/interfaces/user";
   import {
     Drawer,
     Button,
@@ -158,10 +159,7 @@
     }
   }
 
-  let suggestions: Array<{
-    id: string;
-    name: string;
-  }> = [];
+  let suggestions: UserSuggestion[] = [];
 
   $: {
     retrieved_users = retrieved_users.filter((user) => {
@@ -172,6 +170,9 @@
         id: user.id,
         name: user.username,
       };
+    });
+    suggestions = suggestions.filter((s) => {
+      return s.id !== $user_info_store.id;
     });
   }
 </script>
@@ -275,6 +276,7 @@
             bind:suggestions
             bind:searchTerm={search_term}
             on:select={(e) => {
+              console.log(e.detail);
               let user = retrieved_users.find(
                 (user) => user.id === e.detail.index
               );

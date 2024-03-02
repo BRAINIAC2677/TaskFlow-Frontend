@@ -3,17 +3,13 @@
   import { Input } from "flowbite-svelte";
   import { BarLoader } from "svelte-loading-spinners";
   import { get_color_hex_code } from "$lib/stores/theme_store";
+  import type { UserSuggestion } from "$lib/interfaces/user";
   import theme_store from "$lib/stores/theme_store";
 
-  interface Suggestion {
-    id: number | string;
-    name: string;
-  }
-
-  export let suggestions: Array<Suggestion> = [];
+  export let suggestions: Array<UserSuggestion> = [];
   export let loading: boolean = false;
   export let searchTerm: string = "";
-  let filteredSuggestions: Array<Suggestion> = [];
+  let filteredSuggestions: Array<UserSuggestion> = [];
 
   const dispatch = createEventDispatcher();
 
@@ -74,6 +70,7 @@
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <li
           class="px-4 py-2 cursor-default select-none hover:bg-gray-300 dark:hover:bg-gray-600"
+          on:click={() => selectSuggestion(suggestion.id, suggestion.name)}
         >
           {@html makeMatchBold(suggestion.name, searchTerm)}
         </li>

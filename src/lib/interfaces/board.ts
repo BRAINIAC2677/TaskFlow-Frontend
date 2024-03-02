@@ -1,4 +1,5 @@
 import type { BoardContentListForm } from "./list";
+import type { UserMemberInfo } from "./user";
 
 interface OwnerInfo {
   user_id: bigint;
@@ -35,4 +36,5 @@ export interface BoardContent {
   board_lists: Array<BoardContentListForm>;
   board_name: string;
   board_access: number; // 1: owner, 2: admin, 3: member
+  board_members: Array<UserMemberInfo>;
 }

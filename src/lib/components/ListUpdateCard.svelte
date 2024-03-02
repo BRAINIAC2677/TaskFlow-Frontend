@@ -133,26 +133,28 @@
   }
 </script>
 
-<div class="flex flex-col gap-6 bg-white shadow-md rounded-lg p-6">
+<div
+  class="flex flex-col gap-6 bg-accent-100 dark:bg-gray-800 shadow-xl rounded-lg p-6"
+>
   <div class="flex responsive-flex gap-3">
     <div class="flex-1">
-      <label class="text-gray-700 block">
-        List Name
+      <label class="text-accent-900 dark:text-accent-100 block">
+        <span class="font-bold"> List Name </span>
         <input
           type="text"
           bind:value={name}
-          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md"
+          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md text-accent-900 dark:text-accent-900"
           placeholder="Enter List Name"
         />
       </label>
     </div>
     <div class="flex-1">
-      <label class="text-gray-700 block">
-        Deadline
+      <label class="text-accent-900 dark:text-accent-100 block">
+        <span class="font-bold"> Deadline </span>
         <input
           type="datetime-local"
           bind:value={deadline}
-          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md"
+          class="form-input mt-1 block w-full border-gray-300 shadow-sm rounded-md text-accent-900 dark:text-accent-900"
         />
       </label>
     </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { user_info_store } from "$lib/stores/user_store";
   import BoardSettingsModal from "$lib/components/BoardSettingsModal.svelte";
+  import MemberModeration from "./MemberModeration.svelte";
   import type { BoardContent } from "$lib/interfaces/board";
   import { sineIn } from "svelte/easing";
   import { fade } from "svelte/transition";
@@ -39,6 +40,7 @@
   }
 
   let boardSettingsModal: boolean = false;
+  let memberModerationModal: boolean = false;
   let transitionParams = {
     x: -320,
     duration: 200,
@@ -93,7 +95,10 @@
             </svelte:fragment>
           </SidebarItem>
         {/if}
-        <SidebarItem label="Members">
+        <SidebarItem
+          label="Members"
+          on:click={() => (memberModerationModal = true)}
+        >
           <svelte:fragment slot="icon">
             <UsersSolid
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -143,5 +148,11 @@
       bind:showModal={boardSettingsModal}
       on:boardUpdated={handleBoardUpdate}
     />
+  </div>
+{/if}
+
+{#if memberModerationModal}
+  <div transition:fade={{ duration: 250 }}>
+    <MemberModeration bind:showModal={memberModerationModal} bind:board />
   </div>
 {/if}

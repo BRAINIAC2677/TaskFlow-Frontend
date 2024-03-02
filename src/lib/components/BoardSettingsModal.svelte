@@ -109,7 +109,7 @@
               description === board.board_description &&
               deadline === board.board_deadline}
             type="button"
-            class="w-1/3 md:w-1/4 bg-accent-50 hover:bg-accent-600 text-accent-900 dark:bg-accent-50 dark:hover:bg-accent-600 disabled:hover:bg-accent-50 disabled:dark:hover:bg-accent-50"
+            class="w-1/3 md:w-1/4 bg-accent-50 hover:bg-accent-600 text-accent-100 font-bold dark:bg-accent-50 dark:hover:bg-accent-600 disabled:hover:bg-accent-50 disabled:dark:hover:bg-accent-50"
             on:click={() => {
               updatingBoard = true;
               updateBoard()

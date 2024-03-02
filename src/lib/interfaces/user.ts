@@ -37,3 +37,8 @@ export interface RegistrationInfo {
   email: string;
   password: string;
 }
+
+export interface UserSuggestion {
+  id: string;
+  name: string;
+}
