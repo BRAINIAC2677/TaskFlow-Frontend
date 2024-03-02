@@ -108,6 +108,10 @@
         bind:value={timestamp}
       />
     </Label>
-    <Button type="submit" class="w-full">Create List</Button>
+    <Button
+      type="submit"
+      class="w-1/4 md:w-1/3 mx-auto bg-accent-50 text-accent-900 hover:bg-accent-600 dark:bg-accent-50 dark:hover:bg-accent-600"
+      >Create List</Button
+    >
   </form>
 </Modal>

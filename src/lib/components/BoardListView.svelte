@@ -40,7 +40,7 @@
                 <!-- Filter dropdowns or sorting controls can be added here -->
                 <Input
                     id="search"
-                    placeholder="Search"
+                    placeholder="Search Boards"
                     size="md"
                     bind:value={search_term}
                     class="dark:bg-accent-800 border-accent-50 dark:border-accent-50 text-accent-50"

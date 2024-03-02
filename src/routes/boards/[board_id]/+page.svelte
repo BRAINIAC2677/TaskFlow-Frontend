@@ -1,58 +1,32 @@
 <script lang="ts">
   import ListCard from "./ListCard.svelte";
   import NewListModal from "$lib/components/NewListModal.svelte";
-  import { sineIn } from "svelte/easing";
   import server_url from "$lib/stores/server_store";
   import type { BoardContent } from "$lib/interfaces/board";
+  import type { BoardContentListForm } from "$lib/interfaces/list";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
-  import { user_info_store } from "$lib/stores/user_store";
   import { Wave } from "svelte-loading-spinners";
   import { get_color_hex_code } from "$lib/stores/theme_store";
   import theme_store from "$lib/stores/theme_store";
   import { fade } from "svelte/transition";
   import { Input } from "flowbite-svelte";
   import { SearchOutline } from "flowbite-svelte-icons";
-  import {
-    Drawer,
-    Sidebar,
-    SidebarDropdownWrapper,
-    SidebarGroup,
-    SidebarItem,
-    SidebarWrapper,
-  } from "flowbite-svelte";
-  import {
-    PieChartSolid,
-    UsersSolid,
-    AnnotationSolid,
-    ClipboardCheckSolid,
-    AngleRightSolid,
-    AngleLeftSolid,
-    FileCodeSolid,
-  } from "flowbite-svelte-icons";
-  let formModal = false;
+  import BoardViewDrawer from "$lib/components/BoardViewDrawer.svelte";
 
-  let hiddenSideBar = true;
-  let transitionParams = {
-    x: -320,
-    duration: 200,
-    easing: sineIn,
-  };
-
+  let addListModal: boolean = false;
+  let hiddenSideBar: boolean = true;
   let search_term: string = "";
-
-  function toggleSidebar() {
-    hiddenSideBar = !hiddenSideBar;
-  }
 
   function handleListCreated(event: any) {
     // console.log("List created", event);
-    tasklist_collection.push({
+    task_lists.push({
       list_id: event.detail.list_id,
       list_name: event.detail.list_name,
+      list_deadline: event.detail.list_deadline,
       list_tasks: event.detail.list_tasks,
     });
-    tasklist_collection = tasklist_collection;
+    task_lists = task_lists;
   }
 
   async function fetchBoardContent() {
@@ -81,16 +55,20 @@
     }
   }
 
-  let spinner_color: string = "#000000";
-  $: {
-    spinner_color = get_color_hex_code($theme_store.accentCurrentColor);
+  function stripTimezoneFromTimestamp(timestamp: string): string {
+    // This regex matches YYYY-MM-DDTHH:MM:SS and captures this part, ignoring timezone info
+    const regex = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/;
+    const match = timestamp.match(regex);
+    return match ? match[1] : ""; // Return the captured datetime or an empty string if no match
   }
+
+  let spinner_color: string = "#000000";
+  $: spinner_color = get_color_hex_code($theme_store.accentCurrentColor);
 
   let content_loading: boolean = false;
   let board_content: BoardContent;
-  import type { BoardContentListForm } from "$lib/interfaces/list";
-  let tasklist_collection: BoardContentListForm[] =
-    Array<BoardContentListForm>();
+
+  let task_lists: BoardContentListForm[] = Array<BoardContentListForm>();
 
   onMount(async () => {
     // console.log("Fetching board content");
@@ -99,8 +77,12 @@
       if ($page.params.board_id) {
         board_content = await fetchBoardContent();
       }
+      board_content.board_deadline = stripTimezoneFromTimestamp(
+        board_content.board_deadline
+      );
       board_content.board_lists.forEach((list) => {
-        tasklist_collection.push(list);
+        list.list_deadline = stripTimezoneFromTimestamp(list.list_deadline);
+        task_lists.push(list);
       });
     } catch (err) {
       console.error("Fetch error:", err);
@@ -111,7 +93,7 @@
 
   $: {
     if (board_content) {
-      tasklist_collection = board_content.board_lists.filter((list) => {
+      task_lists = board_content.board_lists.filter((list) => {
         let keep: boolean = list.list_name
           .toLowerCase()
           .includes(search_term.toLowerCase());
@@ -133,91 +115,7 @@
 </svelte:head>
 
 <div class="flex h-screen bg-accent-100 dark:bg-accent-900">
-  <button
-    on:click={toggleSidebar}
-    class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
-  >
-    <AngleRightSolid />
-  </button>
-  <Drawer
-    transitionType="fly"
-    {transitionParams}
-    bind:hidden={hiddenSideBar}
-    id="sidebar2"
-    backdrop={false}
-    leftOffset="top-16 h-screen start-0"
-    divClass="bg-gray-100 dark:bg-accent-800 shadow-lg dark:shadow-none"
-    width="w-72"
-  >
-    <div class="flex items-center justify-between px-3">
-      <h5
-        id="drawer-navigation-label-3"
-        class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
-      >
-        Hello, {$user_info_store.username}
-      </h5>
-      <button
-        on:click={toggleSidebar}
-        class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100"
-      >
-        <AngleLeftSolid />
-      </button>
-    </div>
-    <Sidebar>
-      <SidebarWrapper
-        divClass="overflow-y-auto py-4 px-3 rounded dark:bg-gray-800"
-      >
-        <SidebarGroup>
-          <SidebarItem label="Board Settings">
-            <svelte:fragment slot="icon">
-              <PieChartSolid
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-              />
-            </svelte:fragment>
-          </SidebarItem>
-          <SidebarItem label="Members">
-            <svelte:fragment slot="icon">
-              <UsersSolid
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-              />
-            </svelte:fragment>
-          </SidebarItem>
-
-          <SidebarDropdownWrapper label="Recent Boards">
-            <svelte:fragment slot="icon">
-              <AnnotationSolid
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-              />
-            </svelte:fragment>
-            <!-- this can be later added from database -->
-            <!-- {#each recent_board_ids as id}
-                <SidebarDropdownItem
-                  label="Board {id}"
-                  target="_self"
-                  href={`/boards/${id}`}
-                />
-              {/each} -->
-          </SidebarDropdownWrapper>
-          <SidebarDropdownWrapper label="Your Boards">
-            <svelte:fragment slot="icon">
-              <ClipboardCheckSolid
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-              />
-            </svelte:fragment>
-          </SidebarDropdownWrapper>
-
-          <SidebarItem label="Log out">
-            <svelte:fragment slot="icon">
-              <FileCodeSolid
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-              />
-            </svelte:fragment>
-          </SidebarItem>
-        </SidebarGroup>
-      </SidebarWrapper>
-    </Sidebar>
-  </Drawer>
-
+  <BoardViewDrawer bind:board={board_content} bind:hiddenSideBar />
   <div
     class={`flex-grow p-4 ${
       !hiddenSideBar ? "ml-72" : "ml-0"
@@ -245,7 +143,7 @@
           <!-- Filter dropdowns or sorting controls can be added here -->
           <Input
             id="search"
-            placeholder="Search"
+            placeholder="Search Lists"
             size="md"
             bind:value={search_term}
             class="dark:bg-accent-800 border-accent-50 dark:border-accent-50 text-accent-50"
@@ -258,24 +156,24 @@
       <div
         class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
       >
-        {#if tasklist_collection != undefined}
-          {#each tasklist_collection as list}
+        {#if task_lists != undefined}
+          {#each task_lists as list}
             <ListCard {list} />
           {/each}
         {/if}
         <button
           class="p-3 rounded text-ink-light bg-accent-200 dark:text-ink-dark dark:bg-accent-700 hover:bg-accent-600 dark:hover:bg-accent-600"
-          on:click={() => (formModal = true)}>+ Add another list</button
+          on:click={() => (addListModal = true)}>+ Add another list</button
         >
       </div>
     {/if}
   </div>
 </div>
 
-{#if formModal}
+{#if addListModal}
   <div transition:fade={{ duration: 250 }}>
     <NewListModal
-      bind:showModal={formModal}
+      bind:showModal={addListModal}
       on:listCreated={handleListCreated}
     />
   </div>
