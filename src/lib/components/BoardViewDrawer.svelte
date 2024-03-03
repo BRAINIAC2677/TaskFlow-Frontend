@@ -139,36 +139,36 @@
           </svelte:fragment>
         </SidebarItem>
 
-        <SidebarDropdownWrapper label="Recent Boards">
+        <!-- <SidebarDropdownWrapper label="Recent Boards">
           <svelte:fragment slot="icon">
             <AnnotationSolid
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
             />
-          </svelte:fragment>
-          <!-- this can be later added from database -->
-          <!-- {#each recent_board_ids as id}
+          </svelte:fragment> -->
+        <!-- this can be later added from database -->
+        <!-- {#each recent_board_ids as id}
                 <SidebarDropdownItem
                   label="Board {id}"
                   target="_self"
                   href={`/boards/${id}`}
                 />
               {/each} -->
-        </SidebarDropdownWrapper>
+        <!-- </SidebarDropdownWrapper>
         <SidebarDropdownWrapper label="Your Boards">
           <svelte:fragment slot="icon">
             <ClipboardCheckSolid
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
             />
           </svelte:fragment>
-        </SidebarDropdownWrapper>
+        </SidebarDropdownWrapper> -->
 
-        <SidebarItem label="Log out">
+        <!-- <SidebarItem label="Log out">
           <svelte:fragment slot="icon">
             <FileCodeSolid
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
             />
           </svelte:fragment>
-        </SidebarItem>
+        </SidebarItem> -->
       </SidebarGroup>
     </SidebarWrapper>
   </Sidebar>

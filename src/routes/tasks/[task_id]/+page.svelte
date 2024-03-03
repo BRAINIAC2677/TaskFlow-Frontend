@@ -287,8 +287,8 @@
 <div class="flex flex-wrap max-h-screen overflow-y-scroll md:flex-nowrap">
   <div
     bind:this={left_panel}
-    class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900"
-    style="width: 35%"
+    class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900 overflow-y-auto"
+    style="width: 50%"
   >
     {#if taskLoading || !task}
       <div class="flex flex-col justify-center items-center h-full">
@@ -380,7 +380,7 @@
                 {/each}
               {/if}
             </div>
-            <div class="flex flex-col p-4 mt-4 rounded-lg">
+            <div class="flex flex-row p-4 mt-4 rounded-lg">
               <input
                 type="text"
                 class="flex-1 mr-2 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
@@ -404,14 +404,16 @@
                 Add
               </button>
             </div>
-            <button
-              class="px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
-              on:click={() => {
-                update_task();
-              }}
-            >
-              Save Task
-            </button>
+            <div class="flex items-center justify-center w-full">
+              <button
+                class="px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
+                on:click={() => {
+                  update_task();
+                }}
+              >
+                Save Task
+              </button>
+            </div>
           </div>
         </div>
       </div>
