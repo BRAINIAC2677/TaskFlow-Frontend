@@ -7,6 +7,13 @@
   import StackedBarChart from "$lib/components/StackedBarChart.svelte";
   import Heatmap from "$lib/components/Heatmap.svelte";
 
+  function getTitle(i: number) {
+    if (i == 0) return "Time Contribution";
+    else if (i == 1) return "CheckList Contribution";
+    else if (i == 2) return "Task Contribution";
+    else return "Board Contribution";
+  }
+
   let heatmapOptions = {
     chart: {
       type: "heatmap",
@@ -16,7 +23,7 @@
       mode: $theme_store.darkMode ? "dark" : "light",
     },
     series: Array.from({ length: 4 }, (_, i) => ({
-      name: `Metric ${i + 1}`,
+      name: getTitle(i),
       data: Array.from({ length: 24 }, (_, j) => ({
         x: `Day ${j + 1}`,
         y: Math.floor(Math.random() * 100),
