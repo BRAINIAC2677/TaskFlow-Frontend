@@ -57,46 +57,51 @@
     chart: {
       type: "bar",
       stacked: true,
+      background: "transparent",
     },
     theme: {
       mode: $theme_store.darkMode ? "dark" : "light",
-      background: "transparent",
     },
     series: [
       {
-        name: "Product A",
+        name: "CSE406 Project | Wazuh",
         data: [44, 55, 41, 67, 22, 43],
       },
       {
-        name: "Product B",
+        name: "ISD Project | ExploreMate",
         data: [13, 23, 20, 8, 13, 27],
       },
       {
-        name: "Product C",
+        name: "Language Model of Phylogenetic Trees",
         data: [11, 17, 15, 15, 21, 14],
       },
       {
-        name: "Product D",
+        name: "Renewable Energy Optimization",
         data: [21, 7, 25, 13, 22, 8],
       },
     ],
     xaxis: {
       categories: [
-        "2011 Q1",
-        "2011 Q2",
-        "2011 Q3",
-        "2011 Q4",
-        "2012 Q1",
-        "2012 Q2",
+        "2021 Q1",
+        "2021 Q2",
+        "2021 Q3",
+        "2021 Q4",
+        "2022 Q1",
+        "2022 Q2",
       ],
+      title: {
+        text: "Time",
+      },
+    },
+    yaxis: {
+      title: {
+        text: "Number of checklist items completed",
+      },
     },
     plotOptions: {
       bar: {
         horizontal: false,
       },
-    },
-    fill: {
-      opacity: 1,
     },
   };
 

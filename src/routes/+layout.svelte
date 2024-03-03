@@ -107,7 +107,7 @@
 <div
   class="min-h-screen text-ink-light dark:text-ink-dark bg-accent-100 dark:bg-accent-800"
 >
-  <Navbar class="sticky top-0 py-0 dark:bg-accent-900 bg-accent-50">
+  <Navbar class="sticky top-0 py-0 dark:bg-accent-900 bg-accent-50 z-50">
     <NavBrand href="/">
       <span
         class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"

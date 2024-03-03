@@ -1,29 +1,11 @@
 <script lang="ts">
   import Chart from "./Chart.svelte";
-  import { onMount } from "svelte";
-  import server_url from "$lib/stores/server_store";
   import theme_store from "$lib/stores/theme_store";
 
   let loading = false;
   export let options: any;
 
-  let data: any;
-
-  onMount(async () => {});
-
-  $: if (data) {
-    options = {
-      theme: {
-        mode: $theme_store.darkMode ? "dark" : "light",
-      },
-      chart: {
-        type: "pie",
-        background: "transparent",
-      },
-      series: data.series,
-      labels: data.labels,
-    };
-  }
+  $: options.theme.mode = $theme_store.darkMode ? "dark" : "light";
 </script>
 
 {#if loading}
