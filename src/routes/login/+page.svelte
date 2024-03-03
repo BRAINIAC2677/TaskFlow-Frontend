@@ -106,7 +106,7 @@
 <div class="flex h-screen overflow-hidden bg-accent-100 dark:bg-accent-900">
     <div class="flex flex-col items-center justify-center w-full h-full">
         <div
-            class="flex flex-col items-center justify-center px-2 py-8 my-8 mx-4 border border-gray-200 shadow-xl rounded-xl min-w-[26rem] lg:py-0 dark:border-gray-800 bg-accent-100 dark:bg-accent-800"
+            class="flex flex-col items-center border-[1px] justify-center px-2 py-8 my-8 mx-4 border-accent-50 dark:!border-accent-50 shadow-xl rounded-xl min-w-[26rem] lg:py-0 dark:border-gray-800 bg-accent-100 dark:bg-accent-800"
         >
             <h1 class="mt-8 text-2xl font-bold text-center text-accent-50">
                 TaskFlow
@@ -131,7 +131,7 @@
                         <span>Email</span>
                         <Input
                             name="email"
-                            class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             bind:value={user_info.email}
                             required
                             placeholder="Enter your mail"
@@ -142,7 +142,7 @@
                         <Input
                             name="password"
                             type="password"
-                            class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="block w-full p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             bind:value={user_info.password}
                             required
                             placeholder="Enter your password"
