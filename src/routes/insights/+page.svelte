@@ -1,13 +1,19 @@
 <script lang="ts">
-  import Chart from "$lib/components/Chart.svelte";
+  import theme_store from "$lib/stores/theme_store";
   import InsightOverview from "$lib/components/InsightOverview.svelte";
   import DailyTaskCompletionLineChart from "$lib/components/DailyTaskCompletionLineChart.svelte";
   import WeeklyTaskCompletionBarChart from "$lib/components/WeeklyTaskCompletionBarChart.svelte";
   import TaskProgressionPieChart from "$lib/components/TaskProgressionPieChart.svelte";
+  import StackedBarChart from "$lib/components/StackedBarChart.svelte";
+  import Heatmap from "$lib/components/Heatmap.svelte";
 
   let heatmapOptions = {
     chart: {
       type: "heatmap",
+      background: "transparent",
+    },
+    theme: {
+      mode: $theme_store.darkMode ? "dark" : "light",
     },
     series: Array.from({ length: 4 }, (_, i) => ({
       name: `Metric ${i + 1}`,
@@ -51,6 +57,10 @@
     chart: {
       type: "bar",
       stacked: true,
+    },
+    theme: {
+      mode: $theme_store.darkMode ? "dark" : "light",
+      background: "transparent",
     },
     series: [
       {
@@ -135,14 +145,14 @@
   <div class={containerClass}>
     <h2 class={titleClass}>Performance Analysis</h2>
     <div class={cardClass}>
-      <Chart options={stackedBarChartOptions} />
+      <StackedBarChart options={stackedBarChartOptions} />
     </div>
   </div>
 
   <div class={containerClass}>
     <h2 class={titleClass}>Daily Task Heatmap</h2>
     <div class={cardClass}>
-      <Chart options={heatmapOptions} />
+      <Heatmap options={heatmapOptions} />
     </div>
   </div>
 </div>

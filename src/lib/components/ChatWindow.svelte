@@ -154,8 +154,8 @@
     "text-xs text-black font-bold dark:text-white text-right mt-1";
 </script>
 
-<div class="flex-1 p-4 bg-accent-100 dark:bg-accent-900">
-  <h2 class="mb-4 text-xl font-semibold text-black dark:text-black">
+<div class="flex flex-col flex-1 h-screen p-4 bg-accent-100 dark:bg-accent-900">
+  <h2 class="mb-4 text-xl font-semibold text-black dark:text-white">
     Chat Window
   </h2>
   {#if fetchingMessages}
@@ -172,7 +172,7 @@
   {:else if chatMessages.length == 0}
     <p class="text-center">No messages yet</p>
   {:else}
-    <div class="mb-6 space-y-6">
+    <div class="mb-6 space-y-6 overflow-y-scroll h-3/4">
       {#each chatMessages as message}
         {#if message.sender_username != $user_info_store.username}
           <div class="flex gap-4">
@@ -214,7 +214,7 @@
   {/if}
   <div class="pt-4 text-center">
     <textarea
-              class="w-full p-2 text-sm border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+      class="w-full p-2 text-sm border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
       rows="2"
       placeholder="Type your message..."
       bind:value={messageText}
