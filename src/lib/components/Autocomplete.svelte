@@ -26,9 +26,15 @@
     return ret;
   };
 
-  const selectSuggestion = (index: number | string, suggestion: string) => {
+  const selectSuggestion = (
+    index: number | string,
+    suggestion: string,
+    full_name: string,
+    dp_url: string
+  ) => {
     searchTerm = suggestion;
-    dispatch("select", { index, suggestion });
+    dispatch("select", { index, suggestion, full_name, dp_url });
+    searchTerm = "";
   };
 
   $: if (suggestions.length && searchTerm) {
@@ -70,7 +76,13 @@
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <li
           class="px-4 py-2 cursor-default select-none hover:bg-gray-300 dark:hover:bg-gray-600"
-          on:click={() => selectSuggestion(suggestion.id, suggestion.name)}
+          on:click={() =>
+            selectSuggestion(
+              suggestion.id,
+              suggestion.name,
+              suggestion.full_name,
+              suggestion.dp_url
+            )}
         >
           {@html makeMatchBold(suggestion.name, searchTerm)}
         </li>

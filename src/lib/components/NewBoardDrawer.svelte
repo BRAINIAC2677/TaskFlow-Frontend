@@ -169,6 +169,8 @@
       return {
         id: user.id,
         name: user.username,
+        full_name: user.full_name,
+        dp_url: user.dp_url,
       };
     });
     suggestions = suggestions.filter((s) => {

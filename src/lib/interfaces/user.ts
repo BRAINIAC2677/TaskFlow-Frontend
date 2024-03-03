@@ -41,4 +41,6 @@ export interface RegistrationInfo {
 export interface UserSuggestion {
   id: string;
   name: string;
+  full_name: string;
+  dp_url: string;
 }

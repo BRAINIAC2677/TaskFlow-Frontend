@@ -3,6 +3,7 @@
   import Autocomplete from "$lib/components/Autocomplete.svelte";
   import server_url from "$lib/stores/server_store";
   import { toast } from "@zerodevx/svelte-toast";
+  import { onMount, onDestroy } from "svelte";
   import type {
     UserMemberInfo,
     UserSuggestion,
@@ -11,6 +12,7 @@
   import type { BoardContent } from "$lib/interfaces/board";
   import { user_info_store } from "$lib/stores/user_store";
   import { createEventDispatcher } from "svelte";
+  import { add } from "date-fns";
 
   export let board: BoardContent;
   export let showModal = false;
@@ -46,8 +48,30 @@
 
   let loading: boolean = false;
   let search_term: string = "";
+  let last_fetched_term: string = "";
   let selected_users: UserMemberInfo[] = [];
   let retrieved_users: UserMinimalForm[] = [];
+  let fetch_interval: NodeJS.Timeout;
+  let interval_time: number = 100;
+
+  onMount(() => {
+    fetch_interval = setInterval(() => {
+      if (search_term !== last_fetched_term && search_term.length > 0) {
+        fetchUsers(search_term)
+          .then((users) => {
+            retrieved_users = users;
+            last_fetched_term = search_term;
+          })
+          .catch((err) => {
+            console.error("Fetch error:", err);
+          });
+      }
+    }, interval_time);
+  });
+
+  onDestroy(() => {
+    clearInterval(fetch_interval);
+  });
 
   let admins: Array<UserMemberInfo> = [];
   let members: Array<UserMemberInfo> = [];
@@ -97,12 +121,43 @@
     }
   }
 
-  // let userID = event.detail.user_id;
-  //   let prev_role = event.detail.prev_role;
-  //   let new_role = event.detail.new_role;
-  //   let username = event.detail.username;
-  //   let full_name = event.detail.full_name;
-  //   let dp_url = event.detail.dp_url;
+  function addAdmin(
+    userID: string,
+    username: string,
+    full_name: string,
+    dp_url: string
+  ) {
+    // 3 to 2
+    updateMemberAccess(userID, 3, 2)
+      .then((res) => {
+        dispatch("memberUpdated", {
+          user_id: userID,
+          prev_role: 3,
+          new_role: 2,
+          username: username,
+          full_name: full_name,
+          dp_url: dp_url,
+        });
+        toast.push("Admin added successfully", {
+          theme: {
+            "--toastBackground": "rgba(16, 185, 129, 0.9)",
+            "--toastProgressBackground": "rgba(16, 185, 129, 0.5)",
+            "--toastProgressEndBackground": "rgba(16, 185, 129, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      })
+      .catch((error) => {
+        toast.push("Failed to add admin", {
+          theme: {
+            "--toastBackground": "rgba(220, 38, 38, 0.9)",
+            "--toastProgressBackground": "rgba(220, 38, 38, 0.5)",
+            "--toastProgressEndBackground": "rgba(220, 38, 38, 0)",
+            "--toastColor": "#fff",
+          },
+        });
+      });
+  }
 
   function removeAdmin(
     userID: string,
@@ -218,7 +273,38 @@
       });
   }
 
+  function handleUserSelection(event: any) {
+    addMember(
+      event.detail.index,
+      event.detail.suggestion,
+      event.detail.full_name,
+      event.detail.dp_url
+    );
+  }
+
   let suggestions: Array<UserSuggestion> = [];
+  $: {
+    retrieved_users = retrieved_users.filter((user) => {
+      return selected_users.every((selected) => selected.user_id !== user.id);
+    });
+    suggestions = retrieved_users.map((user) => {
+      return {
+        id: user.id,
+        name: user.username,
+        full_name: user.full_name,
+        dp_url: user.dp_url,
+      };
+    });
+    suggestions = suggestions.filter((s) => {
+      return s.id !== $user_info_store.id;
+    });
+    suggestions = suggestions.filter((s) => {
+      return (
+        members.every((member) => member.user_id !== s.id) &&
+        admins.every((admin) => admin.user_id !== s.id)
+      );
+    });
+  }
 
   let textClass: string = "text-slate-800 dark:text-slate-100 text-sm";
 </script>
@@ -229,7 +315,7 @@
     bind:loading
     bind:suggestions
     bind:searchTerm={search_term}
-    on:select={() => {}}
+    on:select={handleUserSelection}
   />
 
   <div class="mt-4">
@@ -334,19 +420,36 @@
               <span class={`${textClass}`}>{member.full_name}</span>
             </div>
           </div>
-          <Button
-            color="red"
-            size="xs"
-            on:click={() =>
-              removeMember(
-                member.user_id,
-                member.username,
-                member.full_name,
-                member.dp_url
-              )}
-          >
-            Remove Member
-          </Button>
+          <div class="flex items-center gap-2">
+            {#if board.board_access === 1}
+              <Button
+                color="green"
+                size="xs"
+                on:click={() =>
+                  addAdmin(
+                    member.user_id,
+                    member.username,
+                    member.full_name,
+                    member.dp_url
+                  )}
+              >
+                Add as Admin
+              </Button>
+            {/if}
+            <Button
+              color="red"
+              size="xs"
+              on:click={() =>
+                removeMember(
+                  member.user_id,
+                  member.username,
+                  member.full_name,
+                  member.dp_url
+                )}
+            >
+              Remove Member
+            </Button>
+          </div>
         </div>
       {/each}
     {/if}
