@@ -109,24 +109,33 @@
 >
   <Navbar class="sticky top-0 py-0 dark:bg-accent-900 bg-accent-50 z-50">
     <NavBrand href="/">
-      <span
-        class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+      <span class="self-center text-xl font-bold whitespace-nowrap text-white"
         >TaskFlow</span
       >
     </NavBrand>
 
     <NavUl slideParams={{ delay: 10, duration: 10, easing: bounceOut }}>
-      <NavLi href="/">Home</NavLi>
+      <NavLi class="text-accent-100 font-bold" href="/">Home</NavLi>
       {#if $is_logged_in}
-        <NavLi href="/dashboard">Dashboard</NavLi>
-        <NavLi href="/taskview">Task View</NavLi>
-        <NavLi href="/insights">Insights</NavLi>
-        <NavLi href="/notifications">Notifications</NavLi>
+        <NavLi class="text-accent-100 font-bold" href="/dashboard"
+          >Dashboard</NavLi
+        >
+        <NavLi class="text-accent-100 font-bold" href="/taskview"
+          >Task View</NavLi
+        >
+        <NavLi class="text-accent-100 font-bold" href="/insights"
+          >Insights</NavLi
+        >
+        <NavLi class="text-accent-100 font-bold" href="/notifications"
+          >Notifications</NavLi
+        >
       {:else}
-        <NavLi href="/login">Login</NavLi>
-        <NavLi href="/register">Register</NavLi>
+        <NavLi class="text-accent-100 font-bold" href="/login">Login</NavLi>
+        <NavLi class="text-accent-100 font-bold" href="/register"
+          >Register</NavLi
+        >
       {/if}
-      <NavLi href="/about">About</NavLi>
+      <NavLi class="text-accent-100 font-bold" href="/about">About</NavLi>
     </NavUl>
 
     <div class="flex items-center md:order-2">
