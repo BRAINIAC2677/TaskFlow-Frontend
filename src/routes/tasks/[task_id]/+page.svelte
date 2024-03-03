@@ -168,6 +168,85 @@
     }
   });
 
+  async function update_task() {
+    const token = localStorage.getItem("access_token") || "";
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    const request = {
+      method: "POST",
+      headers,
+      body: JSON.stringify(task),
+    };
+
+    try {
+      const response = await fetch($server_url + "/task/update", request);
+      if (response.ok) {
+        toast.push("Task updated successfully", {
+          theme: {
+            "--toastBackground": "green",
+            "--toastProgressBackground": "lightgreen",
+            "--toastProgressText": "green",
+            "--toastText": "white",
+          },
+        });
+        task = await get_task_detail();
+      } else {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.push("Error updating task", {
+        theme: { "--toastBackground": "red", "--toastText": "white" },
+      });
+    }
+  }
+
+  async function add_checklist_item() {
+    const token = localStorage.getItem("access_token") || "";
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    const request = {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        task_id: task.id,
+        name: new_checklist_item.item_name,
+      }),
+    };
+    try {
+      const response = await fetch(
+        $server_url + "/task/create-checklist-item",
+        request
+      );
+      if (response.ok) {
+        toast.push("Checklist item added successfully", {
+          theme: {
+            "--toastBackground": "green",
+            "--toastProgressBackground": "lightgreen",
+            "--toastProgressText": "green",
+            "--toastText": "white",
+          },
+        });
+        task = await get_task_detail();
+      } else {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Add error:", error);
+      toast.push("Error adding checklist item", {
+        theme: { "--toast Background": "red", "--toastText": "white" },
+      });
+    }
+  }
+
   // Dragging
   let start_x: number;
   let start_width: number;
@@ -312,10 +391,11 @@
                 class="w-20 h-10 px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
                 on:click={() => {
                   if (new_checklist_item.item_name.trim() === "") return;
-                  task.checklist_items.push(new_checklist_item);
+                  add_checklist_item();
                   task.checklist_items = task.checklist_items;
                   new_checklist_item = {
                     item_name: "",
+
                     is_completed: false,
                     item_id: 0,
                   };
@@ -324,6 +404,14 @@
                 Add
               </button>
             </div>
+            <button
+              class="px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
+              on:click={() => {
+                update_task();
+              }}
+            >
+              Save Task
+            </button>
           </div>
         </div>
       </div>
