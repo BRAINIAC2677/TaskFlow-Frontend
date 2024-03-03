@@ -3,7 +3,6 @@
   import theme_store from "$lib/stores/theme_store";
   export let task: BoardContentTaskForm;
 
-  // some pre-processing
   if (task.task_label_color == null) {
     task.task_label_color = "#FFFFFF";
   }
@@ -75,8 +74,8 @@
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
-    height: 200px; /* Set a fixed height or use aspect ratio for responsive height */
-    width: 100%; /* You may adjust this as needed */
+    height: 200px;
+    width: 100%;
   }
 
   @keyframes loading {
