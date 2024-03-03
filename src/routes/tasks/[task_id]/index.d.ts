@@ -2,8 +2,8 @@ interface Task {
     id: number;
     name: string;
     description: string;
-    start_time: Date;
-    due_time: Date;
+    start_time: string;
+    due_time: string;
     labels: Array<String>;
     label_color: string; // of form #RRGGBB
     cover_url: string;

@@ -3,21 +3,21 @@
   import { toast } from "@zerodevx/svelte-toast";
   import server_url from "$lib/stores/server_store";
   import ChatWindow from "$lib/components/ChatWindow.svelte";
+  import { Circle2 } from "svelte-loading-spinners";
   import { page } from "$app/stores";
+  import { Input } from "flowbite-svelte";
 
   let task_id: number = Number($page.params.task_id);
 
-  let task: Task = {
-    id: 0,
-    name: "",
-    description: "",
-    start_time: new Date(),
-    due_time: new Date(),
-    labels: [],
-    label_color: "#000000",
-    cover_url: "",
-    checklist_items: [],
-  };
+  let task: Task;
+  let taskLoading: boolean = false;
+
+  function stripTimezoneFromTimestamp(timestamp: string): string {
+    // This regex matches YYYY-MM-DDTHH:MM:SS and captures this part, ignoring timezone info
+    const regex = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/;
+    const match = timestamp.match(regex);
+    return match ? match[1] : ""; // Return the captured datetime or an empty string if no match
+  }
 
   let new_checklist_item: CheckListItem = {
     item_id: 0,
@@ -65,7 +65,7 @@
           "--toastProgressText": "green",
           "--toastText": "white",
         },
-      }); 
+      });
       task.cover_url = data.url;
       // console.log("Cover photo uploaded successfully");
     } catch (error) {
@@ -152,17 +152,19 @@
 
   onMount(async () => {
     try {
-      // console.log("Fetching task detail");
+      console.log("Fetching task detail");
+      taskLoading = true;
       if (task_id) {
         const data = await get_task_detail();
-        // console.log(data);
         task = data;
-        console.log(task);
+        task.start_time = stripTimezoneFromTimestamp(task.start_time);
+        task.due_time = stripTimezoneFromTimestamp(task.due_time);
       }
     } catch (error) {
-      // console.log("Error fetching task detail");
+      console.error(error);
     } finally {
-      // console.log("Task detail fetched");
+      console.log("Task detail fetched");
+      taskLoading = false;
     }
   });
 
@@ -197,19 +199,6 @@
     document.documentElement.removeEventListener("mousemove", do_drag, false);
     document.documentElement.removeEventListener("mouseup", stop_drag, false);
   }
-
-  // Convert Date objects to the appropriate string format for the inputs
-  // YYYY-MM-DDTHH:mm:ss.sssZ
-  let start_date_str: string = task.start_time.toISOString().split("T")[0];
-  let start_time_str: string = task.start_time
-    .toISOString()
-    .split("T")[1]
-    .substring(0, 5);
-  let due_date_str: string = task.due_time.toISOString().split("T")[0];
-  let due_time_str: string = task.due_time
-    .toISOString()
-    .split("T")[1]
-    .substring(0, 5);
 </script>
 
 <svelte:head>
@@ -222,174 +211,123 @@
     class="flex flex-col p-4 bg-accent-100 dark:bg-accent-900"
     style="width: 35%"
   >
-    <div class="flex flex-col gap-10 p-6 lg:flex-row">
-      <div
-        class="w-full max-w-2xl p-6 mx-auto rounded-lg shadow-lg text-accent-900 dark:text-accent-100 bg-accent-100 dark:bg-accent-800"
-      >
-        <h2 class="mb-4 text-2xl font-semibold">
-          {task.name}
-        </h2>
-        <div class="mb-4">
-          {#if task.cover_url}
-            <!-- svelte-ignore a11y-img-redundant-alt -->
-            <img src="{task.cover_url}?t={new Date().getTime()}" alt="Cover Photo" class="w-full mb-4" />
+    {#if taskLoading || !task}
+      <div class="flex flex-col justify-center items-center h-full">
+        <Circle2 size={100} />
+        <span class="mt-4 text-xl font-semibold">Loading Task Detail...</span>
+      </div>
+    {:else}
+      <div class="flex flex-col gap-10 p-6 lg:flex-row">
+        <div
+          class="w-full max-w-2xl p-6 mx-auto rounded-lg shadow-lg text-accent-900 dark:text-accent-100 bg-accent-100 dark:bg-accent-800"
+        >
+          <h2 class="mb-4 text-2xl font-semibold">
+            {task.name}
+          </h2>
+          <div class="mb-4">
+            {#if task.cover_url}
+              <!-- svelte-ignore a11y-img-redundant-alt -->
+              <img
+                src="{task.cover_url}?t={new Date().getTime()}"
+                alt="Cover Photo"
+                class="w-full mb-4"
+              />
+              <button
+                class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+                on:click={delete_cover_photo}
+              >
+                Delete
+              </button>
+            {/if}
+            <input
+              type="file"
+              id="coverUpload"
+              class="hidden"
+              accept="image/*"
+              on:change={upload_cover_photo}
+            />
             <button
-              class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
-              on:click={delete_cover_photo}
+              class="px-4 py-2 mt-4 font-bold text-white transition-all rounded hover:bg-accent-500 bg-accent-50"
+              on:click={() => document.getElementById("coverUpload")?.click()}
             >
-              Delete
+              Upload
             </button>
-          {/if}
-          <input
-            type="file"
-            id="coverUpload"
-            class="hidden"
-            accept="image/*"
-            on:change={upload_cover_photo}
-          />
-          <button
-            class="px-4 py-2 mt-4 font-bold text-white transition-all rounded hover:bg-accent-500 bg-accent-50"
-            on:click={() => document.getElementById("coverUpload")?.click()}
-          >
-            Upload
-          </button>
-        </div>
+          </div>
 
-        <div class="mb-4">
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold">Label Color</label>
-          <input
-            type="color"
-            class="block w-full mt-1"
-            bind:value={task.label_color}
-            on:change={() => {
-              // console.log(task.label_color);
-            }}
-          />
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
-          <div>
-            <label class="font-bold" for="start-date"
+          <div class="grid grid-cols-2 gap-4 mb-4 items-center">
+            <label class="font-bold flex items-center" for="start-date"
               >Start Date</label
             >
-            <input
+            <Input
+              type="datetime-local"
+              required
+              bind:value={task.start_time}
+            />
+            <!-- <Input
               id="start-date"
-              type="date"
+              type="datetime-local"
               class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
-              bind:value={start_date_str}
-              on:change={() => {
-                const [year, month, day] = start_date_str.split("-");
-                task.start_time.setFullYear(
-                  parseInt(year),
-                  parseInt(month) - 1,
-                  parseInt(day)
-                );
-              }}
-            />
+              bind:value={task.start_time}
+            /> -->
           </div>
-          <div>
-            <label class="font-bold" for="start-time"
-              >Start Time</label
-            >
-            <input
-              id="start-time"
-              type="time"
 
-              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
-
-              bind:value={start_time_str}
-              on:change={() => {
-                const [hours, minutes] = start_time_str.split(":");
-                task.start_time.setHours(parseInt(hours), parseInt(minutes));
-              }}
-            />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
-          <div>
-            <label class="font-bold" for="due-date"
+          <div class="grid grid-cols-2 gap-4 mb-4 items-center">
+            <label class="font-bold flex items-center" for="due-date"
               >Due Date</label
             >
-            <input
+            <Input type="datetime-local" required bind:value={task.due_time} />
+            <!-- <Input
               id="due-date"
-              type="date"
+              type="datetime-local"
               class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
-
-              bind:value={due_date_str}
-              on:change={() => {
-                const [year, month, day] = due_date_str.split("-");
-                task.due_time.setFullYear(
-                  parseInt(year),
-                  parseInt(month) - 1,
-                  parseInt(day)
-                );
-              }}
-            />
+              bind:value={task.due_time}
+            /> -->
           </div>
-          <div>
-            <label class="font-bold" for="due-time"
-              >Due Time</label
-            >
-            <input
-              id="due-time"
-              type="time"
-              class="block w-full mt-1 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
 
-              bind:value={due_time_str}
-              on:change={() => {
-                const [hours, minutes] = due_time_str.split(":");
-                task.due_time.setHours(parseInt(hours), parseInt(minutes));
-              }}
-            />
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="font-bold">Checklist</label>
-          <div class="mt-1">
-            {#if task.checklist_items != undefined}
-              {#each task.checklist_items as item, i}
-                <div class="flex items-center mb-2">
-                  <input
-                    type="checkbox"
-                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                    bind:checked={item.is_completed}
-                  />
-                  <span class="ml-2 ">{item.item_name}</span>
-                </div>
-              {/each}
-            {/if}
-          </div>
-          <div class="flex flex-col p-4 mt-4 rounded-lg">
-            <input
-              type="text"
-
-              class="flex-1 mr-2 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
-              placeholder="Add a new item"
-              bind:value={new_checklist_item.item_name}
-            />
-            <button
-              class="w-20 h-10 px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
-              on:click={() => {
-                if (new_checklist_item.item_name.trim() === "") return;
-                task.checklist_items.push(new_checklist_item);
-                task.checklist_items = task.checklist_items;
-                new_checklist_item = {
-                  item_name: "",
-                  is_completed: false,
-                  item_id: 0,
-                };
-              }}
-            >
-              Add
-            </button>
+          <div class="mb-4">
+            <!-- svelte-ignore a11y-label-has-associated-control -->
+            <label class="font-bold">Checklist</label>
+            <div class="mt-1">
+              {#if task.checklist_items != undefined}
+                {#each task.checklist_items as item, i}
+                  <div class="flex items-center mb-2">
+                    <input
+                      type="checkbox"
+                      class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      bind:checked={item.is_completed}
+                    />
+                    <span class="ml-2">{item.item_name}</span>
+                  </div>
+                {/each}
+              {/if}
+            </div>
+            <div class="flex flex-col p-4 mt-4 rounded-lg">
+              <input
+                type="text"
+                class="flex-1 mr-2 border-2 rounded-md shadow-sm border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                placeholder="Add a new item"
+                bind:value={new_checklist_item.item_name}
+              />
+              <button
+                class="w-20 h-10 px-4 py-2 mx-auto my-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700"
+                on:click={() => {
+                  if (new_checklist_item.item_name.trim() === "") return;
+                  task.checklist_items.push(new_checklist_item);
+                  task.checklist_items = task.checklist_items;
+                  new_checklist_item = {
+                    item_name: "",
+                    is_completed: false,
+                    item_id: 0,
+                  };
+                }}
+              >
+                Add
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    {/if}
   </div>
 
   <!-- svelte-ignore a11y-no-static-element-interactions -->
