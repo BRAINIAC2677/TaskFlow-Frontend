@@ -6,6 +6,7 @@
   import { Circle2 } from "svelte-loading-spinners";
   import { page } from "$app/stores";
   import { Input } from "flowbite-svelte";
+  import { goto } from "$app/navigation";
 
   let task_id: number = Number($page.params.task_id);
 
@@ -200,6 +201,43 @@
     } catch (error) {
       console.error("Update error:", error);
       toast.push("Error updating task", {
+        theme: { "--toastBackground": "red", "--toastText": "white" },
+      });
+    }
+  }
+
+  async function delete_task() {
+    const token = localStorage.getItem("access_token") || "";
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
+
+    const request = {
+      method: "DELETE",
+      headers,
+      body: JSON.stringify({ task_id: task_id }),
+    };
+
+    try {
+      const response = await fetch($server_url + "/task/delete", request);
+      if (response.ok) {
+        toast.push("Task deleted successfully", {
+          theme: {
+            "--toastBackground": "green",
+            "--toastProgressBackground": "lightgreen",
+            "--toastProgressText": "green",
+            "--toastText": "white",
+          },
+        });
+        goto("/dashboard");
+      } else {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.push("Error deleting task", {
         theme: { "--toastBackground": "red", "--toastText": "white" },
       });
     }
@@ -412,6 +450,14 @@
                 }}
               >
                 Save Task
+              </button>
+              <button
+                class="px-4 py-2 mx-auto my-2 font-bold text-black bg-red-500 rounded hover:bg-red-700"
+                on:click={() => {
+                  delete_task();
+                }}
+              >
+                Delete Task
               </button>
             </div>
           </div>
