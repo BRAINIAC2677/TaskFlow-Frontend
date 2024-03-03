@@ -151,7 +151,7 @@
                     <div class="flex items-start">
                         <a
                             href="/reset-password/recovery-mail"
-                            class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
+                            class="ml-auto text-sm text-accent-50 hover:underline"
                             >Forgot password?</a
                         >
                     </div>
