@@ -103,7 +103,7 @@
         class="flex flex-col items-center justify-center h-full px-3 mx-auto min-w-[30rem] w-1/3"
     >
         <div
-            class="flex flex-col items-center justify-center w-full px-6 py-8 mx-auto border border-gray-200 shadow-xl rounded-xl dark:border-gray-700 dark:bg-accent-800 bg-accent-100"
+            class="flex flex-col items-center justify-center w-full px-6 py-8 mx-auto border shadow-xl border-accent-50 rounded-xl dark:border-accent-50 dark:bg-accent-800 bg-accent-100"
         >
             <h2 class="mb-4 text-4xl font-bold text-accent-50">Register</h2>
             <form
@@ -149,7 +149,7 @@
                             type="text"
                             id="first_name"
                             bind:value={new_user.first_name}
-                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             required
                             Placeholder="e.g. John"
                         />
@@ -160,7 +160,7 @@
                             type="text"
                             id="middle_name"
                             bind:value={new_user.middle_name}
-                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             Placeholder="e.g. Doe"
                         />
                     </div>
@@ -170,7 +170,7 @@
                             type="text"
                             id="last_name"
                             bind:value={new_user.last_name}
-                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             required
                             Placeholder="e.g. Smith"
                         />
@@ -181,7 +181,7 @@
                             type="text"
                             id="username"
                             bind:value={new_user.username}
-                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                            class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                             required
                             Placeholder="e.g. jsmith"
                         />
@@ -194,7 +194,7 @@
                         id="email"
                         required
                         bind:value={new_user.email}
-                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                         Placeholder="Enter your mail"
                     />
                 </div>
@@ -205,7 +205,7 @@
                         id="password"
                         required
                         bind:value={new_user.password}
-                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                         Placeholder="Type your password"
                     />
                     {#if new_user.password.length > 0 && new_user.password.length < 6}
@@ -225,7 +225,7 @@
                         id="confirm_password"
                         bind:value={confirm_password}
                         required
-                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 focus:border-accent-50 focus:ring focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
+                        class="p-3 mt-1 placeholder-gray-400 border rounded-md shadow-sm dark:placeholder-gray-600 border-accent-50 dark:border-accent-50 focus:border-accent-50 dark:focus:border-accent-50 focus:ring focus:ring-accent-50 dark:focus:ring-accent-50 focus:ring-opacity-50 dark:bg-accent-700 bg-accent-100"
                         Placeholder="Retype your password"
                     />
                     {#if password_match === 1}
