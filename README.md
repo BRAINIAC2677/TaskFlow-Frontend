@@ -39,7 +39,7 @@
   <p align="center">
     An advanced AI powered task management system
     <br />
-    <a href="https://github.com/BRAINIAC2677/taskflow"><strong>Explore the docs »</strong></a>
+    <a href="https://taskflow-2c96.onrender.com/"><strong>Explore it live »</strong></a>
     <br />
     <br />
     <a href="https://github.com/BRAINIAC2677/taskflow_express_api">Back-end</a>
