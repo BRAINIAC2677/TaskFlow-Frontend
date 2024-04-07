@@ -42,7 +42,7 @@
     <a href="https://github.com/BRAINIAC2677/taskflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/BRAINIAC2677/taskflow">View Demo</a>
+    <a href="https://github.com/BRAINIAC2677/taskflow_express_api">Back-end</a>
     ·
     <a href="https://github.com/BRAINIAC2677/taskflow/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
@@ -69,12 +69,10 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
