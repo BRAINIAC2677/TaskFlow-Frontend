@@ -42,7 +42,7 @@
     <a href="https://taskflow-2c96.onrender.com/"><strong>Explore it live »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/BRAINIAC2677/taskflow_express_api">Back-end</a>
+    <a href="https://github.com/BRAINIAC2677/taskflow-express-api">Back-end</a>
     ·
     <a href="https://github.com/BRAINIAC2677/taskflow/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
@@ -114,15 +114,17 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a supabase API Key at [https://supabase.com/](https://supabase.com/) and edit [.env](.env) file
-2. Clone the repo
+- Clone the repo
    ```sh
    git clone https://github.com/BRAINIAC2677/taskflow.git
    ```
-3. Install NPM packages
+- Install NPM packages
    ```sh
    npm install
    ```
+- Change the `server_url` in [this file](src/lib/stores/server_store.ts) to your server url or localhost.
+
+- If you set `server_url` to localhost, you must run the backend server from [here](https://github.com/BRAINIAC2677/taskflow-express-api)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
