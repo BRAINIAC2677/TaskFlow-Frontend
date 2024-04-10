@@ -41,6 +41,7 @@
         list_id: data.id,
         list_name: name,
         list_tasks: [],
+        list_deadline: timestamp,
       });
       return data;
     } catch (error) {

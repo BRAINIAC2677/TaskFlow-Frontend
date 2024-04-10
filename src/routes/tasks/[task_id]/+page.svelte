@@ -195,6 +195,8 @@
           },
         });
         task = await get_task_detail();
+        task.start_time = stripTimezoneFromTimestamp(task.start_time);
+        task.due_time = stripTimezoneFromTimestamp(task.due_time);
       } else {
         throw new Error("Network response was not ok");
       }
